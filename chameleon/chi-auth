@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Loads Chameleon authentication
+################################################################################
+# Help/Usage                                                                   #
+################################################################################
+Help()
+{
+   # Display Help
+   echo "Chameleon CLI auth manager"
+   echo
+   echo "Syntax: chi-auth [-h] <chameleon site>"
+   echo "options:"
+   echo "h     Print this Help."
+   echo
+}
+
+################################################################################
+# Get the options
+while getopts ":h" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+     \?) # Invalid option
+         echo "Error: Invalid option"
+         exit;;
+   esac
+done
+################################################################################
+chameleon_site=$1
+case $chameleon_site in
+  "tacc") source ./tacc/app-cred-cli-openrc.sh ;;
+   *) echo "Error: Invalid chameleon site" ;;
+esac

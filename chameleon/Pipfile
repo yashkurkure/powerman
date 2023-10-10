@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+python-openstackclient = "*"
+python-blazarclient = {ref = "chameleoncloud/xena", git = "git+https://github.com/chameleoncloud/python-blazarclient"}
+pyreadline3 = "*"
+gnureadline = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
