@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Sets up SSH keys of chameleon
+cp ./ssh_keys/tacc ~/.ssh/
+cp ./ssh_keys/tacc.pub ~/.ssh/
+cat ./ssh_keys/config >> ~/.ssh/config
