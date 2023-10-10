@@ -28,8 +28,6 @@ while getopts ":h" option; do
    esac
 done
 ################################################################################
-chameleon_site=$1
-case $chameleon_site in
-  "tacc") source ./tacc/app-cred-cli-openrc.sh ;;
-   *) echo "Error: Invalid chameleon site" ;;
-esac
+
+# Load the auth env variables for the site
+source ./$1/app-cred-cli-openrc.sh
