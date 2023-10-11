@@ -16,6 +16,7 @@ Once a reservation is obtained for a device, a bare metal instance can be launch
 * https://web.eece.maine.edu/~vweaver/projects/rapl/rapl_support.html
 * https://ark.intel.com/content/www/us/en/ark/products/120483/intel-xeon-gold-6126-processor-19-25m-cache-2-60-ghz.html
 * https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/advisory-guidance/running-average-power-limit-energy-reporting.html
+* https://vstinner.github.io/intel-cpus.html#:~:text=The%20processor%20P%2Dstate%20is,some%20penalty%20to%20CPU%20performance.
 
 ### Papers
 * https://dl.acm.org/doi/10.1145/2989081.2989088
