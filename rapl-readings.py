@@ -1,6 +1,9 @@
 # Python script to run rapl-read.c at intervals to gather power consumption
 import subprocess
 import time
+import sys
+
+outgraph = sys.argv[1]
 
 def read_rapl():
     args = ("./rapl-read", "-m")
@@ -13,7 +16,24 @@ def read_rapl():
     timestamp = time.time()
     return [timestamp, package1_energy, package2_energy]
 
-print(f'Time\t\t\t\t\t\tPackage1\t\t\tPackage2')
-while True:
-    reading = read_rapl()
-    print(f'{reading[0]}\t\t\t\t{reading[1]}\t\t\t{reading[2]}')
+x = []
+y1 = []
+y2 = []
+
+try:
+    while True:
+        reading = read_rapl()
+        x.append(reading[0])
+        y1.append(reading[1])
+        y2.append(reading[2])
+except KeyboardInterrupt:
+    print('Stoping rapl reads...')
+
+import matplotlib.pyplot as plt
+fig = plt.figure()
+plt.plot(x, y1, color = 'green', marker = 'o', label='Package 1')
+plt.plot(x, y2, color = 'red', marker = 'x', label='Package 2')
+plt.ylabel('Energy(J)')
+plt.xlabel('Unix Time(s)')
+plt.legend(title = f'Energy(J) vs T')
+plt.savefig(f'{outgraph}', dpi=300)
