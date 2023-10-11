@@ -17,6 +17,8 @@ Once a reservation is obtained for a device, a bare metal instance can be launch
 * https://ark.intel.com/content/www/us/en/ark/products/120483/intel-xeon-gold-6126-processor-19-25m-cache-2-60-ghz.html
 * https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/advisory-guidance/running-average-power-limit-energy-reporting.html
 * https://vstinner.github.io/intel-cpus.html#:~:text=The%20processor%20P%2Dstate%20is,some%20penalty%20to%20CPU%20performance.
+* https://www.youtube.com/watch?v=1Rl8PyuK6yA
+* https://www.reddit.com/r/Fedora/comments/11lh9nn/set_nvidia_gpu_power_and_temp_limit_on_boot/
 
 ### Papers
 * https://dl.acm.org/doi/10.1145/2989081.2989088
