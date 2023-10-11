@@ -1,5 +1,0 @@
-
-Host tacc
-    HostName 129.114.109.179
-    User cc
-    IdentityFile ~/.ssh/tacc

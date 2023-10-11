@@ -30,4 +30,4 @@ done
 ################################################################################
 
 # Load the auth env variables for the site
-source ./$1/app-cred-cli-openrc.sh
+source ./$1-app-cred.sh
