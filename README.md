@@ -19,6 +19,7 @@ Once a reservation is obtained for a device, a bare metal instance can be launch
 * https://vstinner.github.io/intel-cpus.html#:~:text=The%20processor%20P%2Dstate%20is,some%20penalty%20to%20CPU%20performance.
 * https://www.youtube.com/watch?v=1Rl8PyuK6yA
 * https://www.reddit.com/r/Fedora/comments/11lh9nn/set_nvidia_gpu_power_and_temp_limit_on_boot/
+* https://developer.nvidia.com/nvidia-management-library-nvml
 
 ### Papers
 * https://dl.acm.org/doi/10.1145/2989081.2989088
