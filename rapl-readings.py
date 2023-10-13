@@ -2,19 +2,21 @@
 import subprocess
 import time
 import sys
-
+import os
 outgraph = sys.argv[1]
 
-def read_rapl():
-    args = ("./rapl-read", "-m")
-    popen = subprocess.Popen(args, stdout=subprocess.PIPE)
-    popen.wait()
-    output = popen.stdout.readlines()
+start_timestamp = time.time()
 
-    package1_energy = float(output[49].decode().strip().split(':')[1].split('J')[0].strip())
-    package2_energy = float(output[53].decode().strip().split(':')[1].split('J')[0].strip())
+def read_rapl():
+    f = open("/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj", "r")
+    energy_counter1 = int(f.readline())
+    f.close()
+    f = open("/sys/class/powercap/intel-rapl/intel-rapl:1/energy_uj", "r")
+    energy_counter2 = int(f.readline())
+    f.close()
     timestamp = time.time()
-    return [timestamp, package1_energy, package2_energy]
+    return [int(timestamp - start_timestamp), energy_counter1/1000000, energy_counter2/1000000]
+
 
 x = []
 y1 = []
@@ -23,6 +25,7 @@ y2 = []
 try:
     while True:
         reading = read_rapl()
+        time.sleep(1)
         x.append(reading[0])
         y1.append(reading[1])
         y2.append(reading[2])
