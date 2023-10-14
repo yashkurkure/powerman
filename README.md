@@ -29,7 +29,7 @@ Various units of a heterogenous system might have differnt ways of accessing pow
 A more comprehensive list can be found in this [article](https://web.eece.maine.edu/~vweaver/projects/perf_events/uncore/offcore_uncore.pdf).
 
 
-## On chameleon ~ Experiment on Intel Skylake using RAPL on Chameleon Cloud
+## On Chameleon ~ Experiment on Intel Skylake using RAPL on Chameleon Cloud
 
 This exeperiment demonstrates energy monitoring an Intel Skylake CPU using RAPL on Chameleon Cloud.  
 
