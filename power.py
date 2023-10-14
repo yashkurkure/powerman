@@ -29,8 +29,8 @@ def read_rapl():
     energy_counter2_1 = int(f.readline())
     f.close()
 
-    power_counter1 = (energy_counter1_1 - energy_counter1_0)/100000
-    power_counter2 = (energy_counter2_1 - energy_counter2_0)/100000
+    power_counter1 = (energy_counter1_1 - energy_counter1_0)/1000000
+    power_counter2 = (energy_counter2_1 - energy_counter2_0)/1000000
 
     timestamp = time.time()
     return [int(t0 - start_timestamp), power_counter1, power_counter2]
