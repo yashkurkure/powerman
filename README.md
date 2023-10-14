@@ -13,7 +13,9 @@ Note: Does not support AMD CPUs but can be added to CHI@EVL site of Chameleon Cl
 
 ## Power consumption and capping
 
-Various units of a heterogenous system might have differnt ways of accessing power and energy readings. For example, Intel processors after and including Sandy Bridge provides the RAPL (Running Average Power Limit) interface via the linux kernel under `/sys/devices/virtual/powercap/intel-rapl`. For GPUs, Nvidia provides nvidia-smi (System Management Interface). These tools allow power mangement by interacting with the model specific registers (MSRs).
+Various units of a heterogenous system might have differnt ways of accessing power and energy readings. For example, Intel processors after and including Sandy Bridge provides the RAPL (Running Average Power Limit) interface via the linux kernel under `/sys/devices/virtual/powercap/intel-rapl`. For GPUs, Nvidia provides nvidia-smi (System Management Interface). These tools allow power mangement by interacting with the model specific registers (MSRs). 
+
+**Chameleon provides root access which allows us to use tools and read necessary files such as the intel-rapl files in the Kernel's `\sys` interface.**
 
 |||
 |-----------|-----------|
@@ -41,13 +43,25 @@ Model name:            Intel(R) Xeon(R) Gold 6126 CPU @ 2.60GHz
 ```
 This node was leased at the CHI@TACC site and the CPU contains 2 physical packages PP0 and PP1.
 
-The energy consumption can be understood by readings files:
+The energy consumption can be understood by reading files for each package. For package 0 read the files:
 * `/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj`
 * `/sys/class/powercap/intel-rapl/intel-rapl:0/max_energy_uj`
 
-`energy_uj` keep a counter of energy consumed in micro joules and when this counter reaches the value of `max_energy_uj`, it is reset to 0. (The sampling rate is unknown, but it is possible to query the file at intervals and calulcate the power)
+and for package N:
+* `/sys/class/powercap/intel-rapl/intel-rapl:{N}/energy_uj`
+* `/sys/class/powercap/intel-rapl/intel-rapl:{N}/max_energy_uj`
 
+`energy_uj` keeps a counter of energy consumed in micro joules and when this counter reaches the value of `max_energy_uj`, it is reset to 0.
 
+The below energy plots were produced by querying the files for a 30s window while a 10s stress test was run the 32 cores.
+
+![image](./energy_cpu32_package0.png)
+
+![image](./energy_cpu32_package1.png)
+
+The power plots were created by sampling for a window of 1s:
+
+![image](./power_cpu32.png)
 
 ## Chameleon reserving resources
 Chameleon resources are available at multiple sites, e.g., CHI@TACC, CHI@UC, CHI@Edge. Each of the sites host their own resources for each project to use. It is possible to lease resources at each chameleon site. The maximum length of a lease is 7 days. You can find more details about reservations [here](https://chameleoncloud.readthedocs.io/en/latest/technical/reservations.html).
