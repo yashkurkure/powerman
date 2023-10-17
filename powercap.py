@@ -16,3 +16,10 @@ f = open("/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_u
 print('Setting power cap to 50W')
 f.write('50000000')
 f.close()
+
+time.sleep(10)
+
+f = open("/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw", "w+")
+print('Setting power cap back to 125W')
+f.write('125000000')
+f.close()
