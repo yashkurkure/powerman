@@ -21,7 +21,7 @@ Various units of a heterogenous system might have differnt ways of accessing pow
 |-----------|-----------|
 |Intel CPUs post Sandybridge Architecture| [Intel RAPL](https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/advisory-guidance/running-average-power-limit-energy-reporting.html), [Kernel docs](https://www.kernel.org/doc/html/next/power/powercap/powercap.html)|
 |Nvidia GPUs post 2011|[nvidia smi](https://developer.download.nvidia.com/compute/DCGM/docs/nvidia-smi-367.38.pdf)|
-|arm| [ACPI](https://developer.arm.com/Architectures/ACPI)|
+|arm| [ACPI](https://developer.arm.com/Architectures/ACPI) (Unsure about this ???)|
 |AMD Family 17h, 19h|RAPL (same register contents, but the MSR numbers are different), [17h support Kernel Patch](https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=linux-next&id=43756a298928c9a4e8201baaeb205c0c103728af), [19h support Kernel Patch](https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=linux-next&id=8a9d881f22d7a0e06a46a326d0880fb45a06d3b5)|
 |AMD GPUs| ??? |
 |FPGAs|???|
@@ -31,6 +31,8 @@ A more comprehensive list can be found in this [article](https://web.eece.maine.
 
 ## On Chameleon ~ Experiment on Intel Skylake using RAPL on Chameleon Cloud
 
+
+### Power monitoring
 This exeperiment demonstrates energy monitoring an Intel Skylake CPU using RAPL on Chameleon Cloud.  
 
 ```
@@ -55,13 +57,33 @@ and for package N:
 
 The below energy plots were produced by querying the files for a 30s window while a 10s stress test was run the 32 cores.
 
-![image](./energy_cpu32_package0.png)
+![image](./intel-skylake/energy_cpu32_package0.png)
 
-![image](./energy_cpu32_package1.png)
+![image](./intel-skylake/energy_cpu32_package1.png)
 
 The power plots were created by sampling for a window of 1s:
 
-![image](./power_cpu32.png)
+![image](./intel-skylake/power_cpu32.png)
+
+### Power capping
+
+Power capping can be performed by writing to the following files:
+* Long term constraint - Package 0: `/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw`
+* Short term constraint - Package 1: `/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_1_power_limit_uw`
+* Long term constraint - Package 0: `/sys/class/powercap/intel-rapl/intel-rapl:1/constraint_0_power_limit_uw`
+* Short term constraint - Package 1: `/sys/class/powercap/intel-rapl/intel-rapl:1/constraint_1_power_limit_uw`
+
+Each of these files is accompanied by the time_window after which the constraint can be reevaluated.
+For eg: `/sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_time_window_us` for Long term constraint of Package 0.
+
+You may also find the name of the constraint inside `constraint_0_name`  
+```
+[cc@skylake powerman]$ cat /sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_name
+long_term
+```
+
+Below plot shows a 50W cap applied to package 0 while performing a stress test:
+![image](./intel-skylake/cap_pkg0.png)
 
 ## Chameleon reserving resources
 Chameleon resources are available at multiple sites, e.g., CHI@TACC, CHI@UC, CHI@Edge. Each of the sites host their own resources for each project to use. It is possible to lease resources at each chameleon site. The maximum length of a lease is 7 days. You can find more details about reservations [here](https://chameleoncloud.readthedocs.io/en/latest/technical/reservations.html).
