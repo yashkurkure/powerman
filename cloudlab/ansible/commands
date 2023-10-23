@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Ping the devices in group linux
+ansible linux -m ping
+
+# Run a command on devices in group linux
+ansible linux -a "cat /etc/os-release"
