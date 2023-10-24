@@ -1,4 +1,4 @@
-# Power Consumption of Heterogeneous Clusters hosted on Chameleon Cloud
+# Power Consumption of Heterogeneous Clusters
 
 Chameleon Cloud is a large-scale, deeply reconfigurable experimental platform built to support Computer Sciences systems research. It hosts baremetal nodes
 with many configurations and also gives users full control of the software stack including root privileges, kernel customization, and console access.
