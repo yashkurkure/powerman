@@ -8,6 +8,14 @@ Wait for the experiment to start, and then log into one or more of the nodes
 by clicking on them in the toplogy, and choosing the `shell` menu option.
 Use `sudo` to run root commands. 
 """
+# """Creates a cluster with 1 login node, 1 head node and N worker nodes in a lan.
+# All nodes run Ubuntu 20.04 with OpenPBS 23.06.06.
+#
+# Instructions:
+# Wait for the experiment to start, and then log into node0 with username pbsuser to begin
+# schduling jobs on the worker nodes.
+# """
+
 
 # Import the Portal object.
 import geni.portal as portal
@@ -23,25 +31,16 @@ pc = portal.Context()
 request = pc.makeRequestRSpec()
 
 # Variable number of nodes.
-pc.defineParameter("nodeCount", "Number of Nodes", portal.ParameterType.INTEGER, 1,
-                   longDescription="If you specify more then one node, " +
-                   "we will create a lan for you.")
+pc.defineParameter("workerNodeCount", "Number of Worker Nodes", portal.ParameterType.INTEGER, 1,
+                   longDescription="Specify atleast 1 worker node")
 
 # Pick your OS.
-imageList = [
-    ('default', 'Default Image'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU22-64-STD', 'UBUNTU 22.04'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD', 'UBUNTU 18.04'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8S-64-STD',  'CENTOS 8 Stream'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//FBSD123-64-STD', 'FreeBSD 12.3'),
-    ('urn:publicid:IDN+emulab.net+image+emulab-ops//FBSD131-64-STD', 'FreeBSD 13.1')]
+imageList = [('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04')]
 
 pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList,
-                   longDescription="Most clusters have this set of images, " +
-                   "pick your favorite one.")
+                   longDescription="Using Ubuntu 20.04")
 
 # Optional physical type for all nodes.
 pc.defineParameter("phystype",  "Optional physical node type",
@@ -109,9 +108,12 @@ pc.defineParameter("tempFileSystemMount", "Temporary Filesystem Mount Point",
 # Retrieve the values the user specifies during instantiation.
 params = pc.bindParameters()
 
+
 # Check parameter validity.
-if params.nodeCount < 1:
-    pc.reportError(portal.ParameterError("You must choose at least 1 node.", ["nodeCount"]))
+if params.workerNodeCount < 1:
+    pc.reportError(portal.ParameterError("You must choose at least 1 node.", ["workerNodeCount"]))
+
+nodeCount = workerNodeCount + 2
 
 if params.tempFileSystemSize < 0 or params.tempFileSystemSize > 200:
     pc.reportError(portal.ParameterError("Please specify a size greater then zero and " +
@@ -125,8 +127,8 @@ if params.phystype != "":
 pc.verifyParameters()
 
 # Create link/lan.
-if params.nodeCount > 1:
-    if params.nodeCount == 2:
+if nodeCount > 1:
+    if nodeCount == 2:
         lan = request.Link()
     else:
         lan = request.LAN()
@@ -140,7 +142,7 @@ if params.nodeCount > 1:
     pass
 
 # Process nodes, adding to link or lan.
-for i in range(params.nodeCount):
+for i in range(nodeCount):
     # Create a node and add it to the request
     if params.useVMs:
         name = "vm" + str(i)
@@ -153,7 +155,7 @@ for i in range(params.nodeCount):
         node.disk_image = params.osImage
         pass
     # Add to lan
-    if params.nodeCount > 1:
+    if nodeCount > 1:
         iface = node.addInterface("eth1")
         lan.addInterface(iface)
         pass
