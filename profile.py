@@ -1,20 +1,10 @@
-"""Variable number of nodes in a lan. You have the option of picking from one
-of several standard images we provide, or just use the default (typically a recent
-version of Ubuntu). You may also optionally pick the specific hardware type for
-all the nodes in the lan. 
+"""Creates a cluster with 1 login node, 1 head node and N worker nodes in a lan.
+All nodes run Ubuntu 20.04 with OpenPBS 23.06.06.
 
 Instructions:
-Wait for the experiment to start, and then log into one or more of the nodes
-by clicking on them in the toplogy, and choosing the `shell` menu option.
-Use `sudo` to run root commands. 
+Wait for the experiment to start, and then log into node0 [head node] to manage cluster.
+To login as a user of the cluster, log into node1 [login node] as user0.
 """
-# """Creates a cluster with 1 login node, 1 head node and N worker nodes in a lan.
-# All nodes run Ubuntu 20.04 with OpenPBS 23.06.06.
-#
-# Instructions:
-# Wait for the experiment to start, and then log into node0 with username pbsuser to begin
-# schduling jobs on the worker nodes.
-# """
 
 
 # Import the Portal object.
