@@ -101,9 +101,12 @@ params = pc.bindParameters()
 
 # Check parameter validity.
 if params.workerNodeCount < 1:
-    pc.reportError(portal.ParameterError("You must choose at least 1 node.", ["workerNodeCount"]))
+    pc.reportError(portal.ParameterError("You must choose at least 1 worker node.", ["workerNodeCount"]))
 
-nodeCount = params.workerNodeCount + 2
+wokrerNodeCount = params.workerNodeCount
+loginNodeCount = 1
+headNodeCount = 1
+nodeCount = wokrerNodeCount + loginNodeCount + headNodeCount
 
 if params.tempFileSystemSize < 0 or params.tempFileSystemSize > 200:
     pc.reportError(portal.ParameterError("Please specify a size greater then zero and " +
@@ -117,42 +120,68 @@ if params.phystype != "":
 pc.verifyParameters()
 
 # Create link/lan.
-if nodeCount > 1:
-    if nodeCount == 2:
-        lan = request.Link()
-    else:
-        lan = request.LAN()
-        pass
-    if params.bestEffort:
-        lan.best_effort = True
-    elif params.linkSpeed > 0:
-        lan.bandwidth = params.linkSpeed
-    if params.sameSwitch:
-        lan.setNoInterSwitchLinks()
-    pass
+lan = request.LAN()
 
-# Process nodes, adding to link or lan.
+# LAN paremeters
+if params.bestEffort:
+        lan.best_effort = True
+elif params.linkSpeed > 0:
+    lan.bandwidth = params.linkSpeed
+if params.sameSwitch:
+    lan.setNoInterSwitchLinks()
+
+head_nodes = [0]
+login_nodes = [1]
+worker_nodes = [i for i in range(2, nodeCount)]
+# Process nodes, adding to lan.
 for i in range(nodeCount):
-    # Create a node and add it to the request
-    if params.useVMs:
-        name = "vm" + str(i)
-        node = request.XenVM(name)
-    else:
-        name = "node" + str(i)
-        node = request.RawPC(name)
+       
+    # Setup head node
+    if i in head_nodes:
+        # Install a private/public key
+        name = "head"
+        if params.useVMs:
+            node = request.XenVM(name + '_vm')
+        else:
+            node = request.RawPC(name)
+        node.installRootKeys(True, True)
         pass
+
+    # Setup login node
+    if i in login_nodes:
+        name = "login"
+        if params.useVMs:
+            node = request.XenVM(name + '_vm')
+        else:
+            node = request.RawPC(name)
+        # Install public key
+        node.installRootKeys(False, True) 
+        pass
+
+    # Setup worker node
+    if i in worker_nodes:
+        name = "node" + str(i-2)
+        if params.useVMs:
+            node = request.XenVM(name + '_vm')
+        else:
+            node = request.RawPC(name)
+        node.installRootKeys(False, True) 
+        pass
+
+
     if params.osImage and params.osImage != "default":
         node.disk_image = params.osImage
         pass
+    
     # Add to lan
-    if nodeCount > 1:
-        iface = node.addInterface("eth1")
-        lan.addInterface(iface)
-        pass
+    iface = node.addInterface("eth1")
+    lan.addInterface(iface)
+
     # Optional hardware type.
     if params.phystype != "":
         node.hardware_type = params.phystype
         pass
+    
     # Optional Blockstore
     if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
         bs = node.Blockstore(name + "-bs", params.tempFileSystemMount)
