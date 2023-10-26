@@ -138,13 +138,17 @@ for i in range(nodeCount):
        
     # Setup head node
     if i in head_nodes:
-        # Install a private/public key
         name = "head"
         if params.useVMs:
             node = request.XenVM(name + '_vm')
         else:
             node = request.RawPC(name)
+
+        # Install a private/public key
         node.installRootKeys(True, True)
+
+        # Install OpenPBS Server
+        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
         pass
 
     # Setup login node
@@ -154,8 +158,12 @@ for i in range(nodeCount):
             node = request.XenVM(name + '_vm')
         else:
             node = request.RawPC(name)
-        # Install public key
-        node.installRootKeys(False, True) 
+
+        # Install public key of head node
+        node.installRootKeys(False, True)
+
+        # Install OpenPBS Client
+        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-client.sh"))
         pass
 
     # Setup worker node
@@ -165,7 +173,12 @@ for i in range(nodeCount):
             node = request.XenVM(name + '_vm')
         else:
             node = request.RawPC(name)
-        node.installRootKeys(False, True) 
+        
+        # Install public key of head node
+        node.installRootKeys(False, True)
+        
+        # Install OpenPBS MOM
+        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
         pass
 
 

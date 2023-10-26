@@ -10,6 +10,6 @@ apt-get -y install gcc make libtool libhwloc-dev libx11-dev \
 apt-get -y install expat libedit2 postgresql python sendmail-bin \
       sudo tcl tk libical1a
 
-apt-get -y install /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_server.deb
+apt-get -y install /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_execution.deb
 
 
