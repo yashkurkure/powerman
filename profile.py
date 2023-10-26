@@ -10,7 +10,7 @@ To login as a user of the cluster, log into node1 [login node] as user0.
 # Import the Portal object.
 import geni.portal as portal
 # Import the ProtoGENI library.
-import geni.rspec.pg as pg
+import geni.rspec.pg as rspec
 # Emulab specific extensions.
 import geni.rspec.emulab as emulab
 
