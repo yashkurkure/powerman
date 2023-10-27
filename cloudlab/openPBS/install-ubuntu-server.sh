@@ -12,4 +12,11 @@ sudo apt-get -y install expat libedit2 postgresql python sendmail-bin \
 
 sudo apt-get -y install /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_server.deb
 
+# Start postgresql service
+sudo ystemctl start postgresql.service
 
+
+# Start
+sudo chown -R postgres:postgres /var/spool/pbs/datastore
+
+PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs

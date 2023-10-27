@@ -12,7 +12,7 @@ sudo apt-get -y install expat libedit2 postgresql python sendmail-bin \
 
 sudo apt-get -y install /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_execution.deb
 
-echo "PBS_EXEC=/opt/pbs
+sudo echo "PBS_EXEC=/opt/pbs
 PBS_SERVER=head
 PBS_START_SERVER=0
 PBS_START_SCHED=0
@@ -22,6 +22,6 @@ PBS_HOME=/var/spool/pbs
 PBS_CORE_LIMIT=unlimited
 PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
 
-systemctl start pbs
+sudo systemctl start pbs
 
 
