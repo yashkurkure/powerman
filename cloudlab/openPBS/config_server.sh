@@ -1,5 +1,7 @@
-#!/bin/bash
-sudo echo "PBS_EXEC=/opt/pbs
+#!/bin/bas
+# Run as root
+
+echo "PBS_EXEC=/opt/pbs
 PBS_SERVER=$(hostname)
 PBS_START_SERVER=1
 PBS_START_SCHED=1
@@ -11,11 +13,14 @@ PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
 
 
 # Start
-sudo mkdir -p /var/spool/pbs/datastore
-sudo chown -R postgres:postgres /var/spool/pbs/datastore
+mkdir -p /var/spool/pbs/datastore
+chown -R postgres:postgres /var/spool/pbs/datastore
 
 # Start postgresql service
-# sudo systemctl start postgresql
-sudo pg_ctlcluster 12 main start
+pg_ctlcluster 12 main start
 
 PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
+
+qmgr -c  "create node node0.openpbs-install.schedulingpower.emulab.net"
+qmgr -c  "create node node1.openpbs-install.schedulingpower.emulab.net"
+qmgr -c  "create queue testq queue_type=e,enabled=t,started=t"
