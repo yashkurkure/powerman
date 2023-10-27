@@ -10,4 +10,4 @@ sudo apt -y install /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_2
 # Install Ansible
 sudo apt -y install software-properties-common
 sudo add-apt-repository --y --update ppa:ansible/ansible
-sudo apt install ansible
+sudo apt -y install ansible
