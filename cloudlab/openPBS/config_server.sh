@@ -2,7 +2,7 @@
 # Run as root
 
 echo "PBS_EXEC=/opt/pbs
-PBS_SERVER=$(hostname)
+PBS_SERVER=head.openpbs-install.schedulingpower.emulab.netx
 PBS_START_SERVER=1
 PBS_START_SCHED=1
 PBS_START_COMM=1
