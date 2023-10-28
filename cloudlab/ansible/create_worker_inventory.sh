@@ -1,6 +1,9 @@
 #!/bin/bash
 #
 # Usage: create_worker_inventory.sh <number of worker nodes>
+#
+# Ansible test: 
+# ANSIBLE_HOST_KEY_CHECKING=False ansible -i temp workernodes -m ping
 
 # Specify the number of nodes as a argument to the script
 numnodes=$1
