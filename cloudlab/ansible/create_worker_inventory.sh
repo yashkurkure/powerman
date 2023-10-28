@@ -21,4 +21,4 @@ for ((i=0; i<numnodes; i++)); do
 done
 echo "[workernodes:vars]"
 echo "ansible_user=root"
-echo "host_key_checking=False"
+echo "ansible_host_key_checking=False"
