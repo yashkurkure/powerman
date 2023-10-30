@@ -16,6 +16,6 @@
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /temp.txt
-    # - name: Start OpenPBS and configure it to run at boot.
-    #   command: service pbs start
-    # - command: chkconfig pbs on
+    - name: Start OpenPBS and configure it to run at boot.
+      command: service pbs start
+    - command: chkconfig pbs on
