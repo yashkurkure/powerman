@@ -131,8 +131,11 @@ if params.sameSwitch:
     lan.setNoInterSwitchLinks()
 
 head_nodes = [0]
+head_nodes_i = []
 login_nodes = [1]
+login_nodes_i = []
 worker_nodes = [i for i in range(2, nodeCount)]
+worker_nodes_i = []
 # Process nodes, adding to lan.
 for i in range(nodeCount):
        
@@ -144,6 +147,7 @@ for i in range(nodeCount):
         else:
             node = request.RawPC(name)
 
+        head_nodes_i.append(node)
         # Install a private/public key
         node.installRootKeys(True, True)
 
@@ -158,6 +162,7 @@ for i in range(nodeCount):
             node = request.XenVM(name + '_vm')
         else:
             node = request.RawPC(name)
+        login_nodes_i.append(node)
 
         # Install public key of head node
         node.installRootKeys(False, True)
@@ -173,7 +178,8 @@ for i in range(nodeCount):
             node = request.XenVM(name + '_vm')
         else:
             node = request.RawPC(name)
-        
+        worker_nodes_i.append(node)
+
         # Install public key of head node
         node.installRootKeys(False, True)
         
