@@ -18,7 +18,7 @@
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
     - name: Start OpenPBS service.
-      command: service pbs start
+      command: systemctl start pbs
 
     - name: Configure OpenPBS to start automatically during system boot.
-      command: update-rc.d pbs on
+      command: systemctl enable servicename
