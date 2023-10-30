@@ -41,7 +41,7 @@ PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 
 # Add nodes to pbs
 for ((i=0; i<numnodes; i++)); do
-qmgr -c  "create node $(hostname | sed "s/head/node$i/").openpbs-install.schedulingpower.emulab.net"
+        nodename=$(hostname | sed "s/head/node$i/")
+        qmgr -c  "create node $nodename"
 done
 qmgr -c  "create queue testq queue_type=e,enabled=t,started=t"
-
