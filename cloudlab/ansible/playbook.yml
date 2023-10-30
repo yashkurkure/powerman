@@ -15,7 +15,7 @@
         PBS_START_MOM=1
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
-        PBS_SCP=/usr/bin/scp" > /temp.txt
+        PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
     - name: Start OpenPBS and configure it to run at boot.
       command: service pbs start
     - command: chkconfig pbs on
