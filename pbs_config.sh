@@ -50,7 +50,7 @@ PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 echo "[SERVER - PBS] QMGR - Creating nodes..."
 for ((i=0; i<numnodes; i++)); do
         nodename=$(hostname | sed "s/head/node$i/")
-        echo "Adding node: $nodename"
+        echo "[SERVER - PBS] QMGR - Adding node: $nodename"
         qmgr -c  "create node $nodename"
 done
 

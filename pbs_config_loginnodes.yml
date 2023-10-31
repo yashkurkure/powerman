@@ -17,8 +17,10 @@
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
-    - name: Start OpenPBS service.
-      command: systemctl start pbs
+    # Starting a service is not required for login nodes
+    # as no daemons are running on it.
+    # - name: Start OpenPBS service.
+    #   command: systemctl start pbs
 
-    - name: Configure OpenPBS to start automatically during system boot.
-      command: systemctl enable pbs
+    # - name: Configure OpenPBS to start automatically during system boot.
+    #   command: systemctl enable pbs
