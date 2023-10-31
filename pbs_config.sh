@@ -44,4 +44,6 @@ for ((i=0; i<numnodes; i++)); do
         nodename=$(hostname | sed "s/head/node$i/")
         qmgr -c  "create node $nodename"
 done
-qmgr -c  "create queue testq queue_type=e,enabled=t,started=t"
+
+# Configure login nodes using ansible
+ansible-playbook -i inventory pbs_config_loginnodes.yml
