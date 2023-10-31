@@ -11,13 +11,17 @@
 numnodes=$1
 # -------------------------
 
+
 # Generate the ansible inventory file
+echo "[SERVER - ANSIBLE] Generating inventory..."
 ./ansible_gen_inventory.sh $numnodes > inventory
 
 # Configure the worker nodes using ansible
+echo "[SERVER - ANSIBLE] Configuring worker nodes..."
 ansible-playbook -i inventory pbs_config_workernodes.yml
 
 # Update the config for the server
+echo "[SERVER - PBS] Configuring /etc/pbs.conf..."
 echo "PBS_EXEC=/opt/pbs
 PBS_SERVER=head.openpbs-install.schedulingpower.emulab.net
 PBS_START_SERVER=1
@@ -30,20 +34,26 @@ PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
 
 
 # Update postgres user permissions for pbs directories
+echo "[SERVER - PBS] Configuring postgresql..."
 mkdir -p /var/spool/pbs/datastore
 chown -R postgres:postgres /var/spool/pbs/datastore
 
 # Start postgresql service
+echo "[SERVER - PBS] Starting postgresql..."
 pg_ctlcluster 12 main start
 
 # Start the pbs service
+echo "[SERVER - PBS] Starting pbs service..."
 PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 
 # Add nodes to pbs
+echo "[SERVER - PBS] QMGR - Creating nodes..."
 for ((i=0; i<numnodes; i++)); do
         nodename=$(hostname | sed "s/head/node$i/")
+        echo "Adding node: $nodename"
         qmgr -c  "create node $nodename"
 done
 
 # Configure login nodes using ansible
+echo "[SERVER - ANSIBLE] Configuring login nodes..."
 ansible-playbook -i inventory pbs_config_loginnodes.yml
