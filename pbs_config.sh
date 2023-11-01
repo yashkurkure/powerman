@@ -57,3 +57,7 @@ done
 # Configure login nodes using ansible
 echo "[SERVER - ANSIBLE] Configuring login nodes..."
 ansible-playbook -i inventory pbs_config_loginnodes.yml
+
+# Configure the pbsusers group
+echo "[SERVER - ANSIBLE] Configuring pbsusers group..."
+./pbs_config_group.sh
