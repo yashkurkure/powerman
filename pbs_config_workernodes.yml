@@ -1,6 +1,6 @@
 ---
 
-- name: Network Getting Started First Playbook
+- name: Configure worker nodes.
   gather_facts: true
   hosts: workernodes
   tasks:

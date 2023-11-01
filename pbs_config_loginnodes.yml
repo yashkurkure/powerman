@@ -1,6 +1,6 @@
 ---
 
-- name: Network Getting Started First Playbook
+- name: Configure login nodes.
   gather_facts: true
   hosts: loginnodes
   tasks:

@@ -1,0 +1,17 @@
+---
+
+- name: Create user accounts for PBS.
+  gather_facts: true
+  hosts: multi
+  tasks:
+
+    - name: Create pbs user group
+      command: groupadd pbsusers
+  
+    # Starting a service is not required for login nodes
+    # as no daemons are running on it.
+    # - name: Start OpenPBS service.
+    #   command: systemctl start pbs
+
+    # - name: Configure OpenPBS to start automatically during system boot.
+    #   command: systemctl enable pbs
