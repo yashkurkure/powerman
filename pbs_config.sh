@@ -44,6 +44,7 @@ pg_ctlcluster 12 main start
 
 # Start the pbs service
 echo "[SERVER - PBS] Starting pbs service..."
+# NOTE: postgres is the default user that is used by postgresql-12.
 PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 
 # Add nodes to pbs
