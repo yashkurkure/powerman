@@ -103,10 +103,10 @@ params = pc.bindParameters()
 if params.workerNodeCount < 1:
     pc.reportError(portal.ParameterError("You must choose at least 1 worker node.", ["workerNodeCount"]))
 
-wokrerNodeCount = params.workerNodeCount
+workerNodeCount = params.workerNodeCount
 loginNodeCount = 1
 headNodeCount = 1
-nodeCount = wokrerNodeCount + loginNodeCount + headNodeCount
+nodeCount = workerNodeCount + loginNodeCount + headNodeCount
 
 if params.tempFileSystemSize < 0 or params.tempFileSystemSize > 200:
     pc.reportError(portal.ParameterError("Please specify a size greater then zero and " +
