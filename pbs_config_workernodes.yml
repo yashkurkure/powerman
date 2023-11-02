@@ -13,6 +13,7 @@
         PBS_START_SCHED=0
         PBS_START_COMM=0
         PBS_START_MOM=1
+        PBS_MOM_NODE_NAME=$(hostname)
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
