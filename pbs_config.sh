@@ -24,8 +24,9 @@ ansible-playbook -i inventory pbs_config_workernodes.yml
 echo "[SERVER - PBS] Configuring /etc/pbs.conf..."
 serverhostname=$(hostname)
 serverpcname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
+servername=head
 echo "PBS_EXEC=/opt/pbs
-PBS_SERVER=$serverpcname
+PBS_SERVER=$servername
 PBS_START_SERVER=1
 PBS_START_SCHED=1
 PBS_START_COMM=1

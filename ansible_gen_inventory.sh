@@ -21,14 +21,16 @@ echo "[workernodes]"
 for ((i=0; i<numnodes; i++)); do
 workerhostname=$(hostname | sed "s/head/node$i/")
 workerpcname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
-echo $workerpcname
+workername=$workerhostname
+echo $workername
 done
 
 echo "# Login nodes"
 echo "[loginnodes]"
 loginhostname=$(hostname | sed "s/head/login/")
 loginpcname=$(nslookup $loginhostname | grep Name | awk '{print $2}')
-echo $loginpcname
+loginname=$loginhostname
+echo $loginname
 
 echo "# All nodes"
 echo "[multi:children]"
@@ -43,3 +45,4 @@ echo "ansible_host_key_checking=False"
 serverhostname=$(hostname)
 serverpcname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "server_canonical_name=$serverpcname"
+echo "server_name=$serverhostname"
