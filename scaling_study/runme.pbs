@@ -1,0 +1,60 @@
+#!/bin/bash
+#PBS -q workq
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=20
+cd $PBS_O_WORKDIR
+
+# Time stamp for the run
+TIME_STAMP=`date +"%m_%d_%Y_%H%M"`
+
+# Output Directory
+OUT_DIR=$3_$TIME_STAMP
+
+# Save the results of weak scaling.
+WS_RESULT_FILE="weak_scaling"
+
+# Save the results of strong scaling.
+SS_RESULT_FILE="strong_scaling"
+
+# Define the amount of work.
+WORK=$1
+
+# Define the number of threads.
+# If this is set to n, the scaling would 
+# run for cases 2^0, 2^1, 2^2 ..... 2^n threads.
+THREADS=$2
+
+# Create the output directory
+mkdir -p $OUT_DIR/$WORK
+
+# Each unit of work takes 1 millisecond
+# Strong Scaling
+# Threads           Work
+#   1               10^5 (10^2 seconds ~ 1.67 minutes )
+#   2               10^5
+#   4               10^5
+#   8               10^5
+#   16              10^5
+THREAD_COUNT=1
+for ((t=0; t <= $THREADS; t++))
+do
+    printf $THREAD_COUNT"\t"$WORK"\t" >> $OUT_DIR/$WORK/$SS_RESULT_FILE
+    OMP_NUM_THREADS=$THREAD_COUNT ./scaling_study $WORK -s >> $OUT_DIR/$WORK/$SS_RESULT_FILE
+    THREAD_COUNT=$(($THREAD_COUNT*2))
+done
+
+# Each unit of work takes 1 millisecond
+# Weak Scaling
+# Threads           Work per thread                             Total Work
+#   1               10^5 (10^2 seconds ~ 1.67 minutes )         10^5
+#   2               10^5                                        2*10^5
+#   4               10^5                                        4*10^5
+#   8               10^5                                        8*10^5
+#   16              10^5                                        16*10^5
+THREAD_COUNT=1
+for ((t=0; t <= $THREADS; t++))
+do
+    printf $THREAD_COUNT"\t"$(($THREAD_COUNT*$WORK))"\t" >> $OUT_DIR/$WORK/$WS_RESULT_FILE
+    OMP_NUM_THREADS=$THREAD_COUNT ./scaling_study $(($THREAD_COUNT*$WORK)) -s >> $OUT_DIR/$WORK/$WS_RESULT_FILE
+    THREAD_COUNT=$(($THREAD_COUNT*2))
+done
