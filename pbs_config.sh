@@ -22,8 +22,10 @@ ansible-playbook -i inventory pbs_config_workernodes.yml
 
 # Update the config for the server
 echo "[SERVER - PBS] Configuring /etc/pbs.conf..."
+serverhostname=$(hostname)
+serverpcname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "PBS_EXEC=/opt/pbs
-PBS_SERVER=head.openpbs-install.schedulingpower.emulab.net
+PBS_SERVER=$serverpcname
 PBS_START_SERVER=1
 PBS_START_SCHED=1
 PBS_START_COMM=1
