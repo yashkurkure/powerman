@@ -52,9 +52,10 @@ PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 # Add nodes to pbs
 echo "[SERVER - PBS] QMGR - Creating nodes..."
 for ((i=0; i<numnodes; i++)); do
-        nodename=$(hostname | sed "s/head/node$i/")
-        echo "[SERVER - PBS] QMGR - Adding node: $nodename"
-        qmgr -c  "create node $nodename"
+        workerhostname=$(hostname | sed "s/head/node$i/")
+        workerpcname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
+        echo "[SERVER - PBS] QMGR - Adding node: $workerpcname"
+        qmgr -c  "create node $workerpcname"
 done
 
 # Configure login nodes using ansible
