@@ -153,10 +153,6 @@ for i in range(nodeCount):
 
         # Install OpenPBS Server
         node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
-
-        # Set the number of worker nodes
-        t_command = "echo \"export PBS_NUM_WORKER_NODES=" + str(workerNodeCount) + "\" | sudo tee /etc/profile.d/pbs_vars.sh"
-        node.addService(rspec.Execute(shell="bash", command=t_command))
         pass
 
     # Setup login node
