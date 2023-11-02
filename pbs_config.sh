@@ -23,9 +23,9 @@ ansible-playbook -i inventory pbs_config_workernodes.yml
 # Update the config for the server
 echo "[SERVER - PBS] Configuring /etc/pbs.conf..."
 serverhostname=$(hostname)
-serverpcname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
+servercanonicalname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "PBS_EXEC=/opt/pbs
-PBS_SERVER=$serverpcname
+PBS_SERVER=$serverhostname
 PBS_START_SERVER=1
 PBS_START_SCHED=1
 PBS_START_COMM=1
@@ -53,9 +53,9 @@ PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
 echo "[SERVER - PBS] QMGR - Creating nodes..."
 for ((i=0; i<numnodes; i++)); do
         workerhostname=$(hostname | sed "s/head/node$i/")
-        workerpcname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
-        echo "[SERVER - PBS] QMGR - Adding node: $workerpcname"
-        qmgr -c  "create node $workerpcname"
+        workercanonicalname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
+        echo "[SERVER - PBS] QMGR - Adding node: $workerhostname"
+        qmgr -c  "create node $workerhostname"
 done
 
 # Configure login nodes using ansible
