@@ -40,3 +40,6 @@ echo "[multi:vars]"
 echo "ansible_user=root"
 echo "ansible_private_key_file=/root/.ssh/id_rsa"
 echo "ansible_host_key_checking=False"
+serverhostname=$(hostname)
+serverpcname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
+echo "server_canonical_name=$serverpcname"

@@ -5,10 +5,12 @@
   hosts: workernodes
   tasks:
 
+    # TODO: Update PBS_SERVER to canonical name
     - name: Configure OpenPBS at /etc/pbs.conf
+      become: true
       shell: |
-        sudo echo "PBS_EXEC=/opt/pbs
-        PBS_SERVER=head.openpbs-install.schedulingpower.emulab.net
+        echo "PBS_EXEC=/opt/pbs
+        PBS_SERVER=={{ sserver_canonical_name }}
         PBS_START_SERVER=0
         PBS_START_SCHED=0
         PBS_START_COMM=0
@@ -19,7 +21,9 @@
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
     - name: Start OpenPBS service.
+      become: true
       command: systemctl start pbs
 
     - name: Configure OpenPBS to start automatically during system boot.
+      become: true
       command: systemctl enable pbs

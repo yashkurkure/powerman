@@ -6,6 +6,7 @@
   tasks:
 
     - name: Create pbs user group
+      become: true
       command: groupadd pbsusers
   
     # Starting a service is not required for login nodes
