@@ -10,7 +10,7 @@
       become: true
       shell: |
         echo "PBS_EXEC=/opt/pbs
-        PBS_SERVER={{ sserver_canonical_name }}
+        PBS_SERVER={{ server_canonical_name }}
         PBS_START_SERVER=0
         PBS_START_SCHED=0
         PBS_START_COMM=0

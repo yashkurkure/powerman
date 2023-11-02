@@ -10,12 +10,12 @@
       become: true
       shell: |
         echo "PBS_EXEC=/opt/pbs
-        PBS_SERVER=={{ sserver_canonical_name }}
+        PBS_SERVER={{ server_canonical_name }}
         PBS_START_SERVER=0
         PBS_START_SCHED=0
         PBS_START_COMM=0
         PBS_START_MOM=1
-        PBS_MOM_NODE_NAME=$(hostname)
+        PBS_MOM_NODE_NAME=$(nslookup $(hostname) | grep Name | awk '{print $2}')
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
