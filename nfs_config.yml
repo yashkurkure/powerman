@@ -33,8 +33,23 @@
     - name: Install NFS client.
       command: apt install -y nfs-common
 
-    - name: Create NFS mount point.
-      command: mkdir -p /pbsusers
+    # Instead use AutoFS
+    # - name: Create NFS mount point.
+    #   command: mkdir -p /pbsusers
 
-    - name: Mount the NFS directory.
-      command: mount {{ serverhostname }}:/pbsusers /pbsusers
+    # - name: Mount the NFS directory.
+    #   command: mount {{ serverhostname }}:/pbsusers /pbsusers
+
+    - name: Install AutoFS.
+      command: apt install -y autofs
+
+    - name: Configure AutoFS - /etc/auto.master.
+      shell: |
+        echo "/- /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+
+    - name: Configure AutoFS - /etc/auto.nfs.
+      shell: |
+        echo "/pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers/" >> /etc/auto.nfs
+
+    - name: Restart AutoFS.
+      shell: systemctl restart autofs
