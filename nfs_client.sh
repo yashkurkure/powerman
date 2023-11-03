@@ -11,7 +11,7 @@ showmount --exports $SERVER
 
 # Create mount points
 mkdir -p /mnt/nfs/backup
-mkdit -p /mnt/nfs/documents
+mkdir -p /mnt/nfs/documents
 
 # Mount the NFS export
 mount $SERVER:/exports/backup /mnt/nfs/backup

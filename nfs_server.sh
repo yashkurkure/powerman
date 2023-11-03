@@ -3,7 +3,7 @@
 
 # Create NFS directory
 mkdir -p /exports/backup
-mkdit -p /exports/documents
+mkdir -p /exports/documents
 
 # Install NFS server
 apt install -y nfs-kernel-server
