@@ -5,7 +5,6 @@
   tasks:
 
     - name: Configure OpenPBS at /etc/pbs.conf
-      become: true
       shell: |
         echo "PBS_EXEC=/opt/pbs
         PBS_SERVER={{ serverhostname }}
@@ -19,11 +18,9 @@
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
     - name: Start OpenPBS service.
-      become: true
       command: systemctl start pbs
 
     - name: Configure OpenPBS to start automatically during system boot.
-      become: true
       command: systemctl enable pbs
 
 - name: Configure login nodes.
