@@ -22,7 +22,7 @@ echo "/exports/documents 10.10.1.0/255.255.255.0(rw,no_subtree_check)" >> /etc/e
 systemctl restart nfs-kernel-server
 
 # Create some test files
-echo "Hello from $(hostname)" >> /exports/backup/text1.txt
+echo "Hello from $(hostname)" >> /exports/backup/test1.txt
 echo "Hello from $(hostname)" >> /exports/documents/test2.txt
 
 
