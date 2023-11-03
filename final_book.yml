@@ -61,7 +61,6 @@
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
     - name: Setup postgres user.
-      become: true
       command: mkdir -p /var/spool/pbs/datastore && chown -R postgres:postgres /var/spool/pbs/datastore
 
     - name: Start postgresql.
@@ -69,4 +68,12 @@
 
     - name: Start pbs.
       command: PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
+    
+    - name: Add worker nodes.
+      shell: |
+      for ((i=0; i<{{ numworkernodes }}; i++)); do
+              workerhostname=$(hostname | sed "s/head/node$i/")
+              workercanonicalname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
+              qmgr -c  "create node $workerhostname"
+      done
 
