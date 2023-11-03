@@ -1,0 +1,40 @@
+---
+- name: Configure NFS server.
+  become: true
+  hosts: headnode
+  tasks:
+
+    - name: Install NFS server.
+      command: apt install -y nfs-kernel-server
+
+    - name: Create NFS directory.
+      command: mkdir -p /pbsusers
+
+    - name: Backup original /etc/exports.
+      command: mv /etc/exports /etc/exports.orig
+
+    - name: Write to /etc/exports.
+      shell: |
+        echo "/pbsusers 10.10.1.0/255.255.255.0(rw,no_subtree_check)" > /etc/pbs.conf
+      
+    - name: Start NFS server.
+      command: systemctl start nfs-kernel-server
+    
+    - name: Create test file.
+      shell: |
+        echo "Hello from $(hostname)" >> /pbsusers/test.txt
+
+
+- name: Configure NFS clients.
+  become: true
+  hosts: multi
+  tasks:
+
+    - name: Install NFS client.
+      command: apt install -y nfs-common
+
+    - name: Create NFS mount point.
+      command: mkdir -p /pbsusers
+
+    - name: Mount the NFS directory.
+      command: mount {{ serverhostname }}:/pbsusers /pbsusers
