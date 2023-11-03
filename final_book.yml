@@ -60,20 +60,25 @@
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
   
-    - name: Setup postgres user.
-      command: mkdir -p /var/spool/pbs/datastore && chown -R postgres:postgres /var/spool/pbs/datastore
+    - name: Create datastore for postgress under pbs.
+      command: mkdir -p /var/spool/pbs/datastore
+
+    - name: Give postgres user permissions for pbs directory.
+      command: chown -R postgres:postgres /var/spool/pbs/datastore
 
     - name: Start postgresql.
       command: pg_ctlcluster 12 main start
 
     - name: Start pbs.
-      command: PBS_DATA_SERVICE_USER=postgres; sudo systemctl start pbs
-    
-    - name: Add worker nodes.
-      shell: |
-      for ((i=0; i<{{ numworkernodes }}; i++)); do
-              workerhostname=$(hostname | sed "s/head/node$i/")
-              workercanonicalname=$(nslookup $workerhostname | grep Name | awk '{print $2}')
-              qmgr -c  "create node $workerhostname"
-      done
-
+      environment:
+        PBS_DATA_SERVICE_USER: postgress
+      command: systemctl start pbs
+  
+    - name: Create worker nodes
+      command: >
+        bash -c '
+        for ((i=0; i<{{ numworkernodes }}; i++)); do
+          workerhostname=$(hostname | sed "s/head/node$i/")
+          workercanonicalname=$(nslookup $workerhostname | grep Name | awk "{print $2}")
+          /opt/pbs/bin/qmgr -c "create node $workerhostname"
+        done'
