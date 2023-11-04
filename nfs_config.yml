@@ -13,10 +13,25 @@
     - name: Backup original /etc/exports.
       command: mv /etc/exports /etc/exports.orig
 
-    - name: Write to /etc/exports.
-      shell: |
-        echo "/pbsusers 10.10.1.0/255.255.255.0(rw,no_subtree_check)" > /etc/pbs.conf
-      
+    # - name: Write to /etc/exports.
+    #   shell: |
+    #     echo "/pbsusers 10.10.1.0/255.255.255.0(rw,no_subtree_check)" > /etc/exports
+    
+    - name: Write worker nodes to /etc/exports.
+      command: >
+        bash -c '
+        for ((i=0; i<{{ numworkernodes }}; i++)); do
+          workerhostname=$(hostname | sed "s/head/node$i/")
+          echo "/pbsusers $workerhostname(rw,no_subtree_check)" >> /etc/exports
+        done'
+    
+    - name: Write login node to /etc/exports.
+      command: >
+        bash -c '
+          loginhostname=$(hostname | sed "s/head/login/")
+          echo "/pbsusers $loginhostname(rw,no_subtree_check)" >> /etc/exports'
+
+
     - name: Start NFS server.
       command: systemctl start nfs-kernel-server
     
@@ -45,11 +60,11 @@
 
     - name: Configure AutoFS - /etc/auto.master.
       shell: |
-        echo "/- /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+        echo "/ /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
 
     - name: Configure AutoFS - /etc/auto.nfs.
       shell: |
-        echo "/pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers/" >> /etc/auto.nfs
+        echo "/pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers" >> /etc/auto.nfs
 
     - name: Restart AutoFS.
       shell: systemctl restart autofs
