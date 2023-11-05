@@ -18,7 +18,24 @@
 
     - name: Write to /etc/exports.
       shell: |
-        echo "/pbsusers *(rw,no_subtree_check)" > /etc/exports
+        echo "/pbsusers *(rw,no_subtree_check,insecure)" > /etc/exports
+    
+    - name: Check if the service is running
+      ansible.builtin.service:
+        name:  nfs-kernel-server
+      register: service_status
+
+    - name: Restart the service if running
+      ansible.builtin.service:
+        name:  nfs-kernel-server
+        state: restarted
+      when: service_status.state == 'running'
+
+    - name: Start the service if not running
+      ansible.builtin.service:
+        name:  nfs-kernel-server
+        state: started
+      when: service_status.state == 'stopped'
     
     # TODO: It does not like having '-' in the hostname
     # - name: Write worker nodes to /etc/exports.
@@ -38,9 +55,9 @@
     #       echo "/nfs/common $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
 
 
-    - name: Start NFS server.
-      command: systemctl start nfs-kernel-server
-    
+    # - name: Start NFS server.
+    #   command: systemctl start nfs-kernel-server
+
     - name: Create test files.
       shell: |
         echo "Hello from $(hostname)" >> /pbsusers/test.txt
@@ -77,5 +94,22 @@
       shell: |
         echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers" >> /etc/auto.nfs
 
-    - name: Restart AutoFS.
-      shell: systemctl restart autofs
+    # - name: Restart AutoFS.
+    #   shell: systemctl restart autofs
+    
+    - name: Check if the service is running
+      ansible.builtin.service:
+        name:  autofs
+      register: service_status
+
+    - name: Restart the service if running
+      ansible.builtin.service:
+        name:  autofs
+        state: restarted
+      when: service_status.state == 'running'
+
+    - name: Start the service if not running
+      ansible.builtin.service:
+        name:  autofs
+        state: started
+      when: service_status.state == 'stopped'
