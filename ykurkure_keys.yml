@@ -1,0 +1,34 @@
+---
+- name: SSH setup for ykurkure on non-head nodes.
+  become: true
+  hosts: multi
+  tasks:
+    - name: Copy SSH files.
+      copy:
+        src: /root/.ssh/
+        dest: /users/ykurkure/.ssh/
+        remote_src: yes
+
+    - name: Change permissions to ykurkure:SchedulingPower.
+      shell: chown ykurkure:SchedulingPower /root/.ssh/*
+
+    - name: Start ssh-agent and add key for ykurkure.
+      become_user: ykurkure
+      command: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
+
+- name: SSH setup for ykurkure on head node.
+  become: true
+  hosts: headnode
+  tasks:
+    - name: Copy SSH files.
+      copy:
+        src: /root/.ssh/
+        dest: /users/ykurkure/.ssh/
+        remote_src: yes
+
+    - name: Change permissions to ykurkure:SchedulingPower.
+      shell: chown ykurkure:SchedulingPower /root/.ssh/*
+
+    - name: Start ssh-agent and add key for ykurkure.
+      become_user: ykurkure
+      command: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
