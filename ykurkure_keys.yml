@@ -9,12 +9,12 @@
         dest: /users/ykurkure/.ssh/
         remote_src: yes
 
-    - name: Change permissions to ykurkure:SchedulingPower.
-      shell: chown ykurkure:SchedulingPower /root/.ssh/*
+    - name: Change permissions to ykurkure:SchedulingPower for copied keys.
+      shell: chown ykurkure:SchedulingPower /users/ykrukure/.ssh/*
 
     - name: Start ssh-agent and add key for ykurkure.
       become_user: ykurkure
-      command: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
+      shell: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
 
 - name: SSH setup for ykurkure on head node.
   become: true
@@ -26,9 +26,9 @@
         dest: /users/ykurkure/.ssh/
         remote_src: yes
 
-    - name: Change permissions to ykurkure:SchedulingPower.
-      shell: chown ykurkure:SchedulingPower /root/.ssh/*
+    - name: Change permissions to ykurkure:SchedulingPower for copied keys.
+      shell: chown ykurkure:SchedulingPower /users/ykrukure/.ssh/*
 
     - name: Start ssh-agent and add key for ykurkure.
       become_user: ykurkure
-      command: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
+      shell: eval $(ssh-agent) && ssh-add /users/ykrukure/.ssh/id_rsa
