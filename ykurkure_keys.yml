@@ -1,11 +1,12 @@
 ---
+# TODO: add the domains to known-hosts
 - name: SSH setup for ykurkure on non-head nodes.
   become: true
   hosts: multi
   tasks:
     - name: Copy SSH pub key.
       copy:
-        src: /root/.ssh/id_rsa
+        src: /root/.ssh/id_rsa.pub
         dest: /users/ykurkure/.ssh/id_rsa.pub
         remote_src: yes
   
@@ -27,6 +28,16 @@
 
     - name: Change permissions to ykurkure:SchedulingPower for copied keys.
       shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
+    
+    - name: Change permission level of authorized_keys.
+      shell: chmod 644 /users/ykurkure/.ssh/authorized_keys
+
+    - name: Change permission level of pub keys
+      shell: chmod 644 /users/ykurkure/.ssh/*.pub
+
+    - name: Change permission level to pvt key.
+      shell: chmod 600 /users/ykurkure/.ssh/id_rsa
+      
 
     - name: Start ssh-agent and add key for ykurkure.
       become_user: ykurkure
@@ -38,7 +49,7 @@
   tasks:
     - name: Copy SSH pub key.
       copy:
-        src: /root/.ssh/id_rsa
+        src: /root/.ssh/id_rsa.pub
         dest: /users/ykurkure/.ssh/id_rsa.pub
         remote_src: yes
   
@@ -60,6 +71,16 @@
 
     - name: Change permissions to ykurkure:SchedulingPower for copied keys.
       shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
+
+
+    - name: Change permission level of authorized_keys.
+      shell: chmod 644 /users/ykurkure/.ssh/authorized_keys
+
+    - name: Change permission level of pub keys
+      shell: chmod 644 /users/ykurkure/.ssh/*.pub
+
+    - name: Change permission level to pvt key.
+      shell: chmod 600 /users/ykurkure/.ssh/id_rsa
 
     - name: Start ssh-agent and add key for ykurkure.
       become_user: ykurkure
