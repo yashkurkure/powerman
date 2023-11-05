@@ -18,7 +18,7 @@
 
     - name: Write to /etc/exports.
       shell: |
-        echo "/pbsusers *(rw,no_subtree_check,insecure)" > /etc/exports
+        echo "/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)" > /etc/exports
     
     - name: Check if the service is running
       ansible.builtin.service:
