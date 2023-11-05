@@ -3,11 +3,27 @@
   become: true
   hosts: multi
   tasks:
-    - name: Copy SSH files.
+    - name: Copy SSH pub key.
       copy:
-        src: /root/.ssh/
-        dest: /users/ykurkure/.ssh/
+        src: /root/.ssh/id_rsa
+        dest: /users/ykurkure/.ssh/id_rsa.pub
         remote_src: yes
+  
+    - name: Copy SSH pvt key.
+      copy:
+        src: /root/.ssh/id_rsa
+        dest: /users/ykurkure/.ssh/id_rsa
+        remote_src: yes
+
+    - name: Read the contents of authorized keys for root.
+      slurp:
+        src: /root/.ssh/authorized_keys
+      register: root_authorized_keys_contents
+
+    - name: Append contents of root authorized_keys to ykurkure authorized_keys.
+      lineinfile:
+        path: /users/ykurkure/.ssh/authorized_keys
+        line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
     - name: Change permissions to ykurkure:SchedulingPower for copied keys.
       shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
@@ -20,11 +36,27 @@
   become: true
   hosts: headnode
   tasks:
-    - name: Copy SSH files.
+    - name: Copy SSH pub key.
       copy:
-        src: /root/.ssh/
-        dest: /users/ykurkure/.ssh/
+        src: /root/.ssh/id_rsa
+        dest: /users/ykurkure/.ssh/id_rsa.pub
         remote_src: yes
+  
+    - name: Copy SSH pvt key.
+      copy:
+        src: /root/.ssh/id_rsa
+        dest: /users/ykurkure/.ssh/id_rsa
+        remote_src: yes
+
+    - name: Read the contents of authorized keys for root.
+      slurp:
+        src: /root/.ssh/authorized_keys
+      register: root_authorized_keys_contents
+
+    - name: Append contents of root authorized_keys to ykurkure authorized_keys.
+      lineinfile:
+        path: /users/ykurkure/.ssh/authorized_keys
+        line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
     - name: Change permissions to ykurkure:SchedulingPower for copied keys.
       shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
