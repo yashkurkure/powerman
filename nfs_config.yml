@@ -8,33 +8,34 @@
       command: apt install -y nfs-kernel-server
 
     - name: Create NFS directory pbsusers.
-      command: mkdir -p /nfs/pbsusers
+      command: mkdir -p /pbsusers
 
-    - name: Create NFS directory common.
-      command: mkdir -p /nfs/common
+    # - name: Create NFS directory common.
+    #   command: mkdir -p /nfs/common
 
     - name: Backup original /etc/exports.
       command: mv /etc/exports /etc/exports.orig
 
-    # - name: Write to /etc/exports.
-    #   shell: |
-    #     echo "/pbsusers 10.10.1.0/255.255.255.0(rw,no_subtree_check)" > /etc/exports
+    - name: Write to /etc/exports.
+      shell: |
+        echo "/pbsusers *(rw,no_subtree_check)" > /etc/exports
     
-    - name: Write worker nodes to /etc/exports.
-      command: >
-        bash -c '
-        for ((i=0; i<{{ numworkernodes }}; i++)); do
-          workerhostname=$(hostname | sed "s/head/node$i/")
-          echo "/nfs/pbsusers $workerhostname(rw,no_subtree_check)" >> /etc/exports
-          echo "/nfs/common $workerhostname(rw,no_subtree_check)" >> /etc/exports
-        done'
+    # TODO: It does not like having '-' in the hostname
+    # - name: Write worker nodes to /etc/exports.
+    #   command: >
+    #     bash -c '
+    #     for ((i=0; i<{{ numworkernodes }}; i++)); do
+    #       workerhostname=$(hostname | sed "s/head/node$i/")
+    #       echo "/nfs/pbsusers $workerhostname(rw,no_subtree_check)" >> /etc/exports
+    #       echo "/nfs/common $workerhostname(rw,no_subtree_check)" >> /etc/exports
+    #     done'
     
-    - name: Write login node to /etc/exports.
-      command: >
-        bash -c '
-          loginhostname=$(hostname | sed "s/head/login/")
-          echo "/nfs/pbsusers $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
-          echo "/nfs/common $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
+    # - name: Write login node to /etc/exports.
+    #   command: >
+    #     bash -c '
+    #       loginhostname=$(hostname | sed "s/head/login/")
+    #       echo "/nfs/pbsusers $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
+    #       echo "/nfs/common $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
 
 
     - name: Start NFS server.
@@ -42,9 +43,7 @@
     
     - name: Create test files.
       shell: |
-        echo "Hello from $(hostname)" >> /nfs/pbsusers/test.txt
-        echo "Hello from $(hostname)" >> /nfs/common/test.txt
-
+        echo "Hello from $(hostname)" >> /pbsusers/test.txt
 
 - name: Configure NFS clients.
   become: true
@@ -65,19 +64,18 @@
       command: apt install -y autofs
 
     - name: Create NFS directory pbsusers.
-      command: mkdir -p /nfs/pbsusers
+      command: mkdir -p /pbsusers
 
-    - name: Create NFS directory common.
-      command: mkdir -p /nfs/common
+    # - name: Create NFS directory common.
+    #   command: mkdir -p /nfs/common
 
     - name: Configure AutoFS - /etc/auto.master.
       shell: |
-        echo "/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+        echo "/ /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
 
     - name: Configure AutoFS - /etc/auto.nfs.
       shell: |
-        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/nfs/pbsusers" >> /etc/auto.nfs
-        echo "common -fstype=nfs4,rw {{ serverhostname }}:/nfs/common" >> /etc/auto.nfs
+        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers" >> /etc/auto.nfs
 
     - name: Restart AutoFS.
       shell: systemctl restart autofs
