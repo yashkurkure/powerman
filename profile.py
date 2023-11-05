@@ -181,7 +181,7 @@ for i in range(nodeCount):
         worker_nodes_i.append(node)
 
         # Install public key of head node
-        node.installRootKeys(False, True)
+        node.installRootKeys(True, True)
         
         # Install OpenPBS MOM
         node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
