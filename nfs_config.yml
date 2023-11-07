@@ -9,9 +9,9 @@
 
     - name: Create NFS directory pbsusers.
       command: mkdir -p /exports/pbsusers
-
-    # - name: Create NFS directory common.
-    #   command: mkdir -p /nfs/common
+    
+    - name: Create symbolic link for pbsusers in root
+      command: ln -s /exports/pbsusers /pbsusers
 
     - name: Backup original /etc/exports.
       command: mv /etc/exports /etc/exports.orig
@@ -55,7 +55,10 @@
       command: apt install -y autofs
 
     - name: Create NFS directory pbsusers.
-      command: mkdir -p /nfs/pbsusers
+      command: mkdir -p /mnt/nfs/pbsusers
+
+    - name: Create symbolic link for pbsusers in root.
+      command: ln -s /mnt/nfs/pbsusers /pbsusers
 
     - name: Configure AutoFS - /etc/auto.master.
       shell: |
