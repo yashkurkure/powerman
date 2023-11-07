@@ -8,7 +8,7 @@
       command: apt install -y nfs-kernel-server
 
     - name: Create NFS directory pbsusers.
-      command: mkdir -p /pbsusers
+      command: mkdir -p /exports/pbsusers
 
     # - name: Create NFS directory common.
     #   command: mkdir -p /nfs/common
@@ -18,45 +18,26 @@
 
     - name: Write to /etc/exports.
       shell: |
-        echo "/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)" > /etc/exports
+        echo "/exports/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)" > /etc/exports
     
-    - name: Check if the service is running
-      ansible.builtin.service:
-        name:  nfs-kernel-server
-      register: service_status
+    - name: Check if nfs-kernel-server is running
+      command: systemctl is-active nfs-kernel-server
+      register: nfs_status
+      ignore_errors: true
 
-    - name: Restart the service if running
-      ansible.builtin.service:
-        name:  nfs-kernel-server
-        state: restarted
-      when: service_status.state == 'running'
-
-    - name: Start the service if not running
-      ansible.builtin.service:
-        name:  nfs-kernel-server
+    - name: Start or restart nfs-kernel-server service
+      systemd:
+        name: nfs-kernel-server
         state: started
-      when: service_status.state == 'stopped'
-    
-    # TODO: It does not like having '-' in the hostname
-    # - name: Write worker nodes to /etc/exports.
-    #   command: >
-    #     bash -c '
-    #     for ((i=0; i<{{ numworkernodes }}; i++)); do
-    #       workerhostname=$(hostname | sed "s/head/node$i/")
-    #       echo "/nfs/pbsusers $workerhostname(rw,no_subtree_check)" >> /etc/exports
-    #       echo "/nfs/common $workerhostname(rw,no_subtree_check)" >> /etc/exports
-    #     done'
-    
-    # - name: Write login node to /etc/exports.
-    #   command: >
-    #     bash -c '
-    #       loginhostname=$(hostname | sed "s/head/login/")
-    #       echo "/nfs/pbsusers $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
-    #       echo "/nfs/common $loginhostname(rw,no_subtree_check,insecure)" >> /etc/exports'
+      when: nfs_status.rc != 0
+      ignore_errors: true
 
-
-    # - name: Start NFS server.
-    #   command: systemctl start nfs-kernel-server
+    - name: Restart nfs-kernel-server if already running
+      systemd:
+        name: nfs-kernel-server
+        state: restarted
+      when: nfs_status.rc == 0
+      ignore_errors: true
 
     - name: Create test files.
       shell: |
@@ -70,46 +51,35 @@
     - name: Install NFS client.
       command: apt install -y nfs-common
 
-    # Instead use AutoFS
-    # - name: Create NFS mount point.
-    #   command: mkdir -p /pbsusers
-
-    # - name: Mount the NFS directory.
-    #   command: mount {{ serverhostname }}:/pbsusers /pbsusers
-
     - name: Install AutoFS.
       command: apt install -y autofs
 
     - name: Create NFS directory pbsusers.
-      command: mkdir -p /pbsusers
-
-    # - name: Create NFS directory common.
-    #   command: mkdir -p /nfs/common
+      command: mkdir -p /nfs/pbsusers
 
     - name: Configure AutoFS - /etc/auto.master.
       shell: |
-        echo "/ /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+        echo "/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
 
     - name: Configure AutoFS - /etc/auto.nfs.
       shell: |
-        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/pbsusers" >> /etc/auto.nfs
-
-    # - name: Restart AutoFS.
-    #   shell: systemctl restart autofs
+        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/exports/pbsusers" >> /etc/auto.nfs
     
-    - name: Check if the service is running
-      ansible.builtin.service:
-        name:  autofs
-      register: service_status
+    - name: Check if autofs is running
+      command: systemctl is-active autofs
+      register: autofs_status
+      ignore_errors: true
 
-    - name: Restart the service if running
-      ansible.builtin.service:
-        name:  autofs
-        state: restarted
-      when: service_status.state == 'running'
-
-    - name: Start the service if not running
-      ansible.builtin.service:
-        name:  autofs
+    - name: Start or restart autofs service
+      systemd:
+        name: autofs
         state: started
-      when: service_status.state == 'stopped'
+      when: autofs_status.rc != 0
+      ignore_errors: true
+
+    - name: Restart autofs if already running
+      systemd:
+        name: autofs
+        state: restarted
+      when: autofs_status.rc == 0
+      ignore_errors: true
