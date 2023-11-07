@@ -8,7 +8,7 @@ cd $PBS_O_WORKDIR
 TIME_STAMP=`date +"%m_%d_%Y_%H%M"`
 
 # Output Directory
-OUT_DIR=$3_$TIME_STAMP
+OUT_DIR=$ENAME"_"$TIME_STAMP
 
 # Save the results of weak scaling.
 WS_RESULT_FILE="weak_scaling"
@@ -17,12 +17,12 @@ WS_RESULT_FILE="weak_scaling"
 SS_RESULT_FILE="strong_scaling"
 
 # Define the amount of work.
-WORK=$1
+WORK=$EWORK
 
 # Define the number of threads.
 # If this is set to n, the scaling would 
 # run for cases 2^0, 2^1, 2^2 ..... 2^n threads.
-THREADS=$2
+THREADS=$ETHREADS
 
 # Create the output directory
 mkdir -p $OUT_DIR/$WORK
