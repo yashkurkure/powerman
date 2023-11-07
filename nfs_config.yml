@@ -62,7 +62,7 @@
 
     - name: Configure AutoFS - /etc/auto.master.
       shell: |
-        echo "/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+        echo "/mnt/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
 
     - name: Configure AutoFS - /etc/auto.nfs.
       shell: |
