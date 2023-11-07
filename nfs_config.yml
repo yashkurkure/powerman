@@ -10,6 +10,13 @@
     - name: Create NFS directory pbsusers.
       command: mkdir -p /exports/pbsusers
     
+    - name: Change group ownership for folder.
+      command: chown -R :SchedulingPower /exports/pbsusers
+
+    - name: Give the group rw permissions.
+      command: chmod -R g+w /exports/pbsusers
+    
+    
     - name: Create symbolic link for pbsusers in root
       command: ln -s /exports/pbsusers /pbsusers
 
@@ -56,6 +63,12 @@
 
     - name: Create NFS directory pbsusers.
       command: mkdir -p /mnt/nfs/pbsusers
+
+    - name: Change group ownership for folder.
+      command: chown -R :SchedulingPower /mnt/nfs/pbsusers
+
+    - name: Give the group rw permissions.
+      command: chmod -R g+w /mnt/nfs/pbsusers
 
     - name: Create symbolic link for pbsusers in root.
       command: ln -s /mnt/nfs/pbsusers /pbsusers
