@@ -1,0 +1,8 @@
+---
+- name: Install DPC++ on all nodes
+  become: true
+  hosts: headnode
+  tasks:
+
+    - name: Install NFS server.
+      command: apt install -y nfs-kernel-server

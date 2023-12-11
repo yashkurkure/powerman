@@ -45,10 +45,25 @@ echo $loginhostname
 
 echo ""
 
-echo "# All nodes"
+echo "# All non-head nodes"
 echo "[multi:children]"
 echo "workernodes"
 echo "loginnodes"
+echo "# Variables for all nodes"
+echo "[multi:vars]"
+echo "ansible_user=root"
+echo "ansible_private_key_file=/root/.ssh/id_rsa"
+echo "ansible_host_key_checking=False"
+serverhostname=$(hostname)
+servercanonicalname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
+echo "servercanonicalname=$servercanonicalname"
+echo "serverhostname=$serverhostname"
+
+echo "# All nodes"
+echo "[multi:allnodes]"
+echo "workernodes"
+echo "loginnodes"
+echo "headnode"
 echo "# Variables for all nodes"
 echo "[multi:vars]"
 echo "ansible_user=root"
