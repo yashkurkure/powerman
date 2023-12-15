@@ -1,11 +1,10 @@
-export DPCPP_HOME=~/sycl_workspace
-mkdir $DPCPP_HOME
-cd $DPCPP_HOME
+# download the key to system keyring
+wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
+| gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
 
-mkdir -p cmake-3.27 && wget -qO- "https://cmake.org/files/v3.27/cmake-3.27.0-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.27
-~ $ export PATH=`pwd`/cmake-3.27/bin:$PATH
+# add signed entry to apt sources and configure the APT client to use Intel repository:
+echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
 
-git clone https://github.com/intel/llvm -b sycl
+sudo apt update
 
-python3 $DPCPP_HOME/llvm/buildbot/configure.py
-python3 $DPCPP_HOME/llvm/buildbot/compile.py
+sudo apt install intel-basekit

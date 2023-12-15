@@ -4,5 +4,5 @@
   hosts: headnode
   tasks:
 
-    - name: Install NFS server.
-      command: apt install -y nfs-kernel-server
+    - name: Install Intel OneAPI
+      command: apt install -y intel-basekit
