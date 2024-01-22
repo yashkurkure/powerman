@@ -1,5 +1,6 @@
 import pbs
 import sys
+import os
 '''
 1. Job Number -- a counter field, starting from 1.
 2. Submit Time -- in seconds. The earliest time the log refers to is zero, and is usually the submittal time of the first job. The lines in the log are sorted by ascending submittal times. It makes sense for jobs to also be numbered in this order.
@@ -23,7 +24,31 @@ Note that when values are rounded to an integral number of seconds (as often hap
 18. Think Time from Preceding Job -- this is the number of seconds that should elapse between the termination of the preceding job and the submittal of this one.
 '''
 
+e = pbs.event()
+etype = pbs.event().type
+location = '/pbsusers/hook.swf'
 
-row = {
-    
-}
+def write_swf(location,  content):
+    if os.path.exists(location):
+        # If the file exists, open it in append mode
+        with open(location, 'a') as file:
+            file.write(content + '\n')  # Append content to the file
+    else:
+        # If the file doesn't exist, create it and write to it
+        with open(location, 'w') as file:
+            file.write(content + '\n')  # Write content to the file
+
+try:
+    t = 0
+    if etype is pbs.QUEUEJOB:
+        t = 1
+        write_swf(location, 'Queued')
+    elif etype is pbs.RUNJOB:
+        t = 2
+        write_swf(location, 'Run')
+    # accept the event
+    e.accept() 
+except SystemExit:
+    pass 
+except:
+    e.reject("Failed to set job priority")
