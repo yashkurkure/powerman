@@ -22,5 +22,5 @@
 
     - name: Restart pbs.
       environment:
-        PBS_DATA_SERVICE_USER: postgress
+        PBS_DATA_SERVICE_USER: postgres
       command: systemctl restart pbs

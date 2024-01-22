@@ -68,7 +68,7 @@
 
     - name: Start pbs.
       environment:
-        PBS_DATA_SERVICE_USER: postgress
+        PBS_DATA_SERVICE_USER: postgres
       command: systemctl start pbs
   
     - name: Create worker nodes
