@@ -53,6 +53,8 @@ CQSim:
 '''
 
 e = pbs.event()
+timestamp = int(time.time() * 1000)
+jid = str(e.job.id)
 etype = pbs.event().type
 location = '/pbsusers/hook.swf'
 
@@ -65,15 +67,22 @@ def write_swf(location,  content):
         # If the file doesn't exist, create it and write to it
         with open(location, 'w') as file:
             file.write(content + '\n')  # Write content to the file
+import time
 
 try:
-    t = 0
+    t = '-1'
     if etype is pbs.QUEUEJOB:
         t = 1
-        write_swf(location, 'Queued')
     elif etype is pbs.RUNJOB:
         t = 2
-        write_swf(location, 'Run')
+    elif etype is pbs.EXECJOB_BEGIN:
+        t = 3
+    elif etype is pbs.EXECJOB_END:
+        t = 4
+
+    s = f'{timestamp},{jid},{t}'
+    write_swf(location, s)
+
     # accept the event
     e.accept() 
 except SystemExit:
