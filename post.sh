@@ -11,7 +11,7 @@ echo "Number of worker nodes should be atleast 1"
 exit 1
 fi
 
-./gen_inventory.sh $numnodes
+./gen_inventory.sh $numnodes > inventory
 
 ansible-playbook -i inventory ./pbs_config.yml
 
