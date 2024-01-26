@@ -1,6 +1,7 @@
 import pbs
 import sys
 import os
+import time
 '''
 Contents of SWF row:
 
@@ -67,18 +68,19 @@ def write_swf(location,  content):
         # If the file doesn't exist, create it and write to it
         with open(location, 'w') as file:
             file.write(content + '\n')  # Write content to the file
-import time
 
 try:
-    t = '-1'
+    t = ''
     if etype is pbs.QUEUEJOB:
-        t = 1
+        t = 'q'
     elif etype is pbs.RUNJOB:
-        t = 2
+        t = 'r'
     elif etype is pbs.EXECJOB_BEGIN:
-        t = 3
+        t = 'mom_r'
     elif etype is pbs.EXECJOB_END:
-        t = 4
+        t = 'mom_e'
+    else:
+        t = etype
 
     s = f'{timestamp},{jid},{t}'
     write_swf(location, s)
