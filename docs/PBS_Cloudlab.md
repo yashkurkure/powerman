@@ -26,7 +26,9 @@ When the baremental nodes are ready:
 > - Any packages that need to be installed (OpenPBS/PostgreSQL, etc)
 > - This script is also capable of defining various network topologies.
 
-## Post Cloudlab Setup
+## Post Cloudlab Setup & First Job
+
+> Alternatively, you could run the script [post.sh](/post.sh)
 
 SSH into the `head` node and perform the following steps:
 
