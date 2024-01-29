@@ -57,7 +57,7 @@ e = pbs.event()
 timestamp = int(time.time() * 1000)
 jid = str(e.job.id)
 etype = pbs.event().type
-location = '/pbsusers/hook.swf'
+location = '/pbsusers/sample_hook.out'
 
 def write_swf(location,  content):
     if os.path.exists(location):
