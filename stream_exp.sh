@@ -25,6 +25,6 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 
 /opt/pbs/bin/qmgr -c 'import hook redis_hook application/x-python default ./redis_hook.py'
 
-/opt/pbs/bin/qmgr -c 'set hook redis_jobs event = "queuejob,runjob,execjob_begin,execjob_end"'
+/opt/pbs/bin/qmgr -c 'set hook redis_hook event = "queuejob,runjob,execjob_begin,execjob_end"'
 
-/opt/pbs/bin/qmgr -c 'set hook redis_jobs debug = True'
+/opt/pbs/bin/qmgr -c 'set hook redis_hook debug = True'
