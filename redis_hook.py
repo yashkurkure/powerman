@@ -35,7 +35,7 @@ try:
 
     s = f'{timestamp},{jid},{t}'
     write_swf(location, s)
-    r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
     res1 = r.xadd(
         "pbs:hook",
         {"timestamp": f"{timestamp}", "job_id": f"{jid}", "event_type": t},

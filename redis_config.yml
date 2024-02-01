@@ -9,8 +9,36 @@
         curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
         sudo chmod 644 /usr/share/keyrings/redis-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
-        sudo apt-get update
-        sudo apt-get install redis-stack-server
+        sudo apt -y update
+        sudo apt -y install redis-stack-server
+
+    - name: Install Redis Python Client
+      shell: |
+        sudo apt -y install python3-pip
+        pip install redis
+
+    - name: Set redis configuration
+      shell: |
+        echo "protected-mode no
+        bind head.testbed.schedulingpower.emulab.net
+        port 6379
+        daemonize no
+        loadmodule /opt/redis-stack/lib/rediscompat.so
+        loadmodule /opt/redis-stack/lib/redisearch.so
+        loadmodule /opt/redis-stack/lib/redistimeseries.so
+        loadmodule /opt/redis-stack/lib/rejson.so
+        loadmodule /opt/redis-stack/lib/redisbloom.so
+        loadmodule /opt/redis-stack/lib/redisgears.so v8-plugin-path /opt/redis-stack/lib/libredisgears_v8_plugin.so" > /etc/pbs.conf
   
     - name: Start Redis Stack Server
       command: systemctl start redis-stack-server
+
+- name: Configure worker nodes.
+  become: true
+  hosts: workernodes
+  tasks:
+  
+    - name: Install Redis Python Client
+      shell: |
+        sudo apt -y install python3-pip
+        pip install redis
