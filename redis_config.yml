@@ -20,7 +20,7 @@
     - name: Set redis configuration
       shell: |
         echo "protected-mode no
-        bind head.testbed.schedulingpower.emulab.net
+        bind $(hostname)
         port 6379
         daemonize no
         loadmodule /opt/redis-stack/lib/rediscompat.so
