@@ -6,12 +6,7 @@ import time
 import redis
 e = pbs.event()
 timestamp = int(time.time() * 1000)
-jid = str(pbs.event().job.Submit_arguments)
-if jid:
-    jid = jid.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1]
-else:
-    jid = 'Not found'
-    
+
 etype = pbs.event().type
 location = '/pbsusers/sample_hook.out'
 
@@ -27,8 +22,12 @@ def write_swf(location,  content):
 
 try:
     t = ''
+    jid = pbs.event().job.Job_Name
     if etype is pbs.QUEUEJOB:
         t = 'q'
+        jid = str(pbs.event().job.Submit_arguments)
+        jid = jid.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1].split(',')[0].split('=')[1]
+        pbs.event().job.Job_Name = jid
     elif etype is pbs.RUNJOB:
         t = 'r'
     elif etype is pbs.EXECJOB_BEGIN:

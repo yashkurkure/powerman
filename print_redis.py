@@ -2,7 +2,7 @@ import redis
 
 r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
 
-stream_results = r.xread(streams={"pbs:hook": 0}, count=100, block=300)
+stream_results = r.xread(streams={"pbs:hook": 0}, count=10000, block=300)
 for stream_result in stream_results:
     stream_name = stream_result[0]
     stream_data = stream_result[1]
