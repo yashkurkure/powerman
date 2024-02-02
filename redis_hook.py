@@ -1,12 +1,17 @@
 import sys
-sys.path.append('/root/.local/lib/python3.8/site-packages')
+sys.path.append('/usr/local/lib/python3.8/dist-packages')
 import pbs
 import os
 import time
 import redis
 e = pbs.event()
 timestamp = int(time.time() * 1000)
-jid = str(e.job.id)
+jid = str(pbs.event().job.Submit_arguments)
+if jid:
+    jid = jid.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1]
+else:
+    jid = 'Not found'
+    
 etype = pbs.event().type
 location = '/pbsusers/sample_hook.out'
 
