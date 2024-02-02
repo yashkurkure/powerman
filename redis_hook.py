@@ -16,24 +16,24 @@ try:
 
     # Find the event type
     if e.type is pbs.QUEUEJOB:
-        t = 'q'
-        jid = str(pbs.event().job.Submit_arguments)
-        jid = jid.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1].split(',')[0].split('=')[1]
-        pbs.event().job.Job_Name = jid
+        event_type = 'q'
+        job_name = str(pbs.event().job.Submit_arguments)
+        job_name = job_name.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1].split(',')[0].split('=')[1]
+        pbs.event().job.Job_Name = job_name
     elif e.type is pbs.RUNJOB:
-        t = 'r'
+        event_type = 'r'
     elif e.type is pbs.EXECJOB_BEGIN:
-        t = 'mom_r'
+        event_type = 'mom_r'
     elif e.type is pbs.EXECJOB_END:
-        t = 'mom_e'
+        event_type = 'mom_e'
     else:
-        t = 'unknown'
+        event_type = 'unknown'
 
     # Insert data into redis stream
     r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
     r.xadd(
         "redis-hook",
-        { "job_id": f"{jid}", "event_type": t, "event_code": event_code},
+        { "job_id": f"{job_name}", "event_type": event_type, "event_code": event_code},
     )
 
     # accept the event

@@ -1,14 +1,21 @@
 import redis
 
+stream_name = 'redis-hook'
 r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
+last_id = '$'
 
-stream_results = r.xread(streams={"pbs:hook": 0}, count=10000, block=300)
-for stream_result in stream_results:
-    stream_name = stream_result[0]
-    stream_data = stream_result[1]
+while True:
+
+    # Wait for new entry
+    latest = r.xread({stream_name: last_id}, None, 0)[0]
+    print(f'** New In Stream **')
+    stream_name = latest[0]
+    stream_data = latest[1]
     for data in stream_data:
-        id = data[0]
-        t = data[1]['timestamp']
-        jid = data[1]['job_id']
-        e = data[1]['event_type']
-        print(f'{id}\t{t}\t{jid}\t{e}')
+        redis_id = data[0]
+        job_id = data[1]['job_id']
+        event_type = data[1]['event_type']
+        event_code = data[1]['event_code']
+        print(f'{redis_id}\t{job_id}\t{event_type}\t{event_code}')
+        last_id = redis_id
+    print(f'*******************')
