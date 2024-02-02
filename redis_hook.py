@@ -1,54 +1,45 @@
 import sys
+
+# Import packages external to pbs, required for redis import
 sys.path.append('/usr/local/lib/python3.8/dist-packages')
 import pbs
 import os
 import time
 import redis
 e = pbs.event()
-timestamp = int(time.time() * 1000)
-
-etype = pbs.event().type
-location = '/pbsusers/sample_hook.out'
-
-def write_swf(location,  content):
-    if os.path.exists(location):
-        # If the file exists, open it in append mode
-        with open(location, 'a') as file:
-            file.write(content + '\n')  # Append content to the file
-    else:
-        # If the file doesn't exist, create it and write to it
-        with open(location, 'w') as file:
-            file.write(content + '\n')  # Write content to the file
-
 try:
-    t = ''
-    jid = pbs.event().job.Job_Name
-    if etype is pbs.QUEUEJOB:
+
+    # Information to collect 
+    event_type = ''
+    event_code = e.type
+    job_name = e.job.Job_Name
+
+    # Find the event type
+    if e.type is pbs.QUEUEJOB:
         t = 'q'
         jid = str(pbs.event().job.Submit_arguments)
         jid = jid.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1].split(',')[0].split('=')[1]
         pbs.event().job.Job_Name = jid
-    elif etype is pbs.RUNJOB:
+    elif e.type is pbs.RUNJOB:
         t = 'r'
-    elif etype is pbs.EXECJOB_BEGIN:
+    elif e.type is pbs.EXECJOB_BEGIN:
         t = 'mom_r'
-    elif etype is pbs.EXECJOB_END:
+    elif e.type is pbs.EXECJOB_END:
         t = 'mom_e'
     else:
-        t = etype
+        t = 'unknown'
 
-    s = f'{timestamp},{jid},{t}'
-    write_swf(location, s)
+    # Insert data into redis stream
     r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
-    res1 = r.xadd(
-        "pbs:hook",
-        {"timestamp": f"{timestamp}", "job_id": f"{jid}", "event_type": t},
+    r.xadd(
+        "redis-hook",
+        { "job_id": f"{jid}", "event_type": t, "event_code": event_code},
     )
 
     # accept the event
-    e.accept() 
+    pbs.event().accept() 
 except SystemExit:
     pass 
 except:
     pbs.event().reject_msg = f'{e.hook_name} hook failed with {sys.exc_info()[:2]}'
-    e.reject("%s hook failed with %s. Please contact Admin" % (e.hook_name, sys.exc_info()[:2]))
+    pbs.event().reject("%s hook failed with %s. Please contact Admin" % (pbs.event().hook_name, sys.exc_info()[:2]))
