@@ -8,7 +8,7 @@ import time
 import redis
 e = pbs.event()
 try:
-
+    r = redis.StrictRedis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
     # Information to collect 
     event_type = ''
     event_code = e.type
@@ -16,21 +16,28 @@ try:
 
     # Find the event type
     if e.type is pbs.QUEUEJOB:
+
         event_type = 'q'
-        job_name = str(pbs.event().job.Submit_arguments)
-        job_name = job_name.split('</jsdl-hpcpa:Argument><jsdl-hpcpa:Argument>')[1].split(',')[0].split('=')[1]
+        # Job ids - Using counter from Redis
+        if r.exists('job_counter'):
+            job_counter = r.incr('job_counter')
+            job_name = f'job.{job_counter}'
+        else:
+            # Key doesn't exist, create and initialize it to 0
+            r.set('job_counter', 0)
+            job_name = 'job.0'
         pbs.event().job.Job_Name = job_name
-    elif e.type is pbs.RUNJOB:
+
+    elif e.type == pbs.RUNJOB:
         event_type = 'r'
-    elif e.type is pbs.EXECJOB_BEGIN:
+    elif e.type == pbs.EXECJOB_BEGIN:
         event_type = 'mom_r'
-    elif e.type is pbs.EXECJOB_END:
+    elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
     else:
         event_type = 'unknown'
 
     # Insert data into redis stream
-    r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
     r.xadd(
         "redis-hook",
         { "job_id": f"{job_name}", "event_type": event_type, "event_code": event_code},

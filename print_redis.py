@@ -19,3 +19,26 @@ while True:
         print(f'{redis_id}\t{job_id}\t{event_type}\t{event_code}')
         last_id = redis_id
     print(f'*******************')
+
+
+# def create_swf_entry(
+#         job_num,     # 0 
+#         submit_time,    # 1
+#         wait_time,      # 2
+#         run_time,       # 3
+#         num_proc,       # 4
+#         avg_cpu_time=-1,   # 5
+#         mem_usage=-1,      # 6
+#         req_num_p,      # 7 same as # 4
+#         req_time,       # 8
+#         req_mem=-1,        # 9
+#         job_status,     # 10
+#         user_id,        # 11
+#         group_id,       # 12
+#         executable=-1,     # 13
+#         queue_num=-1,      # 14
+#         partition_num=-1,  # 15
+#         preceding_job_num=-1,  #16
+#         think_time=-1          #17
+# ):
+#     pass
