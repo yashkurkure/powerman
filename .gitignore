@@ -1,5 +1,6 @@
 Pipfile.lock
 chameleon/*-app-cred.sh
+benchmarks/NPB3.4.2
 rapl-read
 
 # Mac OSx
