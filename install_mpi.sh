@@ -2,11 +2,22 @@
 #
 # Install OpenMPI
 
-curl -sO https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.1.tar.bz2
-bzip2 -d openmpi-5.0.1.tar.bz2
-tar -xvf openmpi-5.0.1.tar
-cd openmpi-5.0.1
-export LD_LIBRARY_PATH=/opt/pbs/lib:$LD_LIBRARY_PATH  
-export LDFLAGS="-L /opt/pbs/lib -lpbs -lpthread -lcrypto"
-./configure --prefix=/opt/openmpi --with-tm=/opt/pbs --enable-mpi-interface-warning --enable-shared --enable-static 
-make; make install
+cd /pbsusers
+
+curl -sO https://www.mpich.org/static/downloads/4.2.0rc2/mpich-4.2.0rc2.tar.gz
+
+tar xfz mpich-4.2.0rc2.tar.gz
+
+mkdir /pbsusers/mpich-install
+
+mkdir /opt/mpich
+
+cd /opt/mpich
+
+sudo apt install gfortran
+
+/pbsusers/mpich-4.2.0rc2/configure -prefix=/pbsusers/mpich-install 2>&1 | tee c.txt
+
+make 2>&1 | tee m.txt
+
+make install |& tee mi.txt
