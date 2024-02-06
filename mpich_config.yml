@@ -1,0 +1,76 @@
+fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": "cd /local/mpich_build\nmake install |& tee mi.txt\n", "delta": "0:00:00.003929", "end": "2024-02-05 19:37:05.643365", "msg": "non-zero return code", "rc": 2, "start": "2024-02-05 19:37:05.639436", "stderr": "/bin/sh: 2: Syntax error: \"&\" unexpected", "stderr_lines": ["/bin/sh: 2: Syntax error: \"&\" unexpected"], "stdout": "", "stdout_lines": []}
+
+---
+- name: Configure & Install MPICH on head node.
+  become: true
+  hosts: headnode
+  tasks:
+
+    - name: Download MPICH.
+      shell: |
+        cd /local
+        curl -sO https://www.mpich.org/static/downloads/4.2.0rc2/mpich-4.2.0rc2.tar.gz
+        tar xfz mpich-4.2.0rc2.tar.gz
+
+    - name: Install gfortran.
+      command: apt install -y gfortran
+    
+    - name: Create temp build directory for MPICH.
+      shell: |
+        mkdir /local/mpich_build
+
+    - name: Create install directory for MPICH.
+      shell: |
+        mkdir /opt/mpich
+
+    - name: Configure MPICH.
+      shell: |
+        cd /local/mpich_build
+        /local/mpich-4.2.0rc2/configure -prefix=/opt/mpich 2>&1 | tee c.txt
+
+    - name: Build MPICH.
+      shell: |
+        cd /local/mpich_build
+        make 2>&1 | tee m.txt
+
+    - name: Install MPICH.
+      shell: |
+        cd /local/mpich_build
+        make install |& tee mi.txt
+
+- name: Configure & Install MPICH on all nodes.
+  become: true
+  hosts: multi
+  tasks:
+
+    - name: Download MPICH.
+      shell: |
+        cd /local
+        curl -sO https://www.mpich.org/static/downloads/4.2.0rc2/mpich-4.2.0rc2.tar.gz
+        tar xfz mpich-4.2.0rc2.tar.gz
+
+    - name: Install gfortran.
+      command: apt install -y gfortran
+    
+    - name: Create temp build directory for MPICH.
+      shell: |
+        mkdir /local/mpich_build
+
+    - name: Create install directory for MPICH.
+      shell: |
+        mkdir /opt/mpich
+
+    - name: Configure MPICH.
+      shell: |
+        cd /local/mpich_build
+        /local/mpich-4.2.0rc2/configure -prefix=/opt/mpich 2>&1 | tee c.txt
+
+    - name: Build MPICH.
+      shell: |
+        cd /local/mpich_build
+        make 2>&1 | tee m.txt
+
+    - name: Install MPICH.
+      shell: |
+        cd /local/mpich_build
+        make install |& tee mi.txt
