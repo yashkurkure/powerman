@@ -28,3 +28,5 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 /opt/pbs/bin/qmgr -c 'set hook redis_hook event = "queuejob,runjob,execjob_begin,execjob_end"'
 
 /opt/pbs/bin/qmgr -c 'set hook redis_hook debug = True'
+
+ansible-playbook -i inventory ./mpich_config.yml
