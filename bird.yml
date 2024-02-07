@@ -1,15 +1,22 @@
----
-- name: Configure worker nodes.
-  become: true
-  hosts: workernodes
-  tasks:
 
-    - name: Configure MoM usecp
+---
+- name: Configure & Install MPICH on head node.
+  become: true
+  hosts: headnode
+  tasks:
+    
+    - name: PBS env vars for MPICH-HYDRA
       shell: |
-        echo " False
-        \$restrict_user_maxsysid 999
-        \$usecp *:/pbsusers/ /pbsusers/" > /var/spool/pbs/mom_priv/config
-  
-    - name: HUP MoM
+        echo "I_MPI_HYDRA_BOOTSTRAP=rsh
+        I_MPI_HYDRA_BOOTSTRAP_EXEC=/opt/pbs/bin/pbs_tmrsh " >> /var/spool/pbs/pbs_environment
+        
+
+- name: Configure & Install MPICH on all nodes.
+  become: true
+  hosts: multi
+  tasks:
+    
+    - name: PBS env vars for MPICH-HYDRA
       shell: |
-        kill -HUP `ps aux | grep /opt/pbs/sbin/pbs_mom | awk '{print $2}' | head -n 1`
+        echo "I_MPI_HYDRA_BOOTSTRAP=rsh
+        I_MPI_HYDRA_BOOTSTRAP_EXEC=/opt/pbs/bin/pbs_tmrsh " >> /var/spool/pbs/pbs_environment

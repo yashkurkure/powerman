@@ -41,6 +41,11 @@
       shell: |
         echo "PATH=/opt/mpich/bin:$PATH
         export PATH" >> /etc/profile
+    
+    - name: PBS env vars for MPICH-HYDRA
+      shell: |
+        echo "I_MPI_HYDRA_BOOTSTRAP=rsh
+        I_MPI_HYDRA_BOOTSTRAP_EXEC=/opt/pbs/bin/pbs_tmrsh " >> /var/spool/pbs/pbs_environment
         
 
 - name: Configure & Install MPICH on all nodes.
@@ -85,3 +90,8 @@
       shell: |
         echo "PATH=/opt/mpich/bin:$PATH
         export PATH" >> /etc/profile
+    
+    - name: PBS env vars for MPICH-HYDRA
+      shell: |
+        echo "I_MPI_HYDRA_BOOTSTRAP=rsh
+        I_MPI_HYDRA_BOOTSTRAP_EXEC=/opt/pbs/bin/pbs_tmrsh " >> /var/spool/pbs/pbs_environment
