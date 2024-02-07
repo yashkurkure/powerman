@@ -16,7 +16,6 @@
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
-        - name: Configure OpenPBS at /etc/pbs.conf
 
     - name: Configure MoM usecp
       shell: |
