@@ -1,0 +1,21 @@
+---
+- name: Configure & Install MPICH on head node.
+  become: true
+  hosts: headnode
+  tasks:
+  
+    - name: Add MPICH to path
+      shell: |
+        echo "PATH=/opt/mpich/bin:$PATH
+        export PATH" >> /etc/profile
+        
+
+- name: Configure & Install MPICH on all nodes.
+  become: true
+  hosts: multi
+  tasks:
+
+    - name: Add MPICH to path
+      shell: |
+        echo "PATH=/opt/mpich/bin:$PATH
+        export PATH" >> /etc/profile

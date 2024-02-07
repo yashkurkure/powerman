@@ -1,4 +1,3 @@
-fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": "cd /local/mpich_build\nmake install |& tee mi.txt\n", "delta": "0:00:00.003929", "end": "2024-02-05 19:37:05.643365", "msg": "non-zero return code", "rc": 2, "start": "2024-02-05 19:37:05.639436", "stderr": "/bin/sh: 2: Syntax error: \"&\" unexpected", "stderr_lines": ["/bin/sh: 2: Syntax error: \"&\" unexpected"], "stdout": "", "stdout_lines": []}
 
 ---
 - name: Configure & Install MPICH on head node.
@@ -37,6 +36,12 @@ fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": "cd /local/mpich_build\n
       shell: |
         cd /local/mpich_build
         make install 2>&1 | tee mi.txt
+  
+    - name: Add MPICH to path
+      shell: |
+        echo "PATH=/opt/mpich/bin:$PATH
+        export PATH" >> /etc/profile
+        
 
 - name: Configure & Install MPICH on all nodes.
   become: true
@@ -74,3 +79,9 @@ fatal: [127.0.0.1]: FAILED! => {"changed": true, "cmd": "cd /local/mpich_build\n
       shell: |
         cd /local/mpich_build
         make install 2>&1 | tee mi.txt
+        - name: Add MPICH to path
+
+    - name: Add MPICH to path
+      shell: |
+        echo "PATH=/opt/mpich/bin:$PATH
+        export PATH" >> /etc/profile
