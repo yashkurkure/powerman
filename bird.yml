@@ -1,21 +1,13 @@
 ---
-- name: Configure & Install MPICH on head node.
+- name: Configure worker nodes.
   become: true
-  hosts: headnode
+  hosts: workernodes
   tasks:
+
+    - name: Configure MoM usecp
+      shell: |
+        echo "$usecp *:/pbsusers/ /pbsusers/" >> /var/spool/pbs/mom_priv/config
   
-    - name: Add MPICH to path
+    - name: HUP MoM
       shell: |
-        echo "PATH=/opt/mpich/bin:$PATH
-        export PATH" >> /etc/profile
-        
-
-- name: Configure & Install MPICH on all nodes.
-  become: true
-  hosts: multi
-  tasks:
-
-    - name: Add MPICH to path
-      shell: |
-        echo "PATH=/opt/mpich/bin:$PATH
-        export PATH" >> /etc/profile
+        kill -HUP `ps aux | grep /opt/pbs/sbin/pbs_mom | awk '{print $2}' | head -n 1`
