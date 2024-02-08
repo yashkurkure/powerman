@@ -20,7 +20,7 @@
 
     - name: Create install directory for MPICH.
       shell: |
-        rm -r /local/mpich_build
+        rm -r /opt/mpich
         mkdir /opt/mpich
 
     - name: Configure MPICH.
