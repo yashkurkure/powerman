@@ -29,7 +29,7 @@
     
     - name: HUP MoM
       shell: |
-        kill -HUP `ps aux | grep /opt/pbs/sbin/pbs_mom | awk '{print $2}' | head -n 1
+        kill -HUP `ps aux | grep /opt/pbs/sbin/pbs_mom | awk '{print $2}' | head -n 1`
 
 - name: Configure login nodes.
   become: true
