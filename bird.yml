@@ -1,5 +1,5 @@
- ---
- name: Configure & Install MPICH on all nodes.
+---
+- name: Configure & Install MPICH on all nodes.
   become: true
   hosts: multi
   tasks:
@@ -15,10 +15,12 @@
     
     - name: Create temp build directory for MPICH.
       shell: |
+        rm -r /local/mpich_build
         mkdir /local/mpich_build
 
     - name: Create install directory for MPICH.
       shell: |
+        rm -r /local/mpich_build
         mkdir /opt/mpich
 
     - name: Configure MPICH.
