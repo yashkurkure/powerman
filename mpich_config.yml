@@ -82,8 +82,7 @@
       shell: |
         cd /local/mpich_build
         make install 2>&1 | tee mi.txt
-        - name: Add MPICH to path
-
+  
     - name: Add MPICH to path
       shell: |
         echo "PATH=/opt/mpich/bin:$PATH
