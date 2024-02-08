@@ -25,7 +25,7 @@
     
     - name: Configure MoM usecp
       shell: |
-        echo "$usecp *:/pbsusers/ /pbsusers/" >> /var/spool/pbs/mom_priv/config
+        echo '$usecp *:/pbsusers/ /pbsusers/' >> /var/spool/pbs/mom_priv/config
     
     - name: HUP MoM
       shell: |
