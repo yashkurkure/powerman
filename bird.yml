@@ -1,19 +1,45 @@
-
----
-- name: Configure & Install MPICH on head node.
-  become: true
-  hosts: headnode
-  tasks:
-    
-    - name: Strict host checking disable
-      shell: |
-        echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
-        
-
-- name: Configure & Install MPICH on all nodes.
+ ---
+ name: Configure & Install MPICH on all nodes.
   become: true
   hosts: multi
   tasks:
+
+    - name: Download MPICH.
+      shell: |
+        cd /local
+        curl -sO https://www.mpich.org/static/downloads/4.2.0rc2/mpich-4.2.0rc2.tar.gz
+        tar xfz mpich-4.2.0rc2.tar.gz
+
+    - name: Install gfortran.
+      command: apt install -y gfortran
+    
+    - name: Create temp build directory for MPICH.
+      shell: |
+        mkdir /local/mpich_build
+
+    - name: Create install directory for MPICH.
+      shell: |
+        mkdir /opt/mpich
+
+    - name: Configure MPICH.
+      shell: |
+        cd /local/mpich_build
+        /local/mpich-4.2.0rc2/configure -prefix=/opt/mpich 2>&1 | tee c.txt
+
+    - name: Build MPICH.
+      shell: |
+        cd /local/mpich_build
+        make 2>&1 | tee m.txt
+
+    - name: Install MPICH.
+      shell: |
+        cd /local/mpich_build
+        make install 2>&1 | tee mi.txt
+  
+    - name: Add MPICH to path
+      shell: |
+        echo "PATH=/opt/mpich/bin:$PATH
+        export PATH" >> /etc/profile
     
     - name: Strict host checking disable
       shell: |
