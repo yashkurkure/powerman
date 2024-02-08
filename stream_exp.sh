@@ -29,4 +29,4 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 
 /opt/pbs/bin/qmgr -c 'set hook redis_hook debug = True'
 
-ansible-playbook -i inventory ./mpich_config.yml
+ansible-playbook -i inventory ./mpich_config_pkg.yml

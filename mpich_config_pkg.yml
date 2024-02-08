@@ -1,0 +1,25 @@
+
+---
+- name: Configure & Install MPICH on head node.
+  become: true
+  hosts: headnode
+  tasks:
+  
+    - name: Install MPICH
+      command: apt install -y mpich
+        
+    - name: Strict host checking disable
+      shell: |
+        echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+        
+- name: Configure & Install MPICH on all nodes.
+  become: true
+  hosts: multi
+  tasks:
+
+    - name: Install MPICH
+      command: apt install -y mpich
+
+    - name: Strict host checking disable
+      shell: |
+        echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config
