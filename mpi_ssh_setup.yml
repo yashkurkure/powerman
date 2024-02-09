@@ -1,19 +1,19 @@
 ---
 # TODO: add the domains to known-hosts
-- name: SSH setup for ykurkure on non-head nodes.
+- name: SSH setup for {{ username }} on non-head nodes.
   become: true
   hosts: multi
   tasks:
     - name: Copy SSH pub key.
       copy:
         src: /root/.ssh/id_rsa.pub
-        dest: /users/ykurkure/.ssh/id_rsa.pub
+        dest: /users/{{ username }}/.ssh/id_rsa.pub
         remote_src: yes
   
     - name: Copy SSH pvt key.
       copy:
         src: /root/.ssh/id_rsa
-        dest: /users/ykurkure/.ssh/id_rsa
+        dest: /users/{{ username }}/.ssh/id_rsa
         remote_src: yes
 
     - name: Read the contents of authorized keys for root.
@@ -23,40 +23,40 @@
 
     - name: Append contents of root authorized_keys to ykurkure authorized_keys.
       lineinfile:
-        path: /users/ykurkure/.ssh/authorized_keys
+        path: /users/{{ username }}/.ssh/authorized_keys
         line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
     - name: Change permissions to ykurkure:SchedulingPower for copied keys.
-      shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
+      shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
     
     - name: Change permission level of authorized_keys.
-      shell: chmod 644 /users/ykurkure/.ssh/authorized_keys
+      shell: chmod 644 /users/{{ username }}/.ssh/authorized_keys
 
     - name: Change permission level of pub keys
-      shell: chmod 644 /users/ykurkure/.ssh/*.pub
+      shell: chmod 644 /users/{{ username }}/.ssh/*.pub
 
     - name: Change permission level to pvt key.
-      shell: chmod 600 /users/ykurkure/.ssh/id_rsa
+      shell: chmod 600 /users/{{ username }}/.ssh/id_rsa
       
 
-    - name: Start ssh-agent and add key for ykurkure.
-      become_user: ykurkure
-      shell: eval $(ssh-agent) && ssh-add /users/ykurkure/.ssh/id_rsa
+    - name: Start ssh-agent and add key for {{ username }}.
+      become_user: {{ username }}
+      shell: eval $(ssh-agent) && ssh-add /users/{{ username }}/.ssh/id_rsa
 
-- name: SSH setup for ykurkure on head node.
+- name: SSH setup for {{ username }} on head node.
   become: true
   hosts: headnode
   tasks:
     - name: Copy SSH pub key.
       copy:
         src: /root/.ssh/id_rsa.pub
-        dest: /users/ykurkure/.ssh/id_rsa.pub
+        dest: /users/{{ username }}/.ssh/id_rsa.pub
         remote_src: yes
   
     - name: Copy SSH pvt key.
       copy:
         src: /root/.ssh/id_rsa
-        dest: /users/ykurkure/.ssh/id_rsa
+        dest: /users/{{ username }}/.ssh/id_rsa
         remote_src: yes
 
     - name: Read the contents of authorized keys for root.
@@ -64,24 +64,24 @@
         src: /root/.ssh/authorized_keys
       register: root_authorized_keys_contents
 
-    - name: Append contents of root authorized_keys to ykurkure authorized_keys.
+    - name: Append contents of root authorized_keys to {{ username }} authorized_keys.
       lineinfile:
-        path: /users/ykurkure/.ssh/authorized_keys
+        path: /users/{{ username }}/.ssh/authorized_keys
         line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
-    - name: Change permissions to ykurkure:SchedulingPower for copied keys.
-      shell: chown ykurkure:SchedulingPower /users/ykurkure/.ssh/*
+    - name: Change permissions to {{ username }}:SchedulingPower for copied keys.
+      shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
 
 
     - name: Change permission level of authorized_keys.
-      shell: chmod 644 /users/ykurkure/.ssh/authorized_keys
+      shell: chmod 644 /users/{{ username }}/.ssh/authorized_keys
 
     - name: Change permission level of pub keys
-      shell: chmod 644 /users/ykurkure/.ssh/*.pub
+      shell: chmod 644 /users/{{ username }}/.ssh/*.pub
 
     - name: Change permission level to pvt key.
-      shell: chmod 600 /users/ykurkure/.ssh/id_rsa
+      shell: chmod 600 /users/{{ username }}/.ssh/id_rsa
 
-    - name: Start ssh-agent and add key for ykurkure.
-      become_user: ykurkure
-      shell: eval $(ssh-agent) && ssh-add /users/ykurkure/.ssh/id_rsa
+    - name: Start ssh-agent and add key for {{ username }}.
+      become_user: {{ username }}
+      shell: eval $(ssh-agent) && ssh-add /users/{{ username }}/.ssh/id_rsa

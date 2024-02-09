@@ -8,6 +8,9 @@
 # Specify the number of nodes as a argument to the script
 numnodes=$1
 
+# Username to configure ssh access for
+username=$2
+
 # Check if atleast 1 worker node
 if ((numnodes < 1)); then
 echo "Number of worker nodes should be atleast 1"
@@ -25,6 +28,7 @@ echo "numworkernodes=$numnodes"
 echo "ansible_user=root"
 echo "ansible_private_key_file=/root/.ssh/id_rsa"
 echo "ansible_host_key_checking=False"
+echo "username"=$username
 echo ""
 
 echo "# Worker nodes"
@@ -57,7 +61,7 @@ echo "ansible_host_key_checking=False"
 serverhostname=$(hostname)
 servercanonicalname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "servercanonicalname=$servercanonicalname"
-echo "serverhostname=$serverhostname"
+echo "username"=$username
 
 echo "# All nodes"
 echo "[multi:allnodes]"
@@ -73,3 +77,4 @@ serverhostname=$(hostname)
 servercanonicalname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "servercanonicalname=$servercanonicalname"
 echo "serverhostname=$serverhostname"
+echo "username"=$username
