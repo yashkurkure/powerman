@@ -61,6 +61,7 @@ echo "ansible_host_key_checking=False"
 serverhostname=$(hostname)
 servercanonicalname=$(nslookup $serverhostname | grep Name | awk '{print $2}')
 echo "servercanonicalname=$servercanonicalname"
+echo "serverhostname=$serverhostname"
 echo "username"=$username
 
 echo "# All nodes"
