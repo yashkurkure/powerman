@@ -40,3 +40,35 @@ dt	A" > /pbsusers/NPB3.4.2/NPB3.4-MPI/config/suite.def
 
 cd /pbsusers/NPB3.4.2/NPB3.4-MPI/ && make suite
 
+# Build OpenMP benchmarks
+cp /pbsusers/NPB3.4.2/NPB3.4-OMP/config/make.def.template /pbsusers/NPB3.4.2/NPB3.4-OMP/config/make.def
+
+echo "ft	S
+mg	S
+sp	S
+lu	S
+bt	S
+is	S
+ep	S
+cg	S
+ua	S
+ft	W
+mg	W
+sp	W
+lu	W
+bt	W
+is	W
+ep	W
+cg	W
+ua	W
+ft	A
+mg	A
+sp	A
+lu	A
+bt	A
+is	A
+ep	A
+cg	A
+ua	A" > /pbsusers/NPB3.4.2/NPB3.4-OMP/config/suite.def
+
+cd /pbsusers/NPB3.4.2/NPB3.4-OMP/ && make suite
