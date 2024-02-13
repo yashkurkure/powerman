@@ -1,6 +1,6 @@
 ---
 # TODO: add the domains to known-hosts
-- name: SSH setup for {{ username }} on non-head nodes.
+- name: SSH setup on non-head nodes.
   become: true
   hosts: multi
   tasks:
@@ -21,12 +21,12 @@
         src: /root/.ssh/authorized_keys
       register: root_authorized_keys_contents
 
-    - name: Append contents of root authorized_keys to ykurkure authorized_keys.
+    - name: Append contents of root authorized_keys to user authorized_keys.
       lineinfile:
         path: /users/{{ username }}/.ssh/authorized_keys
         line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
-    - name: Change permissions to ykurkure:SchedulingPower for copied keys.
+    - name: Change permissions to user:SchedulingPower for copied keys.
       shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
     
     - name: Change permission level of authorized_keys.
@@ -39,11 +39,11 @@
       shell: chmod 600 /users/{{ username }}/.ssh/id_rsa
       
 
-    - name: Start ssh-agent and add key for {{ username }}.
+    - name: Start ssh-agent and add key for user.
       become_user: "{{ username }}"
       shell: eval $(ssh-agent) && ssh-add /users/{{ username }}/.ssh/id_rsa
 
-- name: SSH setup for {{ username }} on head node.
+- name: SSH setup for user on head node.
   become: true
   hosts: headnode
   tasks:
@@ -64,12 +64,12 @@
         src: /root/.ssh/authorized_keys
       register: root_authorized_keys_contents
 
-    - name: Append contents of root authorized_keys to {{ username }} authorized_keys.
+    - name: Append contents of root authorized_keys to user authorized_keys.
       lineinfile:
         path: /users/{{ username }}/.ssh/authorized_keys
         line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
-    - name: Change permissions to {{ username }}:SchedulingPower for copied keys.
+    - name: Change permissions to user:SchedulingPower for copied keys.
       shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
 
 
@@ -82,6 +82,6 @@
     - name: Change permission level to pvt key.
       shell: chmod 600 /users/{{ username }}/.ssh/id_rsa
 
-    - name: Start ssh-agent and add key for {{ username }}.
+    - name: Start ssh-agent and add key for user.
       become_user: "{{ username }}"
       shell: eval $(ssh-agent) && ssh-add /users/{{ username }}/.ssh/id_rsa
