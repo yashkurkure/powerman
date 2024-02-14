@@ -9,7 +9,7 @@
 cd $PBS_O_WORKDIR
 
 # Set pbs_tmrsch
-P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
 
 # Run the hello_world executable with mpirun
 mpiexec /pbsusers/NPB3.4.2/NPB3.4-MPI/bin/is.A.x
