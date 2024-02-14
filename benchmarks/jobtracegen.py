@@ -106,7 +106,24 @@ cd $PBS_O_WORKDIR
 export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
 export OMP_NUM_THREADS={{ OMP_NUM_THREADS }}
 
-mpirun {{executable path}}
+mpirun {{executable_path}}
 """
+template = Template(job_template)
 
-
+# Generate traces where each trace is a list of job scripts.
+traces = []
+for i in range(0 ,num_traces):
+    job_scripts = []
+    for j in range(0 ,60):
+        parameters = {
+            'nodes': 1,
+            'ppn': 4,
+            'walltime': '00:10:00',
+            'queue_name': 'workq',
+            'output_file': 'output.log',
+            'error_file': 'error.log',
+            'OMP_NUM_THREADS' : 4,
+            'executable_path': './my_executable'
+        }
+        job_scripts.append(template.render(**parameters))
+    traces.append(job_scripts)
