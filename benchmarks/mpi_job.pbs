@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -l nodes=2:ppn=2
+#PBS -l walltime=01:00:00
+#PBS -q workq
+#PBS -o mpi_job.out
+#PBS -e mpi_job.err
+
+# Change to the working directory
+cd $PBS_O_WORKDIR
+
+# Set pbs_tmrsch
+P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+
+# Run the hello_world executable with mpirun
+mpiexec /pbsusers/NPB3.4.2/NPB3.4-MPI/bin/is.A.x

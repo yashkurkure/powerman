@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=32
+#PBS -l walltime=01:00:00
+#PBS -q workq
+#PBS -o omp_job.out
+#PBS -e omp_job.err
+
+# Change to the working directory
+cd $PBS_O_WORKDIR
+
+# Extract the number of cores requested
+PPN=$(echo $PBS_NODEFILE | wc -l)
+
+# Execute
+OMP_NUM_THREADS=$PPN /pbsusers/NPB3.4.2/NPB3.4-OMP/bin/is.S.x
