@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l nodes=2:ppn=2
+#PBS -l walltime=01:00:00
+#PBS -q workq
+#PBS -o mpi_job.out
+#PBS -e mpi_job.err
+
+cd $PBS_O_WORKDIR
+export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+export OMP_NUM_THREADS=2
+mpirun bin/bt-mz.A.x
