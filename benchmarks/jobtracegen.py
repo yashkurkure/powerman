@@ -56,7 +56,7 @@ arrival_delta = 200
 Randomly select the range for possible node configurations for each job while
 ensuring that its maximum node count does not exceed the system size.
 """
-node_counts = [i for i in range(1, 25)]
+node_counts = [i for i in range(1, 26)]
 
 """
 Randomly chooses the range of OpenMP thread count in between 8 and 24
