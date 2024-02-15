@@ -1,4 +1,6 @@
 from jinja2 import Template
+import os
+import argparse
 """
 This script generates job traces based on the following paper with a 
 few modifications:
@@ -43,106 +45,165 @@ Class   Number of Zones     Aggregate Grid    Memory Requirement
 -----------------------------------------------------------------
 """
 
-"""
-Creates 15 unique workload traces. Each trace is composed of 60 jobs 
-in the order of their arrival time. In all the traces, the inter-arrival 
-duration of 200 seconds between consecutive job. 
-"""
-num_traces = 15
-jobs_per_trace = 60
-arrival_delta = 200
-
-"""
-Randomly select the range for possible node configurations for each job while
-ensuring that its maximum node count does not exceed the system size.
-"""
-node_counts = [i for i in range(1, 26)]
-
-"""
-Randomly chooses the range of OpenMP thread count in between 8 and 24
-"""
-omp_thread_counts = [i for i in range(8, 25)]
-
-"""
-The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed to 
-exploit multiple levels of parallelism in applications and to test the 
-effectiveness of multi-level and hybrid parallelization paradigms and tools. 
-
-Randomly select the problem type and class.
-
-The paper uses a sampling range for the problem size between class C and class 
-E with a memory footprint between 0.8 and 250 GB for the above problems. This
-script does the same but between class S and class D.
-
-TODO: Test class E and F
-"""
-problems = ['bt-mz','lu-mz','sp-mz']
-problem_classes = ['S', 'W', 'A', 'B', 'C', 'D']
-
-"""
-For the walltime the paper estimates the job execution time on an intermediate 
-node count (geometric mean of the maximum and minimum nodes requested by the 
-job).(TODO: what does this mean??)
-
-TODO: what walltime to use for each job? for now randomly select between 0.5, 1
-and 1.5 hrs. Some jobs might fail to complete in the specified time due to this.
-"""
-walltimes = ['00:30:00', '01:00:00', '01:30:00']
-
-"""
-Set the path for the location of the benchmark executables.
-"""
-benchmark_path = '/pbsusers/NPB3.4.2/NPB3.4-MPI/bin/'
- 
-job_template = """
-#!/bin/bash
-#PBS -l nodes={{ nodes }}:ppn={{ ppn }}
-#PBS -l walltime={{ walltime }}
-#PBS -q {{ queue_name }}
-#PBS -o {{ output_file }}
-#PBS -e {{ error_file }}
-
-cd $PBS_O_WORKDIR
-export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
-export OMP_NUM_THREADS={{ OMP_NUM_THREADS }}
-
-mpirun {{executable_path}}
-"""
-template = Template(job_template)
-
-# Generate traces where each trace is a list of job scripts.
-traces = []
-
-# TODO: Generate submit script for the jobs
-trace_submit_script = []
-for i in range(0 ,num_traces):
-    job_scripts = []
-
-    # TODO: Give the job scripts a name
-    job_files = []
-    for j in range(0 ,60):
-        import random
-        _nodes = random.choice(node_counts)
-        _ppn = random.choice(omp_thread_counts)
-        _walltime = random.choice(walltimes)
-        _out_file = f'{_nodes}_{_ppn}_{_walltime.replace(':', '_')}.out'
-        _err_file = f'{_nodes}_{_ppn}_{_walltime.replace(':', '_')}.err'
-        _problem = random.choice(problems)
-        _pclass = random.choice(problem_classes)
-        _exec_path = f'{benchmark_path}{_problem}.{_pclass}'
-        parameters = {
-            'nodes': _nodes,
-            'ppn': _ppn,
-            'walltime': _walltime,
-            'queue_name': 'workq',
-            'output_file': _out_file,
-            'error_file': _err_file,
-            'OMP_NUM_THREADS' : _ppn,
-            'executable_path': _exec_path
-        }
-        job_scripts.append(template.render(**parameters))
-    traces.append(job_scripts)
+def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
+    """
+    Function to generate the job traces
+    """
 
 
-# with open('my_job_script.pbs', 'w') as f:
-#     f.write(pbs_script)
+    """
+    Randomly select the range for possible node configurations for each job while
+    ensuring that its maximum node count does not exceed the system size.
+    """
+    node_counts = [i for i in range(1, 26)]
+
+    """
+    Randomly chooses the range of OpenMP thread count in between 8 and 24
+    """
+    omp_thread_counts = [i for i in range(8, 25)]
+
+    """
+    The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed to 
+    exploit multiple levels of parallelism in applications and to test the 
+    effectiveness of multi-level and hybrid parallelization paradigms and tools. 
+
+    Randomly select the problem type and class.
+
+    The paper uses a sampling range for the problem size between class C and class 
+    E with a memory footprint between 0.8 and 250 GB for the above problems. This
+    script does the same but between class S and class D.
+
+    TODO: Test class E and F
+    """
+    problems = ['bt-mz','lu-mz','sp-mz']
+    problem_classes = ['S', 'W', 'A', 'B', 'C', 'D']
+
+    """
+    For the walltime the paper estimates the job execution time on an intermediate 
+    node count (geometric mean of the maximum and minimum nodes requested by the 
+    job).(TODO: what does this mean??)
+
+    TODO: what walltime to use for each job? for now randomly select between 0.5, 1
+    and 1.5 hrs. Some jobs might fail to complete in the specified time due to this.
+    """
+    walltimes = ['00:30:00', '01:00:00', '01:30:00']
+
+    """
+    Set the path for the location of the benchmark executables.
+    """
+    benchmark_path = '/pbsusers/NPB3.4.2/NPB3.4-MPI/bin'
+    
+    job_template = """
+    #!/bin/bash
+    #PBS -l nodes={{ nodes }}:ppn={{ ppn }}
+    #PBS -l walltime={{ walltime }}
+    #PBS -q {{ queue_name }}
+    #PBS -o {{ output_file }}
+    #PBS -e {{ error_file }}
+
+    cd $PBS_O_WORKDIR
+    export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+    export OMP_NUM_THREADS={{ OMP_NUM_THREADS }}
+
+    mpirun {{executable_path}}
+    """
+    template = Template(job_template)
+
+    # Generate traces where each trace is a list of job scripts.
+    traces = []
+
+    # TODO: Generate submit script for the jobs
+    trace_submit_scripts = []
+    for i in range(0 ,num_traces):
+        job_scripts = []
+        shell_submit_script = ''
+
+        import time
+        trace_dir = f'{gen_path}/trace_{i}'
+        shell_submit_script_path = f'{trace_dir}/submit_trace.sh'
+
+
+        # TODO: Generate an ansible script
+        ansible_script = ''
+        ansible_script_path = f'{gen_path}/trace/submit_trace.yml'
+
+
+        for j in range(0 ,jobs_per_trace):
+            import random
+            _nodes = random.choice(node_counts)
+            _ppn = random.choice(omp_thread_counts)
+            _walltime = random.choice(walltimes)
+            _out_file = f'{_nodes}_{_ppn}_{_walltime.replace(":", "_")}.out'
+            _err_file = f'{_nodes}_{_ppn}_{_walltime.replace(":", "_")}.err'
+            _problem = random.choice(problems)
+            _pclass = random.choice(problem_classes)
+            _exec_path = f'{benchmark_path}/{_problem}.{_pclass}'
+            import time
+            _job_dir = f'{trace_dir}/job_{j}'
+            _job_file = f'{_job_dir}/runme.pbs'
+
+            # TODO: Implement submission as some user (requires ansible)
+            _job_user = ''
+
+
+            parameters = {
+                'nodes': _nodes,
+                'ppn': _ppn,
+                'walltime': _walltime,
+                'queue_name': 'workq',
+                'output_file': _out_file,
+                'error_file': _err_file,
+                'OMP_NUM_THREADS' : _ppn,
+                'executable_path': _exec_path
+            }
+            _job_script = template.render(**parameters)
+            job_scripts.append(_job_script)
+            shell_submit_script = shell_submit_script + f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..\n'
+            os.makedirs(_job_dir, exist_ok=True)
+            with open(_job_file, 'w') as f:
+                f.write(_job_script)
+        # TODO: Write the trace submit script
+        traces.append(job_scripts)
+        with open(shell_submit_script_path, 'w') as f:
+            f.write(shell_submit_script)
+
+
+
+def parse_args():
+    """
+    Parse the args for generating the workload traces.
+    
+    NOTE: Default args set as described in paper mentioned in file header 
+    comment.The paper creates 15 unique workload traces. Each trace is composed 
+    of 60 jobs in the order of their arrival time. In all the traces, the 
+    inter-arrival duration of 200 seconds between consecutive job. 
+    """
+
+    print("----Args----")
+    parser = argparse.ArgumentParser(description="Argument Parser")
+
+    parser.add_argument("-nt", "--number_of_traces", type=int, default=15,
+                        help="Number of threads (default: 15)")
+    parser.add_argument("-nj", "--number_of_jobs", type=int, default=60,
+                        help="Number of jobs (default: 60)")
+    parser.add_argument("-ad", "--arrival_delta", type=int, default=200,
+                        help="Additional value (default: 200)")
+    parser.add_argument("-C", "--gen_path", type=str, default=".",
+                        help="Custom string (default: '.')")
+
+    args = parser.parse_args()
+    print("Number of traces:", args.number_of_traces)
+    print("Number of jobs:", args.number_of_jobs)
+    print("Arrival delta:", args.arrival_delta)
+    print("Gen path:", args.gen_path)
+    print("----Args----")
+    return args
+
+if __name__ == "__main__":
+    args = parse_args()
+    generate(
+        args.number_of_traces,
+        args.number_of_jobs,
+        args.arrival_delta,
+        args.gen_path
+    )
