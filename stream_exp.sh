@@ -35,3 +35,7 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 ansible-playbook -i inventory ./mpi_mpich.yml
 
 ansible-playbook -i inventory ./mpi_ssh_setup.yml
+
+# TODO: add commands to setup and compile benchmakrs
+
+# TODO: add commands to generate jobs
