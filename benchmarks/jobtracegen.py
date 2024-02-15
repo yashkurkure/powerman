@@ -112,18 +112,37 @@ template = Template(job_template)
 
 # Generate traces where each trace is a list of job scripts.
 traces = []
+
+# TODO: Generate submit script for the jobs
+trace_submit_script = []
 for i in range(0 ,num_traces):
     job_scripts = []
+
+    # TODO: Give the job scripts a name
+    job_files = []
     for j in range(0 ,60):
+        import random
+        _nodes = random.choice(node_counts)
+        _ppn = random.choice(omp_thread_counts)
+        _walltime = random.choice(walltimes)
+        _out_file = f'{_nodes}_{_ppn}_{_walltime.replace(':', '_')}.out'
+        _err_file = f'{_nodes}_{_ppn}_{_walltime.replace(':', '_')}.err'
+        _problem = random.choice(problems)
+        _pclass = random.choice(problem_classes)
+        _exec_path = f'{benchmark_path}{_problem}.{_pclass}'
         parameters = {
-            'nodes': 1,
-            'ppn': 4,
-            'walltime': '00:10:00',
+            'nodes': _nodes,
+            'ppn': _ppn,
+            'walltime': _walltime,
             'queue_name': 'workq',
-            'output_file': 'output.log',
-            'error_file': 'error.log',
-            'OMP_NUM_THREADS' : 4,
-            'executable_path': './my_executable'
+            'output_file': _out_file,
+            'error_file': _err_file,
+            'OMP_NUM_THREADS' : _ppn,
+            'executable_path': _exec_path
         }
         job_scripts.append(template.render(**parameters))
     traces.append(job_scripts)
+
+
+# with open('my_job_script.pbs', 'w') as f:
+#     f.write(pbs_script)
