@@ -189,7 +189,7 @@ def parse_args():
     parser.add_argument("-ad", "--arrival_delta", type=int, default=200,
                         help="Additional value (default: 200)")
     parser.add_argument("-C", "--gen_path", type=str, default=".",
-                        help="Custom string (default: '.')")
+                        help="Path to traces (default: '.')")
 
     args = parser.parse_args()
     print("Number of traces:", args.number_of_traces)

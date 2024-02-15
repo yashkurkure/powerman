@@ -35,9 +35,3 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 ansible-playbook -i inventory ./mpi_mpich.yml
 
 ansible-playbook -i inventory ./mpi_ssh_setup.yml
-
-/local/repository/benchmarks/setup-bench.sh
-
-pip3 install jinja2
-
-python3 jobtracegen.py -nt 15 -nj 60 -ad 200
