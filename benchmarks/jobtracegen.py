@@ -91,7 +91,7 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
     """
     Set the path for the location of the benchmark executables.
     """
-    benchmark_path = '/pbsusers/NPB3.4.2/NPB3.4-MPI/bin'
+    benchmark_path = '/pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/bin'
     
     job_template = """
     #!/bin/bash
