@@ -85,6 +85,15 @@ lu-mz	W
 bt-mz	W
 sp-mz	A
 lu-mz	A
-bt-mz	A" > /pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/config/suite.def
+bt-mz	A
+sp-mz	B
+lu-mz	B
+bt-mz	B
+sp-mz	C
+lu-mz	C
+bt-mz	C
+sp-mz	D
+lu-mz	D
+bt-mz	D" > /pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/config/suite.def
 
 cd /pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/ && make suite
