@@ -45,7 +45,13 @@ Class   Number of Zones     Aggregate Grid    Memory Requirement
 -----------------------------------------------------------------
 """
 
-def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
+def generate(
+        num_traces, 
+        jobs_per_trace, 
+        arrival_delta, 
+        gen_path,
+        node_range,
+        ppn_range):
     """
     Function to generate the job traces
     """
@@ -55,12 +61,12 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
     Randomly select the range for possible node configurations for each job while
     ensuring that its maximum node count does not exceed the system size.
     """
-    node_counts = [i for i in range(1, 26)]
+    node_counts = [i for i in range(*node_range)]
 
     """
     Randomly chooses the range of OpenMP thread count in between 8 and 24
     """
-    omp_thread_counts = [i for i in range(8, 25)]
+    omp_thread_counts = [i for i in range(*ppn_range)]
 
     """
     The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed to 
@@ -158,7 +164,7 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
             }
             _job_script = template.render(**parameters)
             job_scripts.append(_job_script)
-            shell_submit_script.append(f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..')
+            shell_submit_script.append(f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..\n')
             os.makedirs(_job_dir, exist_ok=True)
             with open(_job_file, 'w') as f:
                 f.write(_job_script)
@@ -167,7 +173,14 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
         with open(shell_submit_script_path, 'w') as f:
             f.writelines(shell_submit_script)
 
-
+def range_type(arg):
+    try:
+        start, end = map(int, arg.split('-'))
+        if start > end:
+            raise argparse.ArgumentTypeError("Invalid range: start value is greater than end value")
+        return start, end
+    except ValueError:
+        raise argparse.ArgumentTypeError("Invalid range: use format start-end")
 
 def parse_args():
     """
@@ -190,11 +203,17 @@ def parse_args():
                         help="Additional value (default: 200)")
     parser.add_argument("-C", "--gen_path", type=str, default=".",
                         help="Path to traces (default: '.')")
+    parser.add_argument("-nr", "--node_range", type=range_type, default=(1, 10),
+                        help='Job resource node count range (default: 1-10)')
+    parser.add_argument("-ppnr", "--ppn_range", type=range_type, default=(1, 10),
+                        help='Job resource ppn range (default: 1-10)')
 
     args = parser.parse_args()
     print("Number of traces:", args.number_of_traces)
     print("Number of jobs:", args.number_of_jobs)
     print("Arrival delta:", args.arrival_delta)
+    print("Node range:", args.node_range)
+    print("PPN range:", args.ppn_range)
     print("Gen path:", args.gen_path)
     print("----Args----")
     return args
@@ -205,5 +224,7 @@ if __name__ == "__main__":
         args.number_of_traces,
         args.number_of_jobs,
         args.arrival_delta,
-        args.gen_path
+        args.gen_path,
+        args.node_range,
+        args.ppn_range
     )
