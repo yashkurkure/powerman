@@ -1,6 +1,7 @@
 import redis
 
 stream_name = 'redis-hook'
+# TODO: update hostname for cloudlab
 r = redis.Redis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
 last_id = '$'
 

@@ -116,7 +116,7 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
     trace_submit_scripts = []
     for i in range(0 ,num_traces):
         job_scripts = []
-        shell_submit_script = ''
+        shell_submit_script = []
 
         import time
         trace_dir = f'{gen_path}/trace_{i}'
@@ -158,14 +158,14 @@ def generate(num_traces, jobs_per_trace, arrival_delta, gen_path):
             }
             _job_script = template.render(**parameters)
             job_scripts.append(_job_script)
-            shell_submit_script = shell_submit_script + f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..\n'
+            shell_submit_script.append(f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..')
             os.makedirs(_job_dir, exist_ok=True)
             with open(_job_file, 'w') as f:
                 f.write(_job_script)
         # TODO: Write the trace submit script
         traces.append(job_scripts)
         with open(shell_submit_script_path, 'w') as f:
-            f.write(shell_submit_script)
+            f.writelines(shell_submit_script)
 
 
 
