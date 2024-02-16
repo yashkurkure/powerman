@@ -58,26 +58,26 @@ def generate(
 
 
     """
-    Randomly select the range for possible node configurations for each job while
-    ensuring that its maximum node count does not exceed the system size.
+    Randomly select the range for possible node configurations for each job 
+    while ensuring that its maximum node count does not exceed the system size.
     """
     node_counts = [i for i in range(*node_range)]
 
     """
-    Randomly chooses the range of OpenMP thread count in between 8 and 24
+    Randomly chooses the range of OpenMP thread count
     """
     omp_thread_counts = [i for i in range(*ppn_range)]
 
     """
-    The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed to 
-    exploit multiple levels of parallelism in applications and to test the 
+    The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed 
+    to exploit multiple levels of parallelism in applications and to test the 
     effectiveness of multi-level and hybrid parallelization paradigms and tools. 
 
     Randomly select the problem type and class.
 
-    The paper uses a sampling range for the problem size between class C and class 
-    E with a memory footprint between 0.8 and 250 GB for the above problems. This
-    script does the same but between class S and class D.
+    The paper uses a sampling range for the problem size between class C and 
+    class E with a memory footprint between 0.8 and 250 GB for the above 
+    problems. This script does the same but between class S and class D.
 
     TODO: Test class E and F
     """
@@ -85,12 +85,13 @@ def generate(
     problem_classes = ['S', 'W', 'A', 'B', 'C', 'D']
 
     """
-    For the walltime the paper estimates the job execution time on an intermediate 
-    node count (geometric mean of the maximum and minimum nodes requested by the 
-    job).(TODO: what does this mean??)
+    For the walltime the paper estimates the job execution time on an 
+    intermediate node count (geometric mean of the maximum and minimum nodes 
+    requested by the job).(TODO: what does this mean??)
 
-    TODO: what walltime to use for each job? for now randomly select between 0.5, 1
-    and 1.5 hrs. Some jobs might fail to complete in the specified time due to this.
+    TODO: what walltime to use for each job? for now randomly select between 
+    0.5, 1 and 1.5 hrs. Some jobs might fail to complete in the specified time 
+    due to this.
     """
     walltimes = ['00:30:00', '01:00:00', '01:30:00']
 
@@ -164,7 +165,8 @@ def generate(
             }
             _job_script = template.render(**parameters)
             job_scripts.append(_job_script)
-            shell_submit_script.append(f'cd {_job_dir} && qsub {_job_file} && sleep {arrival_delta} && cd ..\n')
+            shell_submit_script.append(f'cd {_job_dir} && qsub {_job_file} && \
+                                       sleep {arrival_delta} && cd ..\n')
             os.makedirs(_job_dir, exist_ok=True)
             with open(_job_file, 'w') as f:
                 f.write(_job_script)
@@ -177,7 +179,8 @@ def range_type(arg):
     try:
         start, end = map(int, arg.split('-'))
         if start > end:
-            raise argparse.ArgumentTypeError("Invalid range: start value is greater than end value")
+            raise argparse.ArgumentTypeError("Invalid range: start value is \
+                                             greater than end value")
         return start, end
     except ValueError:
         raise argparse.ArgumentTypeError("Invalid range: use format start-end")
@@ -205,7 +208,8 @@ def parse_args():
                         help="Path to traces (default: '.')")
     parser.add_argument("-nr", "--node_range", type=range_type, default=(1, 10),
                         help='Job resource node count range (default: 1-10)')
-    parser.add_argument("-ppnr", "--ppn_range", type=range_type, default=(1, 10),
+    parser.add_argument("-ppnr", "--ppn_range", type=range_type, 
+                        default=(1, 10), 
                         help='Job resource ppn range (default: 1-10)')
 
     args = parser.parse_args()
