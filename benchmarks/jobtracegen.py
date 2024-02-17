@@ -51,7 +51,8 @@ def generate(
         arrival_delta, 
         gen_path,
         node_range,
-        ppn_range):
+        ppn_range,
+        omp_range):
     """
     Function to generate the job traces
     """
@@ -66,7 +67,12 @@ def generate(
     """
     Randomly chooses the range of OpenMP thread count
     """
-    omp_thread_counts = [i for i in range(*ppn_range)]
+    ppn_counts = [i for i in range(*ppn_range)]
+
+    """
+    Randomly chooses the range of PPN count
+    """
+    omp_thread_counts = [i for i in range(*omp_range)]
 
     """
     The job workloads are Multi-zone versions of NPB (NPB-MZ) that are designed 
@@ -138,7 +144,8 @@ def generate(
         for j in range(0 ,jobs_per_trace):
             import random
             _nodes = random.choice(node_counts)
-            _ppn = random.choice(omp_thread_counts)
+            _ppn = random.choice(ppn_counts)
+            _omp_thread_count = random.choice(omp_thread_counts)
             _walltime = random.choice(walltimes)
             _out_file = f'{_nodes}_{_ppn}_{_walltime.replace(":", "_")}.out'
             _err_file = f'{_nodes}_{_ppn}_{_walltime.replace(":", "_")}.err'
@@ -160,7 +167,7 @@ def generate(
                 'queue_name': 'workq',
                 'output_file': _out_file,
                 'error_file': _err_file,
-                'OMP_NUM_THREADS' : _ppn,
+                'OMP_NUM_THREADS' : omp_thread_counts,
                 'executable_path': _exec_path
             }
             _job_script = template.render(**parameters)
@@ -209,8 +216,11 @@ def parse_args():
     parser.add_argument("-nr", "--node_range", type=range_type, default=(1, 10),
                         help='Job resource node count range (default: 1-10)')
     parser.add_argument("-ppnr", "--ppn_range", type=range_type, 
+                        default=(1, 4), 
+                        help='Job resource ppn range (default: 1-4)')
+    parser.add_argument("-ompr", "--omp_range", type=range_type, 
                         default=(1, 10), 
-                        help='Job resource ppn range (default: 1-10)')
+                        help='Job resource Open MP range (default: 1-10)')
     # TODO: Creating shared jobs on particular vnodes
 
     args = parser.parse_args()
@@ -219,6 +229,7 @@ def parse_args():
     print("Arrival delta:", args.arrival_delta)
     print("Node range:", args.node_range)
     print("PPN range:", args.ppn_range)
+    print("Num OMP thread range:", args.omp_range)
     print("Gen path:", args.gen_path)
     print("----Args----")
     return args
@@ -231,5 +242,6 @@ if __name__ == "__main__":
         args.arrival_delta,
         args.gen_path,
         args.node_range,
-        args.ppn_range
+        args.ppn_range,
+        args.omp_range
     )
