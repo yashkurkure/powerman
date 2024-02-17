@@ -167,7 +167,7 @@ def generate(
                 'queue_name': 'workq',
                 'output_file': _out_file,
                 'error_file': _err_file,
-                'OMP_NUM_THREADS' : omp_thread_counts,
+                'OMP_NUM_THREADS' : _omp_thread_count,
                 'executable_path': _exec_path
             }
             _job_script = template.render(**parameters)
