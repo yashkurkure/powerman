@@ -211,6 +211,7 @@ def parse_args():
     parser.add_argument("-ppnr", "--ppn_range", type=range_type, 
                         default=(1, 10), 
                         help='Job resource ppn range (default: 1-10)')
+    # TODO: Creating shared jobs on particular vnodes
 
     args = parser.parse_args()
     print("Number of traces:", args.number_of_traces)
