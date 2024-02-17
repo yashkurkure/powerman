@@ -4,20 +4,22 @@ import redis
 swf_lines = []
 
 def process_stream_entry(data):
-    # TODO: Process to SWF format
-    #  -1 -1 -1 -1 -1 -1 0
+    # TODO: Process to SWF formats
     swf_entry = {
 	'id':1,
 	'submit': 1641021254,
+    'reqProc': 128,
+	'reqTime': 10800,
+	'reqMem': -1,
+
 	'wait': 52645,
+
 	'run': 10849,
 	'usedProc': 128,
 	'usedAveCPU': -1,
 	'usedMem': -1,
-	'reqProc': 128,
-	'reqTime': 10800,
-	'reqMem': -1,
 	'status': 0,
+
 	'userID': -1,
 	'groupID': -1,
 	'num_exe': -1,
@@ -38,19 +40,28 @@ def process_stream_entry(data):
     """
     if event_type == 'q':
         # Parameters to record
-        # job_num
-        # submit_time
-        # 
+        # id
+        # submit
+        # reqProc
+        # reqTime
+        # reqMem
 
         pass
     elif event_type == 'r':
         # Parameters to record
+        # wait
         pass
     elif event_type == 'mom_r':
         # Parameters to record
+        # none
         pass
     elif event_type == 'mom_e':
         # Parameters to record
+        # run
+        # usedProc
+        # usedAveCPU
+        # usedMem
+        # status
         pass
     else:
         print('unknown')
