@@ -151,7 +151,7 @@ def generate(
             _err_file = f'{_nodes}_{_ppn}_{_walltime.replace(":", "_")}.err'
             _problem = random.choice(problems)
             _pclass = random.choice(problem_classes)
-            _exec_path = f'{benchmark_path}/{_problem}.{_pclass}'
+            _exec_path = f'{benchmark_path}/{_problem}.{_pclass}.x'
             import time
             _job_dir = f'{trace_dir}/job_{j}'
             _job_file = f'{_job_dir}/runme.pbs'
