@@ -21,9 +21,9 @@ try:
         event_type = 'q'
         # Parameters to record
         _job_id = -1
-        _reqProc = -1
-        _reqTime = -1
-        _reqMem = -1
+        _reqProc = pbs.event().job.Resource_List["ncpus"]
+        _reqTime = pbs.event().job.Resource_List["max_walltime"]
+        _reqMem =  pbs.event().job.Resource_List["mem"]
 
         # Job ids - Using counter from Redis
         if r.exists('job_counter'):

@@ -1,5 +1,5 @@
 import redis
-
+import json
 
 swf_lines = []
 
@@ -32,6 +32,7 @@ def process_stream_entry(data):
     job_id = data[1]['job_id']
     event_type = data[1]['event_type']
     event_code = data[1]['event_code']
+    json_data = y = json.loads(data[1]['json_data'])
 
     """
     queuejob -> 0, 1*, 7*, 8*, 9, 11, 12, 13, 14, 15, 
@@ -45,15 +46,15 @@ def process_stream_entry(data):
         # reqProc
         # reqTime
         # reqMem
-
-        pass
+        print(json_data)
     elif event_type == 'r':
         # Parameters to record
         # wait
-        pass
+        print(json_data)
     elif event_type == 'mom_r':
         # Parameters to record
         # none
+        print(json_data)
         pass
     elif event_type == 'mom_e':
         # Parameters to record
@@ -62,6 +63,7 @@ def process_stream_entry(data):
         # usedAveCPU
         # usedMem
         # status
+        print(json_data)
         pass
     else:
         print('unknown')
@@ -102,12 +104,12 @@ if __name__ == "__main__":
         stream_name = latest[0]
         stream_data = latest[1]
         for data in stream_data:
-            process_stream_entry(data)
             redis_id = data[0]
             job_id = data[1]['job_id']
             event_type = data[1]['event_type']
             event_code = data[1]['event_code']
             print(f'{redis_id}\t{job_id}\t{event_type}\t{event_code}')
+            process_stream_entry(data)
             last_id = redis_id
         print(f'*******************')
 
