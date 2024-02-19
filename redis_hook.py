@@ -24,7 +24,7 @@ try:
         _job_id = -1
         _reqProc = j.Resource_List["nodes"]
         _reqTime = j.Resource_List["walltime"]
-        _reqMem =  j.Resource_List["ppn"]
+        _reqMem =  j.Resource_List["mem"]
 
         # Job ids - Using counter from Redis
         if r.exists('job_counter'):
