@@ -62,9 +62,9 @@ try:
     elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
         # Parameters to record
-        _usedProc = j.resources_used["ncpus"]
-        _usedAveCPU = j.resources_used["nodes"]
-        _usedMem = j.resources_used["vmem"]
+        _usedProc = -1
+        _usedAveCPU = -1
+        _usedMem = -1
         # 1 if the job was completed, 0 if it failed, and 5 if cancelled
         _status = -1
         json_data = {

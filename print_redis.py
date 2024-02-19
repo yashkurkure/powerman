@@ -66,7 +66,8 @@ def process_stream_entry(data):
         print(json_data)
         pass
     else:
-        print('unknown')
+        print('!!unknown')
+        print(json_data)
         pass
     pass
 
