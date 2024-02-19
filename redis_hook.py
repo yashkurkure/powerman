@@ -22,9 +22,9 @@ try:
         event_type = 'q'
         # Parameters to record
         _job_id = -1
-        _reqProc = j.Resource_List["ncpus"]
+        _reqProc = j.Resource_List["nodes"]
         _reqTime = j.Resource_List["walltime"]
-        _reqMem =  j.Resource_List["mem"]
+        _reqMem =  j.Resource_List["ppn"]
 
         # Job ids - Using counter from Redis
         if r.exists('job_counter'):
