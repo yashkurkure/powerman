@@ -22,7 +22,9 @@ try:
         event_type = 'q'
         # Parameters to record
         _job_id = -1
-        _reqProc = j.Resource_List["nodes"]
+        _nodes = int(j.Resource_List["nodes"].split(':ppn=')[0])
+        _ppn = int(j.Resource_List["nodes"].split(':ppn=')[1])
+        _reqProc = _nodes * _ppn
         _reqTime = j.Resource_List["walltime"]
         _reqMem =  j.Resource_List["mem"]
 
@@ -53,9 +55,9 @@ try:
     elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
         # Parameters to record
-        _usedProc = -1
-        _usedAveCPU = -1
-        _usedMem = -1
+        _usedProc = j.resources_used["ncpus"]
+        _usedAveCPU = j.resources_used["nodes"]
+        _usedMem = j.resources_used["mem"]
         # 1 if the job was completed, 0 if it failed, and 5 if cancelled
         _status = -1
         json_data = {

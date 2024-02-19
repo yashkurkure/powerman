@@ -16,9 +16,9 @@ def process_stream_entry(data):
 
 	'run': 10849,
 	'usedProc': 128,
-	'usedAveCPU': -1,
-	'usedMem': -1,
 	'status': 0,
+    'usedAveCPU': -1,
+	'usedMem': -1,
 
 	'userID': -1,
 	'groupID': -1,
