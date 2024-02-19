@@ -44,27 +44,35 @@ try:
             'id' : _job_id,
             'reqProc' : _reqProc,
             'reqMem' : _reqMem,
-            'reqTime' : _reqTime
+            'reqTime' : _reqTime,
+            'node' : pbs.get_local_nodename()
         }
 
     elif e.type == pbs.RUNJOB:
         event_type = 'r'
         # TODO : record the node(s) to be run on
+        json_data = {
+            'node' : pbs.get_local_nodename()
+        }
     elif e.type == pbs.EXECJOB_BEGIN:
         event_type = 'mom_r'
+        json_data = {
+            'node' : pbs.get_local_nodename()
+        }
     elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
         # Parameters to record
         _usedProc = j.resources_used["ncpus"]
         _usedAveCPU = j.resources_used["nodes"]
-        _usedMem = j.resources_used["mem"]
+        _usedMem = j.resources_used["vmem"]
         # 1 if the job was completed, 0 if it failed, and 5 if cancelled
         _status = -1
         json_data = {
             'usedProc' : _usedProc,
             'usedAveCPU' : _usedAveCPU,
             'usedMem' : _usedMem,
-            'status' : _status
+            'status' : _status,
+            'node' : pbs.get_local_nodename()
         }
     else:
         event_type = 'unknown'
