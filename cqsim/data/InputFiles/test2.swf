@@ -14,7 +14,7 @@
 ; StartTime: Tue Feb 20 06:08:22 GMT 2024
 ; EndTime:   Tue Feb 20 07:10:39 GMT 2024
 ; MaxNodes: 15
-; MaxProcs: 4
+; MaxProcs: 60
 ; Note: uses the EASY scheduler
 ;
     5 1708409302 0 22 2 -1 -1 2 5400 -1 -1 -1 -1 -1 -1 -1 -1 0
