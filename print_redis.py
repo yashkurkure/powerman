@@ -38,7 +38,7 @@ def process_stream_entry(data):
     event_type = data[1]['event_type']
     # event_code = data[1]['event_code']
     json_data = json.loads(data[1]['json_data'])
-    id = json_data['id']
+    id = int(data[1]['job_id'].split('.')[1])
 
     """
     queuejob -> 0, 1*, 7*, 8*, 9, 11, 12, 13, 14, 15, 
