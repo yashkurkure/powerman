@@ -1,7 +1,10 @@
 import redis
 import json
+import os
 
 swf_lines = []
+qstat = {}
+location = '/pbsusers/log.swf'
 
 def process_stream_entry(data):
     # TODO: Process to SWF formats
@@ -29,10 +32,13 @@ def process_stream_entry(data):
 	'thinkTime': 0,
 	}
     redis_id = data[0]
-    job_id = data[1]['job_id']
+    timestamp_ms = int(redis_id.split('-')[0])
+    timestamp_s = int(timestamp_ms/1000)
+    # job_id = data[1]['job_id']
     event_type = data[1]['event_type']
-    event_code = data[1]['event_code']
-    json_data = y = json.loads(data[1]['json_data'])
+    # event_code = data[1]['event_code']
+    json_data = json.loads(data[1]['json_data'])
+    id = json_data['id']
 
     """
     queuejob -> 0, 1*, 7*, 8*, 9, 11, 12, 13, 14, 15, 
@@ -41,28 +47,61 @@ def process_stream_entry(data):
     """
     if event_type == 'q':
         # Parameters to record
-        # id
-        # submit
-        # reqProc
-        # reqTime
-        # reqMem
+        submit = timestamp_s
+        reqProc = json_data['reqProc']
+        reqTime = json_data['reqTime']
+        reqMem = -1
+        # reqMem = json_data['']
+        qstat[id] = {
+            'id':id,
+            'submit': submit,
+            'reqProc': reqProc,
+            'reqTime': reqTime,
+            'reqMem': reqMem,
+        }
         print(json_data)
     elif event_type == 'r':
         # Parameters to record
-        # wait
+        # wait = timestamp_s - submit
+        qstat[id]['wait'] = timestamp_s - qstat[id]['submit']
         print(json_data)
     elif event_type == 'mom_r':
         # Parameters to record
         # none
         print(json_data)
-        pass
     elif event_type == 'mom_e':
         # Parameters to record
-        # run
+        # run = timestamp_s - submit - wait
         # usedProc
         # usedAveCPU
         # usedMem
         # status
+        if id in qstat:
+            qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
+            qstat[id]['status'] = json_data['status']
+            write_swf(location, 
+                create_swf_entry(
+                 qstat[id]['id'],
+                 qstat[id]['submit'],
+                 qstat[id]['wait'],
+                 qstat[id]['run'],
+                 qstat[id]['reqProc'],
+                 -1,
+                 -1,
+                 qstat[id]['reqProc'],
+                 qstat[id]['reqTime'],
+                 qstat[id]['reqMem'],
+                 qstat[id]['status'],
+                 -1,
+                 -1,
+                 -1,
+                 -1,
+                 -1,
+                 -1,
+                 0
+                )
+            )
+            del qstat[id]
         print(json_data)
         pass
     else:
@@ -87,6 +126,62 @@ def parse_args():
     print("----Args----")
     return args
 
+def write_swf(location, entries):
+
+    line = ''
+    for entry in entries:
+        line = line + '\t' + str(entry)
+
+    if os.path.exists(location):
+        # If the file exists, open it in append mode
+        with open(location, 'a') as file:
+            file.write(entry + '\n')  # Append content to the file
+    else:
+        # If the file doesn't exist, create it and write to it
+        with open(location, 'w') as file:
+            file.write(entry + '\n')  # Write content to the file
+
+
+def create_swf_entry(
+        job_num,     # 0 
+        submit_time,    # 1
+        wait_time,      # 2
+        run_time,       # 3
+        num_proc,       # 4
+        avg_cpu_time,   # 5
+        mem_usage,      # 6
+        req_num_p,      # 7 same as # 4
+        req_time,       # 8
+        req_mem,        # 9
+        job_status,     # 10
+        user_id,        # 11
+        group_id,       # 12
+        executable,     # 13
+        queue_num,      # 14
+        partition_num,  # 15
+        preceding_job_num,  #16
+        think_time      #17
+):
+    return [
+        job_num,     # 0 
+        submit_time,    # 1
+        wait_time,      # 2
+        run_time,       # 3
+        num_proc,       # 4
+        avg_cpu_time,   # 5
+        mem_usage,      # 6
+        req_num_p,      # 7 same as # 4
+        req_time,       # 8
+        req_mem,        # 9
+        job_status,     # 10
+        user_id,        # 11
+        group_id,       # 12
+        executable,     # 13
+        queue_num,      # 14
+        partition_num,  # 15
+        preceding_job_num,  #16
+        think_time      #17
+    ]
 
 if __name__ == "__main__":
     args = parse_args()
@@ -115,24 +210,3 @@ if __name__ == "__main__":
         print(f'*******************')
 
 # 1 1641021254 52645 10849 128 -1 -1 128 10800 -1 0 -1 -1 -1 -1 -1 -1 0
-# def create_swf_entry(
-#         job_num,     # 0 
-#         submit_time,    # 1
-#         wait_time,      # 2
-#         run_time,       # 3
-#         num_proc,       # 4
-#         avg_cpu_time=-1,   # 5
-#         mem_usage=-1,      # 6
-#         req_num_p,      # 7 same as # 4
-#         req_time,       # 8
-#         req_mem=-1,        # 9
-#         job_status,     # 10
-#         user_id,        # 11
-#         group_id,       # 12
-#         executable=-1,     # 13
-#         queue_num=-1,      # 14
-#         partition_num=-1,  # 15
-#         preceding_job_num=-1,  #16
-#         think_time=-1          #17
-# ):
-#     pass

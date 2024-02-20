@@ -15,7 +15,7 @@ try:
     event_type = ''
     event_code = e.type
     job_name = e.job.Job_Name
-    json_data = {}
+    json_data = {'id' : int(job_name.split('.')[1])}
 
     # Find the event type
     if e.type is pbs.QUEUEJOB:
@@ -38,27 +38,21 @@ try:
             r.set('job_counter', 0)
             job_name = 'job.0'
             _job_id = 0
-        pbs.event().job.Job_Name = job_name
+        j.Job_Name = job_name
         
-        json_data = {
-            'id' : _job_id,
-            'reqProc' : _reqProc,
-            'reqMem' : _reqMem,
-            'reqTime' : _reqTime,
-            'node' : pbs.get_local_nodename()
-        }
+        json_data['id'] = _job_id
+        json_data['reqProc'] = _reqProc
+        json_data['reqMem'] = _reqMem
+        json_data['reqTime'] = _reqTime
+        json_data['node'] = pbs.get_local_nodename()
 
     elif e.type == pbs.RUNJOB:
         event_type = 'r'
         # TODO : record the node(s) to be run on
-        json_data = {
-            'node' : pbs.get_local_nodename()
-        }
+        json_data['node'] = pbs.get_local_nodename()
     elif e.type == pbs.EXECJOB_BEGIN:
         event_type = 'mom_r'
-        json_data = {
-            'node' : pbs.get_local_nodename()
-        }
+        json_data['node'] = pbs.get_local_nodename()
     elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
         # Parameters to record
@@ -66,14 +60,12 @@ try:
         _usedAveCPU = -1
         _usedMem = -1
         # 1 if the job was completed, 0 if it failed, and 5 if cancelled
-        _status = -1
-        json_data = {
-            'usedProc' : _usedProc,
-            'usedAveCPU' : _usedAveCPU,
-            'usedMem' : _usedMem,
-            'status' : _status,
-            'node' : pbs.get_local_nodename()
-        }
+        _status = j.Exit_status
+        json_data['usedProc'] = _usedProc
+        json_data['usedAveCPU'] = _usedAveCPU
+        json_data['usedMem'] = _usedMem
+        json_data['status'] = _status
+        json_data['node'] = pbs.get_local_nodename()
     else:
         event_type = 'unknown'
 
