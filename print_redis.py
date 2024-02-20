@@ -135,11 +135,11 @@ def write_swf(location, entries):
     if os.path.exists(location):
         # If the file exists, open it in append mode
         with open(location, 'a') as file:
-            file.write(entry + '\n')  # Append content to the file
+            file.write(line + '\n')  # Append content to the file
     else:
         # If the file doesn't exist, create it and write to it
         with open(location, 'w') as file:
-            file.write(entry + '\n')  # Write content to the file
+            file.write(line + '\n')  # Write content to the file
 
 
 def create_swf_entry(
