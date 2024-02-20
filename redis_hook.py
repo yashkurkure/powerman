@@ -15,7 +15,7 @@ try:
     event_type = ''
     event_code = e.type
     job_name = e.job.Job_Name
-    json_data = {'id' : int(job_name.split('.')[1])}
+    json_data = {}
 
     # Find the event type
     if e.type is pbs.QUEUEJOB:
@@ -49,9 +49,11 @@ try:
     elif e.type == pbs.RUNJOB:
         event_type = 'r'
         # TODO : record the node(s) to be run on
+        json_data['id'] = int(job_name.split('.')[1])
         json_data['node'] = pbs.get_local_nodename()
     elif e.type == pbs.EXECJOB_BEGIN:
         event_type = 'mom_r'
+        json_data['id'] = int(job_name.split('.')[1])
         json_data['node'] = pbs.get_local_nodename()
     elif e.type == pbs.EXECJOB_END:
         event_type = 'mom_e'
@@ -60,7 +62,8 @@ try:
         _usedAveCPU = -1
         _usedMem = -1
         # 1 if the job was completed, 0 if it failed, and 5 if cancelled
-        _status = j.Exit_status
+        _status = -1
+        json_data['id'] = int(job_name.split('.')[1])
         json_data['usedProc'] = _usedProc
         json_data['usedAveCPU'] = _usedAveCPU
         json_data['usedMem'] = _usedMem
