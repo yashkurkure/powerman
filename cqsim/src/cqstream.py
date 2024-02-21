@@ -9,6 +9,9 @@ import re
 import cqsim_path
 import cqsim_main
 import urwid
+import subprocess
+import threading
+import time
 
 def range_type(arg):
     try:
@@ -205,18 +208,13 @@ def generate(
     return traces_job_paths
 
 
-def show_or_exit(key: str) -> None:
-    if key in ("q", "Q"):
-        raise urwid.ExitMainLoop()
-    txt.set_text(repr(key))
+def main():
+    from UI import RootController
+    RootController().main()
+
 
 if __name__ == "__main__":
-
-    txt = urwid.Text("Hello World")
-    fill = urwid.Filler(txt, "top")
-    loop = urwid.MainLoop(fill, unhandled_input=show_or_exit)
-    loop.run()
-
+    main()
     exit(0)
 
     args = parse_args()

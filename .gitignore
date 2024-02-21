@@ -6,3 +6,5 @@ rapl-read
 
 # Mac OSx
 .DS_Store
+
+**/__pycache__/
