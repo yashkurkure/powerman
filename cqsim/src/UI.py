@@ -26,11 +26,12 @@ animation.
 """
 
 from __future__ import annotations
-
+import os
+import sys
 import math
 import time
 import typing
-
+import subprocess
 import urwid
 
 UPDATE_INTERVAL = 0.2
@@ -53,40 +54,8 @@ class RootModel:
     data_max_value = 100
 
     def __init__(self):
-        data = [
-            ("Saw", list(range(0, 100, 2)) * 2),
-            ("Square", [0] * 30 + [100] * 30),
-            ("Sine 1", [sin100(x) for x in range(100)]),
-            ("Sine 2", [(sin100(x) + sin100(x * 2)) / 2 for x in range(100)]),
-            ("Sine 3", [(sin100(x) + sin100(x * 3)) / 2 for x in range(100)]),
-        ]
-        self.modes = []
-        self.data = {}
-        for m, d in data:
-            self.modes.append(m)
-            self.data[m] = d
+        self.sub_process_output = ''
 
-    def get_modes(self):
-        return self.modes
-
-    def set_mode(self, m) -> None:
-        self.current_mode = m
-
-    def get_data(self, offset, r):
-        """
-        Return the data in [offset:offset+r], the maximum value
-        for items returned, and the offset at which the data
-        repeats.
-        """
-        lines = []
-        d = self.data[self.current_mode]
-        while r:
-            offset %= len(d)
-            segment = d[offset : offset + r]
-            r -= len(segment)
-            offset += len(segment)
-            lines += segment
-        return lines, self.data_max_value, len(d)
 
 
 class RootView(urwid.WidgetWrap):
@@ -106,10 +75,21 @@ class RootView(urwid.WidgetWrap):
         self.last_offset = None
         super().__init__(self.main_window())
 
-    def hello_world(self):
-        w = urwid.Text('Hello World')
+
+    # Handler for a sub process
+    def on_update_widget_qstat(self, data: bytes) -> bool:
+        self.widget_qstat.set_text(data.decode("utf8"))
+        return True
+        
+
+    def build_widget_hello_world(self):
+        w = urwid.Text('Hello World\n')
         w = urwid.Filler(w, "top")
         return w
+
+    def build_widget_subprocess(self):
+        txt = urwid.Text('')
+        return txt
     
     def pile(self):
         w = urwid.Pile(
@@ -118,17 +98,32 @@ class RootView(urwid.WidgetWrap):
                 (urwid.WEIGHT, 1, urwid.LineBox(self.hello_world())),
             ]
         )
-        # w = urwid.LineBox(w)
         return w
 
     def main_window(self):
+        self.widget_qstat = self.build_widget_subprocess()
         w = urwid.Columns(
             [
-                (urwid.WEIGHT, 1, self.pile()), 
-                (urwid.WEIGHT, 1, self.pile())
+                (
+                    urwid.WEIGHT, 
+                    1, 
+                    urwid.Pile(
+                    [
+                        (urwid.WEIGHT, 1, urwid.LineBox(urwid.Filler(self.widget_qstat), "qstat -a")),
+                        (urwid.WEIGHT, 1, urwid.LineBox(self.build_widget_hello_world())),
+                    ])
+                ), 
+                (
+                    urwid.WEIGHT, 
+                    1, 
+                    urwid.Pile(
+                    [
+                        (urwid.WEIGHT, 1, urwid.LineBox(self.build_widget_hello_world())),
+                        (urwid.WEIGHT, 1, urwid.LineBox(self.build_widget_hello_world())),
+                    ])
+                )
             ]
         )
-
         w = urwid.LineBox(w)
         return w
 
@@ -143,11 +138,23 @@ class RootController:
         self.animate_alarm = None
         self.model = RootModel()
         self.view = RootView(self)
+    
+    def exit_on_enter(key: str | tuple[str, int, int, int]) -> None:
+        if key == "enter":
+            raise urwid.ExitMainLoop()
 
 
     def main(self):
+        
         self.loop = urwid.MainLoop(self.view, self.view.palette)
-        self.loop.run()
+        run_me = os.path.join(os.path.dirname(sys.argv[0]), "qstat_proxy.py")
+        write_fd = self.loop.watch_pipe(self.view.on_update_widget_qstat)
+        with subprocess.Popen(
+            ["python3", "-u", run_me],  # noqa: S603,S607  # Example can be insecure
+            stdout=write_fd,
+            close_fds=True,
+        ) as proc:
+            self.loop.run()
 
 
 def main():
