@@ -35,8 +35,6 @@ ansible-playbook -i inventory ./pbs_hook_enable.yml
 ansible-playbook -i inventory ./mpi_mpich.yml
 
 ansible-playbook -i inventory ./mpi_ssh_setup.yml
-
-cd /local/repository/benchmarks && setup-bench.sh
 # TODO: add commands to setup and compile benchmakrs
 # pip3 install jinja2
 # python3 jobtracegen.py -nt 20 -nj 100 -ad 300 -C /pbsusers

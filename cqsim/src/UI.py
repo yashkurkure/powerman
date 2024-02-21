@@ -1,28 +1,5 @@
-#!/usr/bin/env python
-#
-# Urwid graphics example program
-#    Copyright (C) 2004-2011  Ian Ward
-#
-#    This library is free software; you can redistribute it and/or
-#    modify it under the terms of the GNU Lesser General Public
-#    License as published by the Free Software Foundation; either
-#    version 2.1 of the License, or (at your option) any later version.
-#
-#    This library is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#    Lesser General Public License for more details.
-#
-#    You should have received a copy of the GNU Lesser General Public
-#    License along with this library; if not, write to the Free Software
-#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-# Urwid web site: https://urwid.org/
-
 """
-Urwid example demonstrating use of the BarGraph widget and creating a
-floating-window appearance.  Also shows use of alarms to create timed
-animation.
+CQStream UI in urwid using MVC
 """
 
 from __future__ import annotations
@@ -33,16 +10,15 @@ import time
 import typing
 import subprocess
 import urwid
+import asyncio
+import random
+import fcntl
 
-UPDATE_INTERVAL = 0.2
-
-
-def sin100(x):
-    """
-    A sin function that returns values between 0 and 100 and repeats
-    after x == 100.
-    """
-    return 50 + 50 * math.sin(x * math.pi / 50)
+async def redis_listener(pipe):
+    while True:
+        await asyncio.sleep(10)
+        random_number = random.randint(1, 100)
+        os.write(pipe, str(random_number).encode())
 
 
 class RootModel:
@@ -80,6 +56,11 @@ class RootView(urwid.WidgetWrap):
     def on_update_widget_qstat(self, data: bytes) -> bool:
         self.widget_qstat.set_text(data.decode("utf8"))
         return True
+    
+    # Handler for a sub process
+    def on_update_widget_redis(self, data: bytes) -> bool:
+        self.widget_qstat.set_text(data.decode("utf8"))
+        return True
         
 
     def build_widget_hello_world(self):
@@ -90,18 +71,11 @@ class RootView(urwid.WidgetWrap):
     def build_widget_subprocess(self):
         txt = urwid.Text('')
         return txt
-    
-    def pile(self):
-        w = urwid.Pile(
-            [
-                (urwid.WEIGHT, 1, urwid.LineBox(self.hello_world())),
-                (urwid.WEIGHT, 1, urwid.LineBox(self.hello_world())),
-            ]
-        )
-        return w
+
 
     def main_window(self):
         self.widget_qstat = self.build_widget_subprocess()
+        self.widget_redis = self.build_widget_subprocess()
         w = urwid.Columns(
             [
                 (
@@ -110,7 +84,7 @@ class RootView(urwid.WidgetWrap):
                     urwid.Pile(
                     [
                         (urwid.WEIGHT, 1, urwid.LineBox(urwid.Filler(self.widget_qstat), "qstat -a")),
-                        (urwid.WEIGHT, 1, urwid.LineBox(self.build_widget_hello_world())),
+                        (urwid.WEIGHT, 1, urwid.LineBox(urwid.Filler(self.widget_redis), "redis-hook")),
                     ])
                 ), 
                 (
@@ -149,13 +123,16 @@ class RootController:
         self.loop = urwid.MainLoop(self.view, self.view.palette)
         run_me = os.path.join(os.path.dirname(sys.argv[0]), "qstat_proxy.py")
         write_fd = self.loop.watch_pipe(self.view.on_update_widget_qstat)
+        write_fd2 = self.loop.watch_pipe(self.view.on_update_widget_redis)
         with subprocess.Popen(
             ["python3", "-u", run_me],  # noqa: S603,S607  # Example can be insecure
             stdout=write_fd,
             close_fds=True,
         ) as proc:
+            # Start the asyncio task
+            asyncio_loop = asyncio.get_event_loop()
+            asyncio_loop.create_task(redis_listener(write_fd2))
             self.loop.run()
-
 
 def main():
     RootController().main()
