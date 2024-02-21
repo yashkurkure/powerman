@@ -96,22 +96,6 @@ class RootView(urwid.WidgetWrap):
     """
 
     palette = [
-        ("body", "black", "light gray", "standout"),
-        ("header", "white", "dark red", "bold"),
-        ("screen edge", "light blue", "dark cyan"),
-        ("main shadow", "dark gray", "black"),
-        ("line", "black", "light gray", "standout"),
-        ("bg background", "light gray", "black"),
-        ("bg 1", "black", "dark blue", "standout"),
-        ("bg 1 smooth", "dark blue", "black"),
-        ("bg 2", "black", "dark cyan", "standout"),
-        ("bg 2 smooth", "dark cyan", "black"),
-        ("button normal", "light gray", "dark blue", "standout"),
-        ("button select", "white", "dark green"),
-        ("line", "black", "light gray", "standout"),
-        ("pg normal", "white", "black", "standout"),
-        ("pg complete", "white", "dark magenta"),
-        ("pg smooth", "dark magenta", "black"),
     ]
 
     def __init__(self, controller):
@@ -123,30 +107,29 @@ class RootView(urwid.WidgetWrap):
         super().__init__(self.main_window())
 
     def hello_world(self):
-        return urwid.Text('Hello World')
+        w = urwid.Text('Hello World')
+        w = urwid.Filler(w, "top")
+        return w
+    
+    def pile(self):
+        w = urwid.Pile(
+            [
+                (urwid.WEIGHT, 1, urwid.LineBox(self.hello_world())),
+                (urwid.WEIGHT, 1, urwid.LineBox(self.hello_world())),
+            ]
+        )
+        # w = urwid.LineBox(w)
+        return w
 
     def main_window(self):
-        self.hw1 = self.hello_world()
-        self.hw2 = self.hello_world()
-        self.hww1 = urwid.WidgetWrap(self.hw1)
-        self.hww2 = urwid.WidgetWrap(self.hw2)
-        vline = urwid.AttrMap(urwid.SolidFill("\u2502"), "line")
-
         w = urwid.Columns(
             [
-                (urwid.WEIGHT, 2, self.hww1), 
-                (1, vline), 
-                (urwid.WEIGHT, 2, self.hww2)
-            ],
-            dividechars=1, 
-            focus_column=2
+                (urwid.WEIGHT, 1, self.pile()), 
+                (urwid.WEIGHT, 1, self.pile())
+            ]
         )
 
-
-        w = urwid.Padding(w, ("fixed left", 1), ("fixed right", 0))
-        w = urwid.AttrMap(w, "body")
         w = urwid.LineBox(w)
-        w = urwid.AttrMap(w, "line")
         return w
 
 
