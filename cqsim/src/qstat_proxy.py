@@ -3,7 +3,7 @@ import time
 def run_subprocess():
     try:
         # Run the program 'some_program.py' as a subprocess
-        process = subprocess.Popen(['python3', 'fake_qstat.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['qstat', '-a'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Wait for the process to finish and get the output
         stdout, stderr = process.communicate()
