@@ -36,11 +36,13 @@ def process_stream_entry(data):
             'reqTime': reqTime,
             'reqMem': reqMem,
         }
+        write_swf_json(qstat[id])
         # print(json_data)
     elif event_type == 'r':
         # Parameters to record
         # wait = timestamp_s - submit
         qstat[id]['wait'] = timestamp_s - qstat[id]['submit']
+        write_swf_json(qstat[id])
         # print(json_data)
     elif event_type == 'mom_r':
         # Parameters to record
@@ -55,30 +57,7 @@ def process_stream_entry(data):
         # usedMem
         # status
         if id in qstat:
-            qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
-            qstat[id]['status'] = json_data['status']
-            write_swf(location, 
-                json.dumps(create_swf_json(
-                 qstat[id]['id'],
-                 qstat[id]['submit'],
-                 qstat[id]['wait'],
-                 qstat[id]['run'],
-                 qstat[id]['reqProc'],
-                 -1,
-                 -1,
-                 qstat[id]['reqProc'],
-                 qstat[id]['reqTime'],
-                 qstat[id]['reqMem'],
-                 qstat[id]['status'],
-                 -1,
-                 -1,
-                 -1,
-                 -1,
-                 -1,
-                 -1,
-                 0)
-                )
-            )
+            write_swf_json(qstat[id])
             del qstat[id]
         # print(json_data)
         pass
@@ -104,16 +83,8 @@ def parse_args():
     # print("----Args----")
     return args
 
-def write_swf(location, json_string):
-    print(json_string)
-    # if os.path.exists(location):
-    #     # If the file exists, open it in append mode
-    #     with open(location, 'a') as file:
-    #         file.write(line + '\n')  # Append content to the file
-    # else:
-    #     # If the file doesn't exist, create it and write to it
-    #     with open(location, 'w') as file:
-    #         file.write(line + '\n')  # Write content to the file
+def write_swf_json(j):
+    print(json.dumps(j))
 
 
 def create_swf_entry(
