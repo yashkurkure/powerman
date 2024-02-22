@@ -8,29 +8,6 @@ location = '/pbsusers/log.swf'
 
 def process_stream_entry(data):
     # TODO: Process to SWF formats
-    swf_entry = {
-	'id':1,
-	'submit': 1641021254,
-    'reqProc': 128,
-	'reqTime': 10800,
-	'reqMem': -1,
-
-	'wait': 52645,
-
-	'run': 10849,
-	'usedProc': 128,
-	'status': 0,
-    'usedAveCPU': -1,
-	'usedMem': -1,
-
-	'userID': -1,
-	'groupID': -1,
-	'num_exe': -1,
-	'num_queue': -1,
-	'num_part': -1,
-	'num_pre': -1,
-	'thinkTime': 0,
-	}
     redis_id = data[0]
     timestamp_ms = int(redis_id.split('-')[0])
     timestamp_s = int(timestamp_ms/1000)
@@ -81,7 +58,7 @@ def process_stream_entry(data):
             qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
             qstat[id]['status'] = json_data['status']
             write_swf(location, 
-                create_swf_entry(
+                json.dumps(create_swf_json(
                  qstat[id]['id'],
                  qstat[id]['submit'],
                  qstat[id]['wait'],
@@ -99,7 +76,7 @@ def process_stream_entry(data):
                  -1,
                  -1,
                  -1,
-                 0
+                 0)
                 )
             )
             del qstat[id]
@@ -127,12 +104,8 @@ def parse_args():
     # print("----Args----")
     return args
 
-def write_swf(location, entries):
-
-    line = ''
-    for entry in entries:
-        line = line + ' ' + str(entry)
-    print(line)
+def write_swf(location, json_string):
+    print(json_string)
     # if os.path.exists(location):
     #     # If the file exists, open it in append mode
     #     with open(location, 'a') as file:
@@ -183,6 +156,38 @@ def create_swf_entry(
         preceding_job_num,  #16
         think_time      #17
     ]
+
+def create_swf_json(
+        job_num,     # 0 
+        submit_time,    # 1
+        wait_time,      # 2
+        run_time,       # 3
+        num_proc,       # 4
+        avg_cpu_time,   # 5
+        mem_usage,      # 6
+        req_num_p,      # 7 same as # 4
+        req_time,       # 8
+        req_mem,        # 9
+        job_status,     # 10
+        user_id,        # 11
+        group_id,       # 12
+        executable,     # 13
+        queue_num,      # 14
+        partition_num,  # 15
+        preceding_job_num,  #16
+        think_time      #17
+):
+    return {
+	'id':job_num,
+	'submit': submit_time,
+    'reqProc': num_proc,
+	'reqTime': req_time,
+	'reqMem': req_mem,
+	'wait': wait_time,
+	'run': run_time,
+	'usedProc': num_proc,
+	'status': job_status,
+	}
 
 if __name__ == "__main__":
     args = parse_args()

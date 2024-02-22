@@ -8,9 +8,10 @@ import sys
 import time
 import subprocess
 import urwid
-import asyncio
 import random
+import json
 
+swfs = []
 
 def redis_listener(loop, view):
     fd = loop.watch_pipe(view.on_update_widget_redis)
@@ -57,7 +58,8 @@ class RootView(urwid.WidgetWrap):
     
     # Handler for a sub process
     def on_update_widget_swf(self, data: bytes) -> bool:
-        self.widget_qstat.set_text(self.widget_swf.text + data.decode("utf8"))
+        swfs.append(json.loads(data.decode("utf8")))
+        self.widget_swf.set_text(json.loads(data.decode("utf8")))
         return True
         
 
