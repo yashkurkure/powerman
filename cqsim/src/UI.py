@@ -59,7 +59,7 @@ class RootView(urwid.WidgetWrap):
     # Handler for a sub process
     def on_update_widget_swf(self, data: bytes) -> bool:
         swfs.append(json.loads(data.decode("utf8")))
-        self.widget_swf.set_text(json.loads(data.decode("utf8")))
+        self.widget_swf.set_text(str(swfs))
         return True
         
 
