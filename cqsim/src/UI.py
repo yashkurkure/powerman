@@ -56,8 +56,8 @@ class RootView(urwid.WidgetWrap):
         return True
     
     # Handler for a sub process
-    def on_udpate_widget_swf(self, data: bytes) -> bool:
-        self.widget_qstat.set_text(self.widget_qstat.text + data.decode("utf8"))
+    def on_update_widget_swf(self, data: bytes) -> bool:
+        self.widget_qstat.set_text(self.widget_swf.text + data.decode("utf8"))
         return True
         
 
@@ -117,7 +117,7 @@ class RootController:
 
 
     def main(self):
-        self.loop = urwid.MainLoop(self.view, self.view.palette, event_loop=ev_loop)
+        self.loop = urwid.MainLoop(self.view, self.view.palette)
         run_me = os.path.join(os.path.dirname(sys.argv[0]), "qstat_proxy.py")
         run_me2 = os.path.join(os.path.dirname(sys.argv[0]), "redis_read.py")
         write_fd = self.loop.watch_pipe(self.view.on_update_widget_qstat)

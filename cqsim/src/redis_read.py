@@ -131,7 +131,7 @@ def write_swf(location, entries):
 
     line = ''
     for entry in entries:
-        line = line + '\t' + str(entry)
+        line = line + ' ' + str(entry)
     print(line)
     # if os.path.exists(location):
     #     # If the file exists, open it in append mode
