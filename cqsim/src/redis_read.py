@@ -47,6 +47,8 @@ def process_stream_entry(data):
         # usedMem
         # status
         if id in qstat:
+            qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
+            qstat[id]['status'] = json_data['status']
             write_swf_json(qstat[id])
             del qstat[id]
         # print(json_data)
@@ -76,7 +78,7 @@ def write_swf_json(j):
 def get_swf(allowPartial = False):
     '''
     from the queue of data reported by the hook, create 
-   input for cqsim.
+    input for cqsim.
     '''
     pass
 
@@ -84,6 +86,10 @@ def run_cq_sim(data):
     '''
     run cqsim given data
     '''
+
+
+
+    
     pass
 
 
