@@ -51,6 +51,7 @@ def process_stream_entry(data):
             qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
             qstat[id]['status'] = json_data['status']
             write_swf_json(qstat[id])
+            run_cq_sim(qstat)
             del qstat[id]
         # print(json_data)
         pass
