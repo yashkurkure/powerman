@@ -78,7 +78,7 @@ def dict_get(dict, key):
         return -1
 
 
-def run_cq_sim(data):
+def run_cq_sim(data, PartialData = False):
     '''
     run cqsim given data
     '''
@@ -88,9 +88,10 @@ def run_cq_sim(data):
     filecontent = swf_header
     job_ids = list(data.keys())
     job_ids.sort()
+    alt_index = 0
     for job_id in job_ids:
         _swf_row = [
-            dict_get(data[job_id], 'id'),
+            alt_index,
             dict_get(data[job_id], 'submit'),
             dict_get(data[job_id], 'wait'),
             dict_get(data[job_id], 'run'),
@@ -113,6 +114,7 @@ def run_cq_sim(data):
         for i in _swf_row:
             line = line + ' ' + str(i)
         filecontent = filecontent + line + '\n'
+        alt_index = alt_index + 1
     with open(filepath, 'w') as file:
             file.write(filecontent)  # Write content to the file
     
@@ -149,7 +151,7 @@ def parse_args():
                         help="Maximum procs (default: 60)")
 
     args = parser.parse_args()
-    swf_header = '; MaxNodes: 100\n; MaxProcs: 100\n;\n'
+    swf_header = f'; MaxNodes: {args.max_nodes}\n; MaxProcs: {args.max_proc}\n;\n'
     
     return args
 
