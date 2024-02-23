@@ -3,6 +3,8 @@ import json
 import os
 
 qstat = {}
+complete_swfs = {}
+partial_swfs = {}
 swf_header = ''
 location = '/pbsusers/log.swf'
 
@@ -51,7 +53,8 @@ def process_stream_entry(data):
             qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
             qstat[id]['status'] = json_data['status']
             write_swf_json(qstat[id])
-            run_cq_sim(qstat)
+            complete_swfs[id] = qstat[id]
+            run_cq_sim(complete_swfs)
             del qstat[id]
         # print(json_data)
         pass
