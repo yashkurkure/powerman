@@ -30,6 +30,8 @@ def process_stream_entry(data):
             'reqMem': reqMem,
         }
         write_swf_json(qstat[id])
+        partial_swfs[id] = qstat[id]
+        run_cq_sim(partial_swfs)
         # print(json_data)
     elif event_type == 'r':
         # Parameters to record
