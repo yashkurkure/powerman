@@ -82,7 +82,7 @@ def run_cq_sim(data):
     '''
     run cqsim given data
     '''
-
+    global swf_header
     filename = 'streamdata.swf'
     filepath = f'../data/InputFiles/{filename}'
     filecontent = swf_header
@@ -135,6 +135,7 @@ def parse_args():
     """
     Parse the args.
     """
+    global swf_header
     import argparse
     parser = argparse.ArgumentParser(description="Argument Parser")
 
