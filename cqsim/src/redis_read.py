@@ -86,7 +86,8 @@ def run_cq_sim(data):
     filename = 'streamdata.swf'
     filepath = f'../data/InputFiles/{filename}'
     filecontent = swf_header
-    job_ids = list(data.keys()).sort()
+    job_ids = list(data.keys())
+    job_ids.sort()
     for job_id in job_ids:
         _swf_row = [
             dict_get(data[job_id], 'id'),
