@@ -3,6 +3,7 @@ import json
 import os
 
 qstat = {}
+swf_header = ''
 location = '/pbsusers/log.swf'
 
 def process_stream_entry(data):
@@ -59,19 +60,6 @@ def process_stream_entry(data):
         pass
     pass
 
-def parse_args():
-    """
-    Parse the args.
-    """
-    import argparse
-    parser = argparse.ArgumentParser(description="Argument Parser")
-
-    parser.add_argument("-s", "--redis_stream", type=str, default="redis-hook",
-                        help="Redis stream name (default: 15)")
-
-    args = parser.parse_args()
-    return args
-
 def write_swf_json(j):
     print(json.dumps(j))
 
@@ -82,16 +70,85 @@ def get_swf(allowPartial = False):
     '''
     pass
 
+def dict_get(dict, key):
+    if key in dict:
+        return dict[key]
+    else:
+        return -1
+
+
 def run_cq_sim(data):
     '''
     run cqsim given data
     '''
 
-
-
+    filename = 'streamdata.swf'
+    filepath = f'../data/InputFiles/{filename}'
+    filecontent = swf_header
+    job_ids = list(data.keys()).sort()
+    for job_id in job_ids:
+        _swf_row = [
+            dict_get(data[job_id], 'id'),
+            dict_get(data[job_id], 'submit'),
+            dict_get(data[job_id], 'wait'),
+            dict_get(data[job_id], 'run'),
+            dict_get(data[job_id], 'reqProc'),
+            -1,
+            -1,
+            dict_get(data[job_id], 'reqProc'),
+            dict_get(data[job_id], 'reqTime'),
+            dict_get(data[job_id], 'reqMem'),
+            dict_get(data[job_id], 'status'),
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            0
+        ]
+        line = ''
+        for i in _swf_row:
+            line = line + ' ' + str(i)
+        filecontent = filecontent + line + '\n'
+    with open(filepath, 'w') as file:
+            file.write(filecontent)  # Write content to the file
     
-    pass
+    from cqsim_api import simulate
+    try:
+        simulate(
+            path_in = "../data/InputFiles/",
+            path_out = "../data/Results/",
+            path_fmt = "../data/Fmt/",
+            path_debug = "../data/Debug/",
+            job_trace= filename,
+            node_struc= filename,
+            debug_lvl=4
+        )
+    except:
+        print('[!!!!!]Could not run cqsim')
 
+
+def parse_args():
+    """
+    Parse the args.
+    """
+    import argparse
+    parser = argparse.ArgumentParser(description="Argument Parser")
+
+    parser.add_argument("-s", "--redis_stream", type=str, default="redis-hook",
+                        help="Redis stream name (default: 15)")
+
+    parser.add_argument("-n", "--max_nodes", type=int, default=15,
+                        help="Maximum node count (default: 15)")
+    
+    parser.add_argument("-p", "--max_procs", type=int, default=60,
+                        help="Maximum procs (default: 60)")
+
+    args = parser.parse_args()
+    swf_header = '; MaxNodes: 100\n; MaxProcs: 100\n;\n'
+    
+    return args
 
 if __name__ == "__main__":
     args = parse_args()
