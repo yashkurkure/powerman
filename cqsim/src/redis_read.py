@@ -1,8 +1,9 @@
 import redis
 import json
 import os
-
+import copy
 qstat = {}
+qstat_copy = {}
 complete_swfs = {}
 partial_swfs = {}
 partial_swfs2 = {}
@@ -36,19 +37,19 @@ def process_stream_entry(data):
             'reqTime': reqTime,
             'reqMem': reqMem,
         }
+        print('q: ', end=':')
         write_swf_json(qstat[id])
-        print('###### Running Parital CQSIM #####')
-        partial_swfs[id] = qstat[id]
-        run_cq_sim(partial_swfs, name = f'{get_event_no()}_queue')
-        print('###### Running Parital CQSIM #####')
+        # print('###### Running Parital CQSIM #####')
+        run_cq_sim(qstat, name = f'{get_event_no()}_queue')
+        # print('###### Running Parital CQSIM #####')
         # print(json_data)
     elif event_type == 'r':
         # Parameters to record
         # wait = timestamp_s - submit
         qstat[id]['wait'] = timestamp_s - qstat[id]['submit']
+        print('r: ', end=':')
         write_swf_json(qstat[id])
-        partial_swfs2[id] = qstat[id]
-        run_cq_sim(partial_swfs2, name = f'{get_event_no()}_run')
+        run_cq_sim(qstat, name = f'{get_event_no()}_run')
         # print(json_data)
     elif event_type == 'mom_r':
         # Parameters to record
@@ -62,13 +63,13 @@ def process_stream_entry(data):
         # usedAveCPU
         # usedMem
         # status
-        if id in qstat:
+        if 'run' in qstat[id]:
             qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
             qstat[id]['status'] = json_data['status']
+            print('e: ', end=':')
             write_swf_json(qstat[id])
             complete_swfs[id] = qstat[id]
             run_cq_sim(complete_swfs, name = f'{get_event_no()}_end')
-            del qstat[id]
         # print(json_data)
         pass
     else:
