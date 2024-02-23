@@ -154,7 +154,7 @@ def parse_args():
                         help="Maximum procs (default: 60)")
 
     args = parser.parse_args()
-    swf_header = f'; MaxNodes: {args.max_nodes}\n; MaxProcs: {args.max_proc}\n;\n'
+    swf_header = f'; MaxNodes: {args.max_nodes}\n; MaxProcs: {args.max_procs}\n;\n'
     
     return args
 
