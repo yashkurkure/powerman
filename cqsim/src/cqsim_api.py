@@ -8,6 +8,8 @@ def simulate(
         path_out = ".",
         path_fmt = ".",
         path_debug = ".",
+        output = "test",
+        debug = "debug_test",
 ):
 
     para_list = build_para_list(
@@ -23,8 +25,8 @@ def simulate(
         anchor = 0,
         read_num = 8000,
         pre_name = "CQSIM_",
-        output = "test",
-        debug = "debug_test",
+        output = output,
+        debug = debug,
         ext_fmt_j = ".csv",
         ext_fmt_n = ".csv",
         ext_fmt_j_c = ".con",

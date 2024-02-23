@@ -5,8 +5,15 @@ import os
 qstat = {}
 complete_swfs = {}
 partial_swfs = {}
+partial_swfs2 = {}
 swf_header = ''
 location = '/pbsusers/log.swf'
+event_no = -1
+def get_event_no():
+    global event_no
+    event_no = event_no + 1
+    return event_no
+
 
 def process_stream_entry(data):
     redis_id = data[0]
@@ -32,7 +39,7 @@ def process_stream_entry(data):
         write_swf_json(qstat[id])
         print('###### Running Parital CQSIM #####')
         partial_swfs[id] = qstat[id]
-        run_cq_sim(partial_swfs)
+        run_cq_sim(partial_swfs, name = f'{get_event_no()}_queue')
         print('###### Running Parital CQSIM #####')
         # print(json_data)
     elif event_type == 'r':
@@ -40,6 +47,8 @@ def process_stream_entry(data):
         # wait = timestamp_s - submit
         qstat[id]['wait'] = timestamp_s - qstat[id]['submit']
         write_swf_json(qstat[id])
+        partial_swfs2[id] = qstat[id]
+        run_cq_sim(partial_swfs2, name = f'{get_event_no()}_run')
         # print(json_data)
     elif event_type == 'mom_r':
         # Parameters to record
@@ -58,7 +67,7 @@ def process_stream_entry(data):
             qstat[id]['status'] = json_data['status']
             write_swf_json(qstat[id])
             complete_swfs[id] = qstat[id]
-            run_cq_sim(complete_swfs)
+            run_cq_sim(complete_swfs, name = f'{get_event_no()}_end')
             del qstat[id]
         # print(json_data)
         pass
@@ -85,7 +94,7 @@ def dict_get(dict, key):
         return -1
 
 
-def run_cq_sim(data, PartialData = False):
+def run_cq_sim(data, PartialData = False, name = 'test'):
     '''
     run cqsim given data
     '''
@@ -137,7 +146,9 @@ def run_cq_sim(data, PartialData = False):
             path_debug = "../data/Debug/",
             job_trace= filename,
             node_struc= filename,
-            debug_lvl=4
+            debug_lvl=4,
+            output = name,
+            debug = f'debug_{name}'
         )
     except:
         print('[!!!!!]Could not run cqsim')
