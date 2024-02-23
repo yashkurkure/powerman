@@ -63,7 +63,7 @@ def process_stream_entry(data):
         # usedAveCPU
         # usedMem
         # status
-        if 'run' in qstat[id]:
+        if 'run' not in qstat[id]:
             qstat[id]['run'] = timestamp_s - qstat[id]['submit'] - qstat[id]['wait']
             qstat[id]['status'] = json_data['status']
             print('e: ', end=':')
