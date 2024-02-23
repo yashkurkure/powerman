@@ -115,6 +115,9 @@ def run_cq_sim(data, PartialData = False):
             line = line + ' ' + str(i)
         filecontent = filecontent + line + '\n'
         alt_index = alt_index + 1
+    print('--------SWF---------')
+    print(filecontent)
+    print('--------------------')
     with open(filepath, 'w') as file:
             file.write(filecontent)  # Write content to the file
     
