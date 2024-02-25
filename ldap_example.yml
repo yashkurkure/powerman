@@ -1,0 +1,13 @@
+---
+- name: Configure head node.
+  become: true
+  hosts: headnode
+  tasks:
+
+    - name: Install LDAPa
+      shell: |
+        sudo apt -y install slapd ldap-utils
+      
+    - name: Get ldap domain components
+      shell: |
+        ldapsearch -x -LLL -s base -b "" namingContexts
