@@ -1,3 +1,4 @@
+# type: ignore - Ignore Pylance
 """Creates a cluster with 1 login node, 1 head node and N worker nodes in a lan.
 All nodes run Ubuntu 20.04 with OpenPBS 23.06.06.
 
@@ -31,6 +32,14 @@ pc.defineParameter("osImage", "Select OS image",
                    portal.ParameterType.IMAGE,
                    imageList[0], imageList,
                    longDescription="Using Ubuntu 20.04")
+
+# Pick Scheduler
+schedulerList = ['OpenPBS', 'Cobalt', 'Slurm']
+
+pc.defineParameter("scheduler", "Select Job Scheduler",
+                   portal.ParameterType.STRING,
+                   schedulerList[0], schedulerList,
+                   longDescription="The job scheduler allows submitting jobs to the cluster.")
 
 # Optional physical type for all nodes.
 pc.defineParameter("phystype",  "Optional physical node type",
@@ -129,6 +138,8 @@ elif params.linkSpeed > 0:
     lan.bandwidth = params.linkSpeed
 if params.sameSwitch:
     lan.setNoInterSwitchLinks()
+
+scheduler = params.scheduler
 
 head_nodes = [0]
 head_nodes_i = []
