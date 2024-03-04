@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 1. Update and upgrade the system
-sudo apt update && sudo apt upgrade -y
+# sudo apt update && sudo apt upgrade -y
 
 # 2. Install OpenLDAP packages
 sudo apt install slapd ldap-utils -y
@@ -20,7 +20,7 @@ sudo dpkg-reconfigure slapd
 # * Allow LDAPv2 protocol? -> No
 
 # 4. Create a base LDAP structure (adjust domain components as needed)
-sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f base.ldif
+sudo ldapadd -x -D cn=admin,dc=emulab,dc=net -W -f base.ldif
 
 # Where 'base.ldif' contains:
 # dn: dc=example,dc=com
@@ -30,7 +30,7 @@ sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f base.ldif
 # o: Example Organization
 
 # 5. Add organizational units for 'users' and 'groups'
-sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f ou.ldif 
+sudo ldapadd -x -D cn=admin,dc=emulab,dc=net -W -f ou.ldif 
 
 # Where 'ou.ldif' contains:
 # dn: ou=users,dc=example,dc=com

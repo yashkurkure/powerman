@@ -9,7 +9,7 @@ hashed_password=$(slappasswd -s "$password")
 
 # 3. Create an LDIF file for the user
 cat << EOF > user.ldif
-dn: uid=$username,ou=users,dc=example,dc=com
+dn: uid=$username,ou=users,dc=emulab,dc=net
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
@@ -24,7 +24,7 @@ userPassword: $hashed_password
 EOF
 
 # 4. Add the user to LDAP
-sudo ldapadd -x -D cn=admin,dc=example,dc=com -W -f user.ldif 
+sudo ldapadd -x -D cn=admin,dc=emulab,dc=net -W -f user.ldif 
 
 # 5. Create the user on the system
 sudo useradd -m -d /home/$username -s /bin/bash $username

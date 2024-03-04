@@ -1,0 +1,5 @@
+dn: dc=emulab,dc=net
+objectClass: dcObject
+objectClass: organization
+dc: emulab
+o: Emulab

@@ -1,0 +1,7 @@
+dn: ou=users,dc=emulab,dc=net
+objectClass: organizationalUnit
+ou: users
+
+dn: ou=groups,dc=emulab,dc=net
+objectClass: organizationalUnit
+ou: groups 
