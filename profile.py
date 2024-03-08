@@ -166,7 +166,8 @@ for i in range(nodeCount):
         node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
 
         # Auto PBS conf
-        node.addService(rspec.Execute(shell="bash", command=f'/local/repository/gen_inventory.sh ykurkure {workerNodeCount} > /local/auto.inventory'))
+        temp_command = "/local/repository/gen_inventory.sh ykurkure " + str(workerNodeCount) + " > /local/auto.inventory"
+        node.addService(rspec.Execute(shell="bash", command=temp_command))
 
         pass
 
