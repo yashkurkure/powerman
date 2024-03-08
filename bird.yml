@@ -1,13 +1,13 @@
 ---
-- name: Configure worker nodes.
-  become: true
+- name: Verify Node Connectivity
   hosts: workernodes
+
   tasks:
-    
-    - name: Configure MoM usecp
-      shell: |
-        echo "$usecp *:/pbsusers/ /pbsusers/" >> /var/spool/pbs/mom_priv/config
-    
-    - name: HUP MoM
-      shell: |
-        kill -HUP `ps aux | grep /opt/pbs/sbin/pbs_mom | awk '{print $2}' | head -n 1
+    - name: Check if hosts are reachable
+      ping:
+      register: ping_result
+
+    - name: Display offline hosts (if any)
+      debug:
+        msg: "{{ inventory_hostname }} is offline!"
+      when: ping_result.failed

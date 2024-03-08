@@ -2,6 +2,7 @@
 
 # 1. Get user details
 read -p "Enter username: " username
+read -p "Enter gid: " gid
 read -sp "Enter password: " password
 
 # 2. Hash password (SSHA method recommended)
@@ -17,17 +18,8 @@ cn: $username
 sn: $username 
 uid: $username
 uidNumber: $(expr $(id -u) + 1000)  # Find next available UID
-gidNumber: 1000  # Or any primary group ID
-homeDirectory: /home/$username
+gidNumber: $gid
+homeDirectory: /pbsusers/$username
 userPassword: $hashed_password
 
 EOF
-
-# 4. Add the user to LDAP
-sudo ldapadd -x -D cn=admin,dc=emulab,dc=net -W -f user.ldif 
-
-# 5. Create the user on the system
-sudo useradd -m -d /home/$username -s /bin/bash $username
-
-# 6. Set the user's password
-echo -e "$password\n$password" | sudo passwd $username
