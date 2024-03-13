@@ -18,18 +18,7 @@ worker_hosts = inventory.get_groups_dict()['workernodes']
 print(worker_hosts)
 
 # Create a simple playbook
-playbook = [
-    {'hosts': 'workernodes',
-     'tasks': [
-         {'name': 'Check for file existence',
-          'stat': {
-              'path': TARGET_FILE
-          },
-          'register': 'file_check'
-         }
-     ]
-    }
-]
+playbook = './bird.yml'
 
 # Run the playbook using Ansible Playbook Executor
 pbex = PlaybookExecutor(

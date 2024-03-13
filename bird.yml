@@ -1,13 +1,9 @@
 ---
-- name: Verify Node Connectivity
+- name: Verify File
   hosts: workernodes
 
   tasks:
-    - name: Check if hosts are reachable
-      ping:
-      register: ping_result
-
-    - name: Display offline hosts (if any)
-      debug:
-        msg: "{{ inventory_hostname }} is offline!"
-      when: ping_result.failed
+    - name: Check for file existence
+      stat:
+        path: /local/node_info
+      register: file_check
