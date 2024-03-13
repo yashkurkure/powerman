@@ -201,6 +201,10 @@ for i in range(nodeCount):
         
         # Install OpenPBS MOM
         node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
+
+        # Create status file
+        temp_command = "touch /local/node_info"
+        node.addService(rspec.Execute(shell="bash", command=temp_command))
         pass
 
 

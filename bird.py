@@ -2,6 +2,7 @@ import paramiko
 import time
 import ansible.inventory.manager
 from ansible.parsing.dataloader import DataLoader
+from ansible.executor.playbook_executor import PlaybookExecutor
 
 # Configuration (modify as needed)
 INVENTORY_PATH = '/local/auto.inventory'
@@ -14,33 +15,31 @@ inventory = ansible.inventory.manager.InventoryManager(loader=loader, sources=[I
 worker_hosts = inventory.get_groups_dict()['workernodes']
 print(worker_hosts)
 
-# def check_file_exists(host):
-#     """Checks if the target file exists on a remote host."""
-#     ssh = paramiko.SSHClient()
-#     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-#     try:
-#         # Replace with your SSH credentials
-#         ssh.connect(host, username='your_username', password='your_password')
-#         sftp = ssh.open_sftp()
-#         sftp.stat(TARGET_FILE)
-#         return True
-#     except FileNotFoundError:
-#         return False
-#     finally:
-#         if ssh:
-#             ssh.close()
+# Create a simple playbook
+playbook = [
+    {'hosts': 'workernodes',
+     'tasks': [
+         {'name': 'Check for file existence',
+          'stat': {
+              'path': TARGET_FILE
+          },
+          'register': 'file_check'
+         }
+     ]
+    }
+]
 
-# # Main loop
-# while True:
-#     all_have_file = True
-#     for host in worker_hosts:
-#         if not check_file_exists(host):
-#             all_have_file = False
-#             break  # No need to check other nodes
+# Run the playbook using Ansible Playbook Executor
+pbex = PlaybookExecutor(playbooks=playbook, inventory=inventory)
+results = pbex.run()
 
-#     if all_have_file:
-#         print("All worker nodes have the file.")
-#         break
+# Analyze results
+all_hosts_have_file = True
+for host, result in results.stats.items():
+    if not result['ok'] or not result['changed'] or not result['ansible_facts']['file_check']['stat']['exists']:
+        print(f"Host {host} does not have the file {TARGET_FILE}")
+        all_hosts_have_file = False
+        break  # You can stop checking if one host fails
 
-#     print("Waiting for file... Retrying in", CHECK_INTERVAL, "seconds.")
-#     time.sleep(CHECK_INTERVAL)
+if all_hosts_have_file:
+    print(f"All hosts in group {TARGET_FILE} have the file {TARGET_FILE}")
