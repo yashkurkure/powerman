@@ -41,6 +41,7 @@ def generate(args):
             node_name = hostname.replace('head',f'node{i}')
             f.write(f'\t\t{node_name}:')
         f.write(f'loginnodes:')
+        f.write(f'\thosts:')
         for i in range(0, args.number_of_login_nodes):
             node_name = hostname.replace('head',f'login{i}')
             f.write(f'\t\t{node_name}:')
@@ -66,8 +67,8 @@ def parse_args():
                         help="Number of login nodes(default: 1)")
     parser.add_argument("-nwn", "--number_of_worker_nodes", type=int, default=1,
                         help="Number of worker nodes (default: 1)")
-    parser.add_argument("-C", "--gen_path", type=str, default=".",
-                        help="Path to traces (default: '.')")
+    parser.add_argument("-C", "--gen_path", type=str, default="inventory",
+                        help="Path to traces (default: 'inventory')")
     # TODO: ssh-users shoulw be passed as --extra-vars to the playbook
     parser.add_argument("-sshu", "--ssh_users", type=str, default=None,
                         help="Path to file with a list of usernames")
