@@ -18,7 +18,7 @@ worker_hosts = inventory.get_groups_dict()['workernodes']
 print(worker_hosts)
 
 # Create a simple playbook
-playbook = './bird.yml'
+playbook = ['./bird.yml']
 
 # Run the playbook using Ansible Playbook Executor
 pbex = PlaybookExecutor(
