@@ -45,7 +45,7 @@ def generate(args):
         for i in range(0, args.number_of_login_nodes):
             node_name = hostname.replace('head',f'login{i}')
             f.write(f'\t\t{node_name}:\n')
-        f.write(f'all:')
+        f.write(f'all:\n')
         f.write(f'\tvars:\n')
         f.write(f'\t\tansible_user: root\n')
         f.write(f'\t\tansible_private_key_file: /root/.ssh/id_rsa\n')
@@ -67,8 +67,8 @@ def parse_args():
                         help="Number of login nodes(default: 1)")
     parser.add_argument("-nwn", "--number_of_worker_nodes", type=int, default=1,
                         help="Number of worker nodes (default: 1)")
-    parser.add_argument("-C", "--gen_path", type=str, default="inventory",
-                        help="Path to traces (default: 'inventory')")
+    parser.add_argument("-C", "--gen_path", type=str, default="inventory.yml",
+                        help="Path to traces (default: 'inventory.yml')")
     # TODO: ssh-users shoulw be passed as --extra-vars to the playbook
     parser.add_argument("-sshu", "--ssh_users", type=str, default=None,
                         help="Path to file with a list of usernames")
