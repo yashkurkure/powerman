@@ -21,9 +21,13 @@ pc = portal.Context()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
-# Variable number of nodes.
+# Variable number of worker nodes.
 pc.defineParameter("workerNodeCount", "Number of Worker Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="Specify atleast 1 worker node")
+
+# Variable number of login nodes.
+pc.defineParameter("loginNodeCount", "Number of Login Nodes", portal.ParameterType.INTEGER, 1,
+                   longDescription="Specify atleast 1 login node")
 
 # Pick your OS.
 imageList = [('urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU20-64-STD', 'UBUNTU 20.04')]
@@ -113,7 +117,7 @@ if params.workerNodeCount < 1:
     pc.reportError(portal.ParameterError("You must choose at least 1 worker node.", ["workerNodeCount"]))
 
 workerNodeCount = params.workerNodeCount
-loginNodeCount = 1
+loginNodeCount = params.loginNodeCount
 headNodeCount = 1
 nodeCount = workerNodeCount + loginNodeCount + headNodeCount
 
@@ -143,9 +147,9 @@ scheduler = params.scheduler
 
 head_nodes = [0]
 head_nodes_i = []
-login_nodes = [1]
+login_nodes = [i for i in range(1, 1 + loginNodeCount)]
 login_nodes_i = []
-worker_nodes = [i for i in range(2, nodeCount)]
+worker_nodes = [i for i in range(1 + loginNodeCount, 1 + loginNodeCount + workerNodeCount)]
 worker_nodes_i = []
 # Process nodes, adding to lan.
 for i in range(nodeCount):
@@ -176,7 +180,7 @@ for i in range(nodeCount):
 
     # Setup login node
     if i in login_nodes:
-        name = "login"
+        name = "login" + str(len(login_nodes_i))
         if params.useVMs:
             node = request.XenVM(name + '_vm')
         else:
@@ -192,7 +196,7 @@ for i in range(nodeCount):
 
     # Setup worker node
     if i in worker_nodes:
-        name = "node" + str(i-2)
+        name = "node" + str(len(worker_nodes_i))
         if params.useVMs:
             node = request.XenVM(name + '_vm')
         else:
