@@ -118,6 +118,7 @@ if params.workerNodeCount < 1:
 
 workerNodeCount = params.workerNodeCount
 loginNodeCount = params.loginNodeCount
+dataNodeCount = 1
 headNodeCount = 1
 nodeCount = workerNodeCount + loginNodeCount + headNodeCount
 
@@ -151,6 +152,7 @@ login_nodes = [i for i in range(1, 1 + loginNodeCount)]
 login_nodes_i = []
 worker_nodes = [i for i in range(1 + loginNodeCount, 1 + loginNodeCount + workerNodeCount)]
 worker_nodes_i = []
+data_nodes_i = []
 # Process nodes, adding to lan.
 for i in range(nodeCount):
        
@@ -169,15 +171,6 @@ for i in range(nodeCount):
         # Install Ansible
         node.addService(rspec.Execute(shell="bash", command="/local/repository/ansible/install-ansible.sh"))
 
-        # Install OpenPBS Server
-        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
-
-        # Auto PBS conf
-        # temp_command = "/local/repository/gen_inventory.sh " +  str(workerNodeCount) + " ykurkure > /local/auto.inventory"
-        # node.addService(rspec.Execute(shell="bash", command=temp_command))
-
-        pass
-
     # Setup login node
     if i in login_nodes:
         name = "login" + str(len(login_nodes_i))
@@ -190,10 +183,6 @@ for i in range(nodeCount):
         # Install public key of head node
         node.installRootKeys(True, True)
 
-        # Install OpenPBS Client
-        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-client.sh"))
-        pass
-
     # Setup worker node
     if i in worker_nodes:
         name = "node" + str(len(worker_nodes_i))
@@ -205,49 +194,20 @@ for i in range(nodeCount):
 
         # Install public key of head node
         node.installRootKeys(True, True)
-        
-        # Install OpenPBS MOM
-        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
 
-        # Create status file
-        # temp_command = "touch /local/node_info"
-        # node.addService(rspec.Execute(shell="bash", command=temp_command))
-        pass
-
-
+    # OS
     if params.osImage and params.osImage != "default":
         node.disk_image = params.osImage
-        pass
-    
-    # Add to lan
-    iface = node.addInterface("eth1")
-    lan.addInterface(iface)
 
-    # Optional hardware type.
-    if params.phystype != "":
-        node.hardware_type = params.phystype
-        pass
-    
-    # Optional Blockstore
-    if params.tempFileSystemSize > 0 or params.tempFileSystemMax:
-        bs = node.Blockstore(name + "-bs", params.tempFileSystemMount)
-        if params.tempFileSystemMax:
-            bs.size = "0GB"
-        else:
-            bs.size = str(params.tempFileSystemSize) + "GB"
-            pass
-        bs.placement = "any"
-        pass
-    #
-    # Install and start X11 VNC. Calling this informs the Portal that you want a VNC
-    # option in the node context menu to create a browser VNC client.
-    #
-    # If you prefer to start the VNC server yourself (on port 5901) then add nostart=True. 
-    #
-    if params.startVNC:
-        node.startVNC()
-        pass
-    pass
+
+
+# Allocate single data node
+node = request.RawPC("data")
+node.disk_image = params.osImage
+bs = node.Blockstore("bs", "/pbsusers")
+bs.size = "250GB"
+
+
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
