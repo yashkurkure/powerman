@@ -31,27 +31,26 @@ template = Template(job_template)
 def generate(args):
     import socket
     hostname = str(socket.gethostname())
-
-    print(f'headnode:')
-    print(f'\thosts:')
-    print(f'\t\tlocalhost:')
-    print(f'workernodes:')
-    print(f'\thosts:')
-    for i in range(0, args.number_of_worker_nodes):
-        node_name = hostname.replace('head',f'node{i}')
-        print(f'\t\t{node_name}:')
-    print(f'loginnodes:')
-    for i in range(0, args.number_of_worker_nodes):
-        node_name = hostname.replace('head',f'login{i}')
-        print(f'\t\t{node_name}:')
-    print(f'all:')
-    print(f'\tvars:')
-    print(f'\t\tansible_user: root')
-    print(f'\t\tansible_private_key_file: /root/.ssh/id_rsa')
-    print(f'\t\tansible_host_key_checking: False')
-    print(f'\t\tnumworkernodes: {args.number_of_worker_nodes}')
-    print(f'\t\tserverhostname: {hostname}')
-
+    with open(args.gen_path, 'w+') as f:
+        f.write(f'headnode:')
+        f.write(f'\thosts:')
+        f.write(f'\t\tlocalhost:')
+        f.write(f'workernodes:')
+        f.write(f'\thosts:')
+        for i in range(0, args.number_of_worker_nodes):
+            node_name = hostname.replace('head',f'node{i}')
+            f.write(f'\t\t{node_name}:')
+        f.write(f'loginnodes:')
+        for i in range(0, args.number_of_login_nodes):
+            node_name = hostname.replace('head',f'login{i}')
+            f.write(f'\t\t{node_name}:')
+        f.write(f'all:')
+        f.write(f'\tvars:')
+        f.write(f'\t\tansible_user: root')
+        f.write(f'\t\tansible_private_key_file: /root/.ssh/id_rsa')
+        f.write(f'\t\tansible_host_key_checking: False')
+        f.write(f'\t\tnumworkernodes: {args.number_of_worker_nodes}')
+        f.write(f'\t\tserverhostname: {hostname}')
     pass
 
 
@@ -67,6 +66,9 @@ def parse_args():
                         help="Number of login nodes(default: 1)")
     parser.add_argument("-nwn", "--number_of_worker_nodes", type=int, default=1,
                         help="Number of worker nodes (default: 1)")
+    parser.add_argument("-C", "--gen_path", type=str, default=".",
+                        help="Path to traces (default: '.')")
+    # TODO: ssh-users shoulw be passed as --extra-vars to the playbook
     parser.add_argument("-sshu", "--ssh_users", type=str, default=None,
                         help="Path to file with a list of usernames")
     args = parser.parse_args()
