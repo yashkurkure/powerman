@@ -51,7 +51,7 @@ def generate(args):
         f.write(f'\t\tansible_private_key_file: /root/.ssh/id_rsa\n')
         f.write(f'\t\tansible_host_key_checking: False\n')
         f.write(f'\t\tnumworkernodes: {args.number_of_worker_nodes}\n')
-        f.write(f'\t\tserverhostname: {hostname}\n      ')
+        f.write(f'\t\tserverhostname: {hostname}\n')
     pass
 
 
