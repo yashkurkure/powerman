@@ -152,7 +152,6 @@ login_nodes = [i for i in range(1, 1 + loginNodeCount)]
 login_nodes_i = []
 worker_nodes = [i for i in range(1 + loginNodeCount, 1 + loginNodeCount + workerNodeCount)]
 worker_nodes_i = []
-data_nodes_i = []
 # Process nodes, adding to lan.
 for i in range(nodeCount):
        
@@ -198,16 +197,17 @@ for i in range(nodeCount):
     # OS
     if params.osImage and params.osImage != "default":
         node.disk_image = params.osImage
+    
+    # Add to lan
+    iface = node.addInterface("eth1")
+    lan.addInterface(iface)
+    
 
-
-
-# Allocate single data node
+# Allocate data node
 node = request.RawPC("data")
 node.disk_image = params.osImage
 bs = node.Blockstore("bs", "/pbsusers")
 bs.size = "250GB"
-
-
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
