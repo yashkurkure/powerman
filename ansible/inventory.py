@@ -38,7 +38,7 @@ def generate(args):
     print(f'workernodes:')
     print(f'\thosts:')
     for i in range(0, args.number_of_worker_nodes):
-        node_name = hostname.replace('head',f'login{i}')
+        node_name = hostname.replace('head',f'node{i}')
         print(f'\t\t{node_name}:')
     print(f'loginnodes:')
     for i in range(0, args.number_of_worker_nodes):
