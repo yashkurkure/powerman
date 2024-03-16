@@ -162,6 +162,9 @@ for i in range(nodeCount):
         # Install a private/public key
         node.installRootKeys(True, True)
 
+        # Install Ansible
+        node.addService(rspec.Execute(shell="bash", command="/local/repository/ansible/install-ansible.sh"))
+
         # Install OpenPBS Server
         # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
 

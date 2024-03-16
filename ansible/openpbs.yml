@@ -56,7 +56,7 @@
   hosts: loginnodes
   tasks:
 
-      - name: Update & Install OpenPBS deps
+    - name: Update & Install OpenPBS deps
       ansible.builtin.apt:
         update_cache: yes
         pkg:
