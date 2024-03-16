@@ -32,26 +32,26 @@ def generate(args):
     import socket
     hostname = str(socket.gethostname())
     with open(args.gen_path, 'w+') as f:
-        f.write(f'headnode:')
-        f.write(f'\thosts:')
-        f.write(f'\t\tlocalhost:')
-        f.write(f'workernodes:')
-        f.write(f'\thosts:')
+        f.write(f'headnode:\n')
+        f.write(f'\thosts:\n')
+        f.write(f'\t\tlocalhost:\n')
+        f.write(f'workernodes:\n')
+        f.write(f'\thosts:\n')
         for i in range(0, args.number_of_worker_nodes):
             node_name = hostname.replace('head',f'node{i}')
-            f.write(f'\t\t{node_name}:')
-        f.write(f'loginnodes:')
-        f.write(f'\thosts:')
+            f.write(f'\t\t{node_name}:\n')
+        f.write(f'loginnodes:\n')
+        f.write(f'\thosts:\n')
         for i in range(0, args.number_of_login_nodes):
             node_name = hostname.replace('head',f'login{i}')
-            f.write(f'\t\t{node_name}:')
+            f.write(f'\t\t{node_name}:\n')
         f.write(f'all:')
-        f.write(f'\tvars:')
-        f.write(f'\t\tansible_user: root')
-        f.write(f'\t\tansible_private_key_file: /root/.ssh/id_rsa')
-        f.write(f'\t\tansible_host_key_checking: False')
-        f.write(f'\t\tnumworkernodes: {args.number_of_worker_nodes}')
-        f.write(f'\t\tserverhostname: {hostname}')
+        f.write(f'\tvars:\n')
+        f.write(f'\t\tansible_user: root\n')
+        f.write(f'\t\tansible_private_key_file: /root/.ssh/id_rsa\n')
+        f.write(f'\t\tansible_host_key_checking: False\n')
+        f.write(f'\t\tnumworkernodes: {args.number_of_worker_nodes}\n')
+        f.write(f'\t\tserverhostname: {hostname}\n      ')
     pass
 
 
