@@ -38,10 +38,12 @@ def generate(args):
     print(f'workernodes:')
     print(f'\thosts:')
     for i in range(0, args.number_of_worker_nodes):
-        print(f'\t\t{hostname.replace('head',f'node{i}')}:')
+        node_name = hostname.replace('head',f'login{i}')
+        print(f'\t\t{node_name}:')
     print(f'loginnodes:')
     for i in range(0, args.number_of_worker_nodes):
-        print(f'\t\t{hostname.replace('head',f'login{i}')}:')
+        node_name = hostname.replace('head',f'login{i}')
+        print(f'\t\t{node_name}:')
     print(f'all:')
     print(f'\tvars:')
     print(f'\t\tansible_user: root')
