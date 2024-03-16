@@ -163,11 +163,11 @@ for i in range(nodeCount):
         node.installRootKeys(True, True)
 
         # Install OpenPBS Server
-        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
+        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-server.sh"))
 
         # Auto PBS conf
-        temp_command = "/local/repository/gen_inventory.sh " +  str(workerNodeCount) + " ykurkure > /local/auto.inventory"
-        node.addService(rspec.Execute(shell="bash", command=temp_command))
+        # temp_command = "/local/repository/gen_inventory.sh " +  str(workerNodeCount) + " ykurkure > /local/auto.inventory"
+        # node.addService(rspec.Execute(shell="bash", command=temp_command))
 
         pass
 
@@ -184,7 +184,7 @@ for i in range(nodeCount):
         node.installRootKeys(True, True)
 
         # Install OpenPBS Client
-        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-client.sh"))
+        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-client.sh"))
         pass
 
     # Setup worker node
@@ -200,11 +200,11 @@ for i in range(nodeCount):
         node.installRootKeys(True, True)
         
         # Install OpenPBS MOM
-        node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
+        # node.addService(rspec.Execute(shell="bash", command="/local/repository/cloudlab/openPBS/install-ubuntu-compute.sh"))
 
         # Create status file
-        temp_command = "touch /local/node_info"
-        node.addService(rspec.Execute(shell="bash", command=temp_command))
+        # temp_command = "touch /local/node_info"
+        # node.addService(rspec.Execute(shell="bash", command=temp_command))
         pass
 
 
