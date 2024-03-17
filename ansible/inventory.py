@@ -27,8 +27,8 @@ def generate(args):
         #-- Data Nodes --
         f.write(f'datanodes:\n')
         f.write(f'  hosts:\n')
-        node_name = hostname.replace('head',f'data')
-        f.write(f'    {node_name}:\n')
+        nfs_node_name = hostname.replace('head',f'data')
+        f.write(f'    {nfs_node_name}:\n')
         #-- All variables --
         f.write(f'all:\n')
         f.write(f'  vars:\n')
@@ -37,6 +37,7 @@ def generate(args):
         f.write(f'    ansible_host_key_checking: False\n')
         f.write(f'    numworkernodes: {args.number_of_worker_nodes}\n')
         f.write(f'    serverhostname: {hostname}\n')
+        f.write(f'    nfshostname: {nfs_node_name}\n')
     pass
 
 

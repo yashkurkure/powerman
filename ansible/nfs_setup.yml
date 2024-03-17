@@ -82,7 +82,7 @@
 
     - name: Configure AutoFS - /etc/auto.nfs.
       shell: |
-        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/exports/pbsusers" >> /etc/auto.nfs
+        echo "pbsusers -fstype=nfs4,rw {{ nfshostname }}:/exports/pbsusers" >> /etc/auto.nfs
     
     - name: Check if autofs is running
       command: systemctl is-active autofs
