@@ -206,10 +206,10 @@ for i in range(nodeCount):
 # Allocate data node
 node = request.RawPC("data")
 node.disk_image = params.osImage
-bs = node.Blockstore("bs", "/pbsusers")
+bs = node.Blockstore("bs", "/exports/pbsusers")
 bs.size = "250GB"
 iface = node.addInterface("eth1")
-lan.addInterface(iface)
+node.installRootKeys(True, True)
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)

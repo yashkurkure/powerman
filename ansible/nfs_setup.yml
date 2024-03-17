@@ -1,0 +1,109 @@
+---
+- name: Configure NFS server.
+  become: true
+  hosts: datanodes
+  tasks:
+
+    - name: Update & Install OpenPBS deps
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - nfs-kernel-server
+
+    - name: Install NFS server.
+      command: apt install -y nfs-kernel-server
+
+    #- name: Create NFS directory pbsusers.
+    #  command: mkdir -p /exports/pbsusers
+    
+    - name: Change group ownership for folder.
+      command: chown -R :SchedulingPower /exports/pbsusers
+
+    - name: Give the group rw permissions.
+      command: chmod -R g+w /exports/pbsusers
+    
+    - name: Create symbolic link for pbsusers in root
+      command: ln -s /exports/pbsusers /pbsusers
+
+    - name: Backup original /etc/exports.
+      command: mv /etc/exports /etc/exports.orig
+
+    - name: Write to /etc/exports.
+      shell: |
+        echo "/exports/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)" > /etc/exports
+    
+    - name: Check if nfs-kernel-server is running
+      command: systemctl is-active nfs-kernel-server
+      register: nfs_status
+      ignore_errors: true
+
+    - name: Start or restart nfs-kernel-server service
+      systemd:
+        name: nfs-kernel-server
+        state: started
+      when: nfs_status.rc != 0
+      ignore_errors: true
+
+    - name: Restart nfs-kernel-server if already running
+      systemd:
+        name: nfs-kernel-server
+        state: restarted
+      when: nfs_status.rc == 0
+      ignore_errors: true
+
+    - name: Create test files.
+      shell: |
+        echo "Hello from $(hostname)" >> /pbsusers/test.txt
+
+- name: Configure NFS clients.
+  become: true
+  hosts: all:!datanodes
+  tasks:
+
+    - name: Update & Install OpenPBS deps
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - nfs-common
+
+    - name: Install AutoFS.
+      command: apt install -y autofs
+
+    - name: Create NFS directory pbsusers.
+      command: mkdir -p /mnt/nfs/pbsusers
+
+    - name: Change group ownership for folder.
+      command: chown -R :SchedulingPower /mnt/nfs/pbsusers
+
+    - name: Give the group rw permissions.
+      command: chmod -R g+w /mnt/nfs/pbsusers
+
+    - name: Create symbolic link for pbsusers in root.
+      command: ln -s /mnt/nfs/pbsusers /pbsusers
+
+    - name: Configure AutoFS - /etc/auto.master.
+      shell: |
+        echo "/mnt/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
+
+    - name: Configure AutoFS - /etc/auto.nfs.
+      shell: |
+        echo "pbsusers -fstype=nfs4,rw {{ serverhostname }}:/exports/pbsusers" >> /etc/auto.nfs
+    
+    - name: Check if autofs is running
+      command: systemctl is-active autofs
+      register: autofs_status
+      ignore_errors: true
+
+    - name: Start or restart autofs service
+      systemd:
+        name: autofs
+        state: started
+      when: autofs_status.rc != 0
+      ignore_errors: true
+
+    - name: Restart autofs if already running
+      systemd:
+        name: autofs
+        state: restarted
+      when: autofs_status.rc == 0
+      ignore_errors: true

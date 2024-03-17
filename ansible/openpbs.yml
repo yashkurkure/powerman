@@ -20,7 +20,7 @@
         - libical3
         - postgresql-server-dev-all
     
-    - name: Install a .deb package
+    - name: Install a openpbs .deb package
       ansible.builtin.apt:
         deb: /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_execution.deb
 
@@ -90,7 +90,7 @@
 
 - name: Configure head node.
   become: true
-  hosts: headnode
+  hosts: headnodes
   tasks:
 
     - name: Update & Install OpenPBS deps

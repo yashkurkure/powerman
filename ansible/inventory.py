@@ -7,19 +7,29 @@ def generate(args):
     import socket
     hostname = str(socket.gethostname())
     with open(args.gen_path, 'w+') as f:
+
+        #-- Head Nodes --
         f.write(f'headnode:\n')
         f.write(f'  hosts:\n')
         f.write(f'    localhost:\n')
+        #-- Worker Nodes --
         f.write(f'workernodes:\n')
         f.write(f'  hosts:\n')
         for i in range(0, args.number_of_worker_nodes):
             node_name = hostname.replace('head',f'node{i}')
             f.write(f'    {node_name}:\n')
+        #-- Login Nodes --
         f.write(f'loginnodes:\n')
         f.write(f'  hosts:\n')
         for i in range(0, args.number_of_login_nodes):
             node_name = hostname.replace('head',f'login{i}')
             f.write(f'    {node_name}:\n')
+        #-- Data Nodes --
+        f.write(f'datanodes:\n')
+        f.write(f'  hosts:\n')
+        node_name = hostname.replace('head',f'data')
+        f.write(f'    {node_name}:\n')
+        #-- All variables --
         f.write(f'all:\n')
         f.write(f'  vars:\n')
         f.write(f'    ansible_user: root\n')
