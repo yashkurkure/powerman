@@ -4,14 +4,11 @@
   hosts: datanodes
   tasks:
 
-    - name: Update & Install OpenPBS deps
+    - name: Update & install nfs sever
       ansible.builtin.apt:
         update_cache: yes
         pkg:
         - nfs-kernel-server
-
-    - name: Install NFS server.
-      command: apt install -y nfs-kernel-server
 
     #- name: Create NFS directory pbsusers.
     #  command: mkdir -p /exports/pbsusers
@@ -60,14 +57,12 @@
   hosts: all:!datanodes
   tasks:
 
-    - name: Update & Install OpenPBS deps
+    - name: Update & install nfs-common and autofs
       ansible.builtin.apt:
         update_cache: yes
         pkg:
         - nfs-common
-
-    - name: Install AutoFS.
-      command: apt install -y autofs
+        - autofs
 
     - name: Create NFS directory pbsusers.
       command: mkdir -p /mnt/nfs/pbsusers
