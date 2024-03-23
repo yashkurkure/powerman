@@ -45,7 +45,7 @@
       register: exports_backup_state
 
     - name: Backup original /etc/exports
-      command: mv /etc/exports /etc/exports.orig
+      command: cp /etc/exports /etc/exports.orig
       when: not exports_backup_state.stat.exists
 
     # - name: Write to /etc/exports.
