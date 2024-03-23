@@ -172,7 +172,7 @@ for i in range(nodeCount):
             + str(loginNodeCount)\
             + " "\
             + str(workerNodeCount)\
-            + " /cluster_inventory.yml"
+            + " /local/cluster_inventory.yml"
         node.addService(rspec.Execute(shell="bash", command=sa_command))
 
     # Setup login node
