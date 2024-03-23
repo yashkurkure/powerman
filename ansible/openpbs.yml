@@ -90,7 +90,7 @@
 
 - name: Configure head node.
   become: true
-  hosts: headnodes
+  hosts: headnode
   tasks:
 
     - name: Update & Install OpenPBS deps
