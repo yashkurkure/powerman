@@ -168,7 +168,8 @@ for i in range(nodeCount):
         node.installRootKeys(True, True)
 
         # Setup Ansible
-        node.addService(rspec.Execute(shell="bash", command="/local/repository/ansible/setup.sh"))
+        sa_command = "/local/repository/ansible/setup.sh " + str(loginNodeCount) + " " + str(workerNodeCount) + " /"
+        node.addService(rspec.Execute(shell="bash", command=sa_command))
 
     # Setup login node
     if i in login_nodes:

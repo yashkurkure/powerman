@@ -2,7 +2,7 @@
 
 
 num_login_nodes=$1
-num_worker_nodes=$1
+num_worker_nodes=$2
 inventory_path=$3
 
 # Install Ansible
