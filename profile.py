@@ -167,8 +167,8 @@ for i in range(nodeCount):
         # Install a private/public key
         node.installRootKeys(True, True)
 
-        # Install Ansible
-        node.addService(rspec.Execute(shell="bash", command="/local/repository/ansible/install-ansible.sh"))
+        # Setup Ansible
+        node.addService(rspec.Execute(shell="bash", command="/local/repository/ansible/setup.sh"))
 
     # Setup login node
     if i in login_nodes:
