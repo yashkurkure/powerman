@@ -22,7 +22,7 @@
     
     - name: Install a openpbs .deb package
       ansible.builtin.apt:
-        deb: /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_execution.deb
+        deb: /local/repository/packages/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_execution.deb
 
     - name: Configure OpenPBS at /etc/pbs.conf
       shell: |
@@ -74,7 +74,7 @@
     
     - name: Install a .deb package
       ansible.builtin.apt:
-        deb: /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_client.deb
+        deb: /local/repository/packages/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_client.deb
 
     - name: Configure OpenPBS at /etc/pbs.conf
       shell: |
@@ -111,7 +111,7 @@
     
     - name: Install a .deb package
       ansible.builtin.apt:
-        deb: /local/repository/cloudlab/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_server.deb
+        deb: /local/repository/packages/openPBS/openpbs_23.06.06.ubuntu_20.04/openpbs_server.deb
 
     - name: Configure OpenPBS at /etc/pbs.conf
       shell: |
