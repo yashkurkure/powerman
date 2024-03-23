@@ -4,49 +4,51 @@
   hosts: datanodes
   tasks:
 
-    - name: Update & install nfs sever
+    - name: Update & install nfs-kernel-server
       ansible.builtin.apt:
         update_cache: yes
         pkg:
         - nfs-kernel-server
 
-    #- name: Create NFS directory pbsusers.
-    #  command: mkdir -p /exports/pbsusers
+    - name: Configure NFS directory pbsusers 
+      file:
+        path: /exports/pbsusers
+        state: directory
+        owner: root 
+        group: SchedulingPower
+        mode: '0775' 
+
+    - name: Ensure symbolic link for pbsusers in root exists
+      file:
+        src: /exports/pbsusers
+        dest: /pbsusers
+        state: link
+
+    - name: Backup original /etc/exports (if not already backed up)
+      stat:
+        path: /etc/exports.orig
+      register: exports_backup_state
+
+    - name: Backup original /etc/exports
+      command: cp /etc/exports /etc/exports.orig
+      when: not exports_backup_state.stat.exists
     
-    - name: Change group ownership for folder.
-      command: chown -R :SchedulingPower /exports/pbsusers
+    - name: Ensure export exists in /etc/exports
+      lineinfile:
+        path: /etc/exports
+        line: "/exports/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)"
+        state: present
 
-    - name: Give the group rw permissions.
-      command: chmod -R g+w /exports/pbsusers
-    
-    - name: Create symbolic link for pbsusers in root
-      command: ln -s /exports/pbsusers /pbsusers
-
-    - name: Backup original /etc/exports.
-      command: mv /etc/exports /etc/exports.orig
-
-    - name: Write to /etc/exports.
-      shell: |
-        echo "/exports/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)" > /etc/exports
-    
-    - name: Check if nfs-kernel-server is running
-      command: systemctl is-active nfs-kernel-server
-      register: nfs_status
-      ignore_errors: true
-
-    - name: Start or restart nfs-kernel-server service
-      systemd:
+    - name: Ensure nfs-kernel-server is installed
+      package:
         name: nfs-kernel-server
-        state: started
-      when: nfs_status.rc != 0
-      ignore_errors: true
+        state: present
 
-    - name: Restart nfs-kernel-server if already running
-      systemd:
+    - name: Manage nfs-kernel-server service
+      service:
         name: nfs-kernel-server
         state: restarted
-      when: nfs_status.rc == 0
-      ignore_errors: true
+        enabled: yes
 
     - name: Create test files.
       shell: |
@@ -64,41 +66,39 @@
         - nfs-common
         - autofs
 
-    - name: Create NFS directory pbsusers.
-      command: mkdir -p /mnt/nfs/pbsusers
+    - name: Configure NFS directory pbsusers 
+      file:
+        path: /mnt/nfs/pbsusers
+        state: directory
+        owner: root 
+        group: SchedulingPower
+        mode: '0775' 
 
-    - name: Change group ownership for folder.
-      command: chown -R :SchedulingPower /mnt/nfs/pbsusers
+    - name: Ensure symbolic link for pbsusers in root exists
+      file:
+        src: /mnt/nfs/pbsusers
+        dest: /pbsusers
+        state: link
 
-    - name: Give the group rw permissions.
-      command: chmod -R g+w /mnt/nfs/pbsusers
+    - name: Ensure AutoFS /etc/auto.master entry exists
+      lineinfile:
+        dest: /etc/auto.master
+        line: "/mnt/nfs /etc/auto.nfs --ghost --timeout=60"
+        create: yes
 
-    - name: Create symbolic link for pbsusers in root.
-      command: ln -s /mnt/nfs/pbsusers /pbsusers
+    - name: Ensure AutoFS /etc/auto.nfs entry exists
+      lineinfile:
+        dest: /etc/auto.nfs
+        line: "pbsusers -fstype=nfs4,rw {{ nfshostname }}:/exports/pbsusers"
+        create: yes
 
-    - name: Configure AutoFS - /etc/auto.master.
-      shell: |
-        echo "/mnt/nfs /etc/auto.nfs --ghost --timeout=60" >> /etc/auto.master
-
-    - name: Configure AutoFS - /etc/auto.nfs.
-      shell: |
-        echo "pbsusers -fstype=nfs4,rw {{ nfshostname }}:/exports/pbsusers" >> /etc/auto.nfs
-    
-    - name: Check if autofs is running
-      command: systemctl is-active autofs
-      register: autofs_status
-      ignore_errors: true
-
-    - name: Start or restart autofs service
-      systemd:
+    - name: Ensure autofs is installed
+      package:
         name: autofs
-        state: started
-      when: autofs_status.rc != 0
-      ignore_errors: true
+        state: present
 
-    - name: Restart autofs if already running
-      systemd:
+    - name: Manage autofs service
+      service:
         name: autofs
         state: restarted
-      when: autofs_status.rc == 0
-      ignore_errors: true
+        enabled: yes
