@@ -168,7 +168,11 @@ for i in range(nodeCount):
         node.installRootKeys(True, True)
 
         # Setup Ansible
-        sa_command = "/local/repository/ansible/setup.sh " + str(loginNodeCount) + " " + str(workerNodeCount) + " /"
+        sa_command = "/local/repository/ansible/setup.sh "\
+            + str(loginNodeCount)\
+            + " "\
+            + str(workerNodeCount)\
+            + " /cluster_inventory.yml"
         node.addService(rspec.Execute(shell="bash", command=sa_command))
 
     # Setup login node
