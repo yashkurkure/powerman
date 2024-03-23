@@ -4,7 +4,7 @@
   hosts: datanodes
   tasks:
 
-    - name: Update & install nfs sever
+    - name: Update & install nfs-kernel-server
       ansible.builtin.apt:
         update_cache: yes
         pkg:
@@ -58,24 +58,35 @@
         line: "/exports/pbsusers *(rw,no_subtree_check,insecure,no_root_squash)"
         state: present
 
-    - name: Check if nfs-kernel-server is running
-      command: systemctl is-active nfs-kernel-server
-      register: nfs_status
-      ignore_errors: true
+    # - name: Check if nfs-kernel-server is running
+    #   command: systemctl is-active nfs-kernel-server
+    #   register: nfs_status
+    #   ignore_errors: true
 
-    - name: Start or restart nfs-kernel-server service
-      systemd:
+    # - name: Start or restart nfs-kernel-server service
+    #   systemd:
+    #     name: nfs-kernel-server
+    #     state: started
+    #   when: nfs_status.rc != 0
+    #   ignore_errors: true
+
+    # - name: Restart nfs-kernel-server if already running
+    #   systemd:
+    #     name: nfs-kernel-server
+    #     state: restarted
+    #   when: nfs_status.rc == 0
+    #   ignore_errors: true
+
+    - name: Ensure nfs-kernel-server is installed
+      package:
         name: nfs-kernel-server
-        state: started
-      when: nfs_status.rc != 0
-      ignore_errors: true
+        state: present
 
-    - name: Restart nfs-kernel-server if already running
-      systemd:
+    - name: Manage nfs-kernel-server service
+      service:
         name: nfs-kernel-server
         state: restarted
-      when: nfs_status.rc == 0
-      ignore_errors: true
+        enabled: yes
 
     - name: Create test files.
       shell: |
@@ -139,21 +150,32 @@
         line: "pbsusers -fstype=nfs4,rw {{ nfshostname }}:/exports/pbsusers"
         create: yes
     
-    - name: Check if autofs is running
-      command: systemctl is-active autofs
-      register: autofs_status
-      ignore_errors: true
+    # - name: Check if autofs is running
+    #   command: systemctl is-active autofs
+    #   register: autofs_status
+    #   ignore_errors: true
 
-    - name: Start or restart autofs service
-      systemd:
+    # - name: Start or restart autofs service
+    #   systemd:
+    #     name: autofs
+    #     state: started
+    #   when: autofs_status.rc != 0
+    #   ignore_errors: true
+
+    # - name: Restart autofs if already running
+    #   systemd:
+    #     name: autofs
+    #     state: restarted
+    #   when: autofs_status.rc == 0
+    #   ignore_errors: true
+
+    - name: Ensure autofs is installed
+      package:
         name: autofs
-        state: started
-      when: autofs_status.rc != 0
-      ignore_errors: true
+        state: present
 
-    - name: Restart autofs if already running
-      systemd:
+    - name: Manage autofs service
+      service:
         name: autofs
         state: restarted
-      when: autofs_status.rc == 0
-      ignore_errors: true
+        enabled: yes
