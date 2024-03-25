@@ -17,4 +17,4 @@ ansible-playbook \
 ansible-playbook \
     -i /local/cluster_inventory.yml\
     --extra-vars "username=ykurkure groupname=SchedulingPower"\
-    /local/repository/ansible/mpich.yml
+    /local/repository/ansible/ssh.yml
