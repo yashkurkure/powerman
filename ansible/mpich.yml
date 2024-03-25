@@ -1,0 +1,11 @@
+- name: Install MPICH
+  become: true
+  hosts: all
+  tasks:
+  
+    - name: Install MPICH
+      command: apt install -y mpich
+        
+    - name: Strict host checking disable
+      shell: |
+        echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config

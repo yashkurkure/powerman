@@ -1,0 +1,43 @@
+---
+# Example of passing variables: --extra-vars "username=ykurkure"
+- name: SSH setup on non-head nodes.
+  become: true
+  hosts: all
+  tasks:
+    - name: Copy SSH pub key.
+      copy:
+        src: /root/.ssh/id_rsa.pub
+        dest: /users/{{ username }}/.ssh/id_rsa.pub
+        remote_src: yes
+  
+    - name: Copy SSH pvt key.
+      copy:
+        src: /root/.ssh/id_rsa
+        dest: /users/{{ username }}/.ssh/id_rsa
+        remote_src: yes
+
+    - name: Read the contents of authorized keys for root.
+      slurp:
+        src: /root/.ssh/authorized_keys
+      register: root_authorized_keys_contents
+
+    - name: Append contents of root authorized_keys to user authorized_keys.
+      lineinfile:
+        path: /users/{{ username }}/.ssh/authorized_keys
+        line: "{{ root_authorized_keys_contents.content | b64decode }}"
+
+    - name: Change permissions to user:SchedulingPower for copied keys.
+      shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
+    
+    - name: Change permission level of authorized_keys.
+      shell: chmod 644 /users/{{ username }}/.ssh/authorized_keys
+
+    - name: Change permission level of pub keys
+      shell: chmod 644 /users/{{ username }}/.ssh/*.pub
+
+    - name: Change permission level to pvt key.
+      shell: chmod 600 /users/{{ username }}/.ssh/id_rsa
+      
+    - name: Start ssh-agent and add key for user.
+      become_user: "{{ username }}"
+      shell: eval $(ssh-agent) && ssh-add /users/{{ username }}/.ssh/id_rsa
