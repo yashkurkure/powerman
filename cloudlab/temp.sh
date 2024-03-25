@@ -4,5 +4,5 @@ path_client=/local/repository/packages/openPBS/openpbs_23.06.06.ubuntu_20.04/ope
 
 ansible-playbook \
     -i /local/cluster_inventory.yml \
-    --extra-vars "headnodes_deb=$path_server workernodes_deb=$path_mom loginnodes_deb=$path_client"\
+    --extra-vars "headnode_deb=$path_server workernodes_deb=$path_mom loginnodes_deb=$path_client"\
     /local/repository/ansible/openpbs.yml

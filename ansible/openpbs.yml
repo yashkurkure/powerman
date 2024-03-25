@@ -1,7 +1,7 @@
 ---
 - name: Install OpenPBS deps
   become: true
-  hosts: all
+  hosts: all:!datanodes
   tasks:
 
     - name: Update & Install OpenPBS deps
@@ -23,13 +23,13 @@
 # --extra-vars "headnodes_deb=/path/to/headnodes.deb workernodes_deb=/path/to/workernodes.deb loginnodes_deb=/path/to/loginnodes.deb"
 - name: Install OpenPBS
   become: true
-  hosts: all
+  hosts: all:!datanodes
   tasks:
 
     - name: Install openpbs .deb package
       ansible.builtin.apt:
         deb: "{{ lookup('vars', item + '_deb') }}"
-      with_items: "{{ group_names }}" 
+      with_items: "{{ group_names[0] }}" 
 
 - name: Configure worker nodes.
   become: true
