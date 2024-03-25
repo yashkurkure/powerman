@@ -36,16 +36,18 @@
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
-  
-    - name: Start OpenPBS service.
-      command: systemctl start pbs
-    
-    - name: Configure OpenPBS to start automatically during system boot.
-      command: systemctl enable pbs
+
+    - name: Manage pbs service
+      service:
+        name: pbs
+        state: restarted
+        enabled: yes
     
     - name: Configure MoM usecp
-      shell: |
-        echo '$usecp *:/pbsusers/ /pbsusers/' >> /var/spool/pbs/mom_priv/config
+      lineinfile:
+        path: /var/spool/pbs/mom_priv/config
+        line: '$usecp *:/pbsusers/ /pbsusers/'
+        create: yes
     
     - name: HUP MoM
       shell: |
@@ -124,20 +126,26 @@
         PBS_HOME=/var/spool/pbs
         PBS_CORE_LIMIT=unlimited
         PBS_SCP=/usr/bin/scp" > /etc/pbs.conf
-  
-    - name: Create datastore for postgress under pbs.
-      command: mkdir -p /var/spool/pbs/datastore
 
     - name: Give postgres user permissions for pbs directory.
-      command: chown -R postgres:postgres /var/spool/pbs/datastore
+      file:
+        path: /var/spool/pbs/datastore
+        state: directory 
+        owner: postgres
+        group: postgres
+        recurse: yes
 
-    - name: Start postgresql.
-      command: pg_ctlcluster 12 main start
+    - name: Start postresql service
+      service:
+        name: postgresql
+        state: started
 
-    - name: Start pbs.
+    - name: Start pbs service
       environment:
         PBS_DATA_SERVICE_USER: postgres
-      command: systemctl start pbs
+      service:
+        name: pbs
+        state: started
   
     - name: Create worker nodes
       command: >

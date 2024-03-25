@@ -1,5 +1,6 @@
 ---
-# Example of passing variables: --extra-vars "username=ykurkure"
+# Example of passing variables
+#  --extra-vars "username=ykurkure groupname=SchedulingPower"
 - name: SSH setup on non-head nodes.
   become: true
   hosts: all
@@ -26,8 +27,8 @@
         path: /users/{{ username }}/.ssh/authorized_keys
         line: "{{ root_authorized_keys_contents.content | b64decode }}"
 
-    - name: Change permissions to user:SchedulingPower for copied keys.
-      shell: chown {{ username }}:SchedulingPower /users/{{ username }}/.ssh/*
+    - name: Change permissions to user:group for copied keys.
+      shell: chown {{ username }}:{{ groupname }} /users/{{ username }}/.ssh/*
     
     - name: Change permission level of authorized_keys.
       shell: chmod 644 /users/{{ username }}/.ssh/authorized_keys
