@@ -25,7 +25,7 @@ conf="/etc/pbs.conf"
 # Specify here where the include files are for the version of Python that you are using.
 # If you are using a Python in a virtual environment then use the include location that 
 # the virtual env was derived from.
-PYTHON_INCL="/usr/bin/python3.8"
+PYTHON_INCL="/usr/include/python3.8"
 
 # Location of the swig exectable.
 SWIG_EXEC="/usr/bin/swig"
