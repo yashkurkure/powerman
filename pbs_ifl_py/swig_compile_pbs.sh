@@ -71,7 +71,7 @@ fi
 # Note: This is what I had before, compile and link in one step. 
 # But I have commented out this and separated the compile and link
 # as its then easier to debug errors during build.
-#gcc -shared -fPIC -I$PYTHON_INCL -I$PBS_EXEC/include pbs_wrap.c \
+# gcc -shared -fPIC -I$PYTHON_INCL -I$PBS_EXEC/include src/pbs_wrap.c \
 #    $PBS_EXEC/lib/libpbs.a \
 #    -L/lib -lpthread -lcrypto -lssl \
 #    -o _pbs.so 
@@ -83,7 +83,7 @@ gcc -c -shared -fpic -I$PYTHON_INCL -I$PBS_EXEC/include src/pbs_wrap.c -o src/pb
 # Not sure if we need to also add -L/lib
 gcc -shared -fpic -L/opt/pbs/lib \
     $PBS_EXEC/lib/libpbs.so src/pbs_wrap.o \
-    -lpthread -lcrypto -lssl -lsec \
+    -lpthread -lcrypto -lssl \
     -o src/_pbs.so 
 
 # It does not need to be executable.
