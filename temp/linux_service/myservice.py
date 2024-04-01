@@ -1,7 +1,7 @@
 import time
 import logging
 
-logging.basicConfig(filename='/var/log/myservice.log', level=logging.INFO)
+logging.basicConfig(filename='/pbsusers/myservice.log', level=logging.INFO)
 
 def do_something():
     # Replace this with the core functionality of your service
