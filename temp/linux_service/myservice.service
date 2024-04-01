@@ -1,0 +1,12 @@
+[Unit]
+Description=My Python Service
+After=network.target 
+
+[Service]
+User=ykurkure
+WorkingDirectory=/local/repository/temp/linux_service
+ExecStart=/usr/bin/python3 /local/repository/temp/linux_service/myservice.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
