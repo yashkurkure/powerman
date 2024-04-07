@@ -23,7 +23,7 @@ app.layout = html.Div([
 ])
 
 app.layout = html.Div([
-    dcc.Tabs(id="tabs", value='tabs', children=[
+    dcc.Tabs(id="tabs", value='tabs-1', children=[
         dcc.Tab(label='Welcome', value='tab-1', children=[
             html.H1("Welcome to the Dashboard"),
             html.Button('Run Script', id='run-script-button', style={'disabled': False}), 
@@ -64,12 +64,13 @@ def trigger_script_and_check(n_clicks, n_intervals, button_disabled):
 
     return button_disabled, 'Script is running...', n_intervals + 1
 
+events = []
 # Simulate a blocking call (modify this for your actual task)
 def blocking_task():
     from time import sleep
-    for i in range(5):
-        sleep(2)  # Simulate some work
-        return f"Event {i + 1} occurred"
+    sleep(5)
+    return 'event occured'
+       
 
 # Callback to update the 'Events' tab
 @app.callback(
@@ -77,8 +78,8 @@ def blocking_task():
     inputs=[dash.dependencies.Input('tabs', 'value')],
 )
 def update_events(tab):
+    global events
     if tab == 'tab-2':
-        events = []
         while True:
             new_event = blocking_task()
             events.append(html.P(new_event))  
