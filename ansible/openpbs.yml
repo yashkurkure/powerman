@@ -19,6 +19,7 @@
         - tk
         - libical3
         - postgresql-server-dev-all
+        - python3-pip
 
 # --extra-vars "headnodes_deb=/path/to/headnodes.deb workernodes_deb=/path/to/workernodes.deb loginnodes_deb=/path/to/loginnodes.deb"
 - name: Install OpenPBS
