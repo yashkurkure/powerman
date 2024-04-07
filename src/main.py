@@ -45,7 +45,7 @@ def capture_state_pbs():
         print(f'\tstime: {job_rtime}')
         print(f'\tnodes: {nodes}')
         print(f'\tppn: {ppn}')
-        print(f'\twalltime" {walltime}')
+        print(f'\twalltime: {walltime}')
         j = Job(
             id = job_id,
             exec_path= '',
@@ -56,9 +56,8 @@ def capture_state_pbs():
             rtime=job_rtime,
             pbs_state=job_state
         )
-        
-
-
+        job_list.append(j)
+    return node_list, job_list
 
 
 def parse_args():
