@@ -106,20 +106,18 @@ def generate(
     """
     benchmark_path = '/pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/bin'
     
-    job_template = """
-    #!/bin/bash
-    #PBS -l nodes={{ nodes }}:ppn={{ ppn }}
-    #PBS -l walltime={{ walltime }}
-    #PBS -q {{ queue_name }}
-    #PBS -o {{ output_file }}
-    #PBS -e {{ error_file }}
+    job_template = """#!/bin/bash
+#PBS -l nodes={{ nodes }}:ppn={{ ppn }}
+#PBS -l walltime={{ walltime }}
+#PBS -q {{ queue_name }}
+#PBS -o {{ output_file }}
+#PBS -e {{ error_file }}
 
-    cd $PBS_O_WORKDIR
-    export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
-    export OMP_NUM_THREADS={{ OMP_NUM_THREADS }}
+cd $PBS_O_WORKDIR
+export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+export OMP_NUM_THREADS={{ OMP_NUM_THREADS }}
 
-    mpirun {{executable_path}}
-    """
+mpirun {{executable_path}}"""
     template = Template(job_template)
 
     # Generate traces where each trace is a list of job scripts.
