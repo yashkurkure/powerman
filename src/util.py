@@ -24,3 +24,22 @@ def walltime_to_seconds(time_str):
   """
   time_obj = datetime.datetime.strptime(time_str, '%H:%M:%S')
   return time_obj.hour * 3600 + time_obj.minute * 60 + time_obj.second
+
+import re
+
+def parse_node_info(node_str):
+  """
+  Parses a string of format "(node0.testbed.schedulingpower.emulab.net:ncpus=1)+(node1.testbed.schedulingpower.emulab.net:ncpus=1)" 
+  and outputs a dictionary of hostname : cpus
+
+  Args:
+      node_str: A string containing node information
+
+  Returns:
+      A dictionary containing node hostnames as keys and cpu counts as values
+  """
+  node_dict = {}
+  for node in re.split(r"\+", node_str):
+    hostname, ncpus = re.split(r"\:", node.strip()[1:-1])
+    node_dict[hostname] = int(ncpus.split("=")[1])
+  return node_dict
