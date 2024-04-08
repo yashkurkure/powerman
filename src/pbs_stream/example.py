@@ -1,18 +1,17 @@
 from src.pbs_stream.types import *
 from src.pbs_stream.statemachine import *
 from src.pbs_stream.redisstream import *
+from src.pbs_stream.utils import capture_state_pbs
 
-# Populate the job list
-job_list: list[PBSJob] = []
-node_list : list[PBSVNode] = []
+# Get the state from pbs
+state = capture_state_pbs()
 
-# Create initial state
-state = PBSState(job_list=job_list, node_list=node_list)
-
-# Create the event produced, in this case it is a redis stream
+# Create the event producer, in this case it is a redis stream
 event_stream = RedisStream(stream_name='pbs_hook_events')
 
 # Create the state machine, in this case we just evaluate the events as is
+# In the case of a smiulation, the evaluator will contain code for the 
+# scheduling policy / algorithm
 stream_evaluator = StreamEvaluator()
 
 # Loop the stream
