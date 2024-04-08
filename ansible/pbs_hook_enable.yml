@@ -1,5 +1,5 @@
 ---
-- name: Configure worker nodes.
+- name: pbs hooks enable - Configure worker nodes.
   become: true
   hosts: workernodes
   tasks:
@@ -12,7 +12,7 @@
       command: systemctl restart pbs
 
 
-- name: Configure head node.
+- name: pbs hooks enable - Configure head node.
   become: true
   hosts: headnode
   tasks:
