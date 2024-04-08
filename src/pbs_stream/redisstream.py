@@ -35,6 +35,8 @@ class RedisStream(EventProducer):
         print(json_data)
         
         if event_type == PBSEvent.EVENT_TYPE_QUEUEJOB:
+            print(f'\t{timestamp}')
+            print(f'\t{event_type}')
             j = PBSJob(
                 id = job_id,
                 nodes = json_data['nodes'],
@@ -43,14 +45,21 @@ class RedisStream(EventProducer):
                 exec_path='',
                 qtime=timestamp
             )
+            print(f'\t{job_id}, {j.nodes}, {j.ppn}, {j.walltime}')
             return JobQueue(timestamp=timestamp, job=j)
         elif event_type == PBSEvent.EVENT_TYPE_RUNJOB:
+            print(f'\t{timestamp}')
+            print(f'\t{event_type}')
             return JobRun(
                 timestamp=timestamp,
                 job_id=job_id,
                 rtime=timestamp
             )
         elif event_type == PBSEvent.EVENT_TYPE_EXECJOB_BEGIN:
+            print(f'\t{timestamp}')
+            print(f'\t{event_type}')
+            mom_name = json_data['mom_name']
+            print(f'\t{job_id}, {mom_name}')
             return JobMoMBegin(
                 timestamp=timestamp,
                 job_id=job_id,
@@ -58,11 +67,15 @@ class RedisStream(EventProducer):
                 mom_name=json_data['mom_name']
             )
         elif event_type == PBSEvent.EVENT_TYPE_EXECJOB_END:
+            print(f'\t{timestamp}')
+            print(f'\t{event_type}')
+            mom_name = json_data['mom_name']
+            print(f'\t{job_id}, {mom_name}')
             return JobEnd(
                 timestamp=timestamp,
                 job_id=job_id,
                 etime=timestamp,
-                mom_name=json_data['mom_name']
+                mom_name=mom_name
             )
         else:
             return None
