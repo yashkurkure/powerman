@@ -44,12 +44,13 @@ class Event:
     
 class State:
     def __init__(self, timestamp: int, node_list : list[Node], job_list : list[Job]):
-        self.timestamp = timestamp
-        self.node_list = node_list
-        self.job_list = job_list
-        self.queued_jobs = []
-        self.running_jobs = []
-        self.completed_jobs = []
+        self.timestamp : int = timestamp
+        self.node_list : list[Node] = node_list
+        self.job_list : list[Job] = job_list
+        self.events_list : list[Event] = []
+        self.queued_jobs : list[int] = []
+        self.running_jobs : list[int] = []
+        self.completed_jobs : list[int] = []
         self.job_dict : dict[int, Job] = {}
         for job in job_list:
             self.job_dict[job.id] = job

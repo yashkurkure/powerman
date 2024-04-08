@@ -163,3 +163,17 @@ class PBSState(State):
         return super().__str__()  + \
             ':' + self.__class__.__name__ + \
             f':{self.timestamp}'
+    
+    def export(path = './'):
+
+        # TODO: Export Nodes
+
+        # TODO: Export Jobs
+
+        # TODO: Export Jobs to Nodes Map
+
+        # TODO: Export Nodes to Jobs Map
+
+        # TODO: Export Events
+
+        pass
