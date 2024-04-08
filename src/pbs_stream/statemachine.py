@@ -24,9 +24,9 @@ class StreamEvaluator(StateMachine):
 
         elif type(e) is JobEnd:
             s.get_job_obj(e.job_id).etime = e.etime
-            del s.get_job_obj(e.job_id).allocated_nodes[e.mom_name]
+            s.get_job_obj(e.job_id).allocated_nodes[e.mom_name] = 0
 
-            if len(s.get_job_obj(e.job_id).allocated_nodes) == 0:
+            if sum(s.get_job_obj(e.job_id).allocated_nodes.values()) == 0:
                 s.running_jobs.remove(e.job_id)
                 s.completed_jobs.append(e.job_id)
         
