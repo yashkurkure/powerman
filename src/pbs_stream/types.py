@@ -28,7 +28,7 @@ class PBSEvent(Event):
     # PBS Event types
     EVENT_TYPE_QUEUEJOB = 'queuejob'
     EVENT_TYPE_RUNJOB = 'runjob'
-    EVENT_TYPE_JOBOBIT = 'jobobit'
+    EVENT_TYPE_EXECJOB_END = 'execjob_end'
 
     def __init__(self, 
                  timestamp: int,
@@ -66,7 +66,8 @@ class JobRun(PBSEvent):
                 ):
         super().__init__(
             timestamp=timestamp, 
-            event_type=PBSEvent.EVENT_TYPE_RUNJOB
+            event_type=PBSEvent.EVENT_TYPE_RUNJOB,
+            event_location=PBSEvent.EVENT_LOCATION_SERVER
         )
         self.description = self.description + ':' + self.__class__.__name__
         self.job_id = job_id
@@ -77,15 +78,18 @@ class JobEnd(PBSEvent):
     def __init__(self, 
                  timestamp : int,
                  job_id: int,
-                 etime: int
+                 etime: int,
+                 mom_name: str
                 ):
         super().__init__(
-            event_type=PBSEvent.EVENT_TYPE_JOBOBIT, 
-            timestamp=timestamp
+            timestamp=timestamp,
+            event_type=PBSEvent.EVENT_TYPE_EXECJOB_END, 
+            event_location=PBSEvent.EVENT_LOCATION_MOM
         )
         self.description = self.description + ':' + self.__class__.__name__
         self.job_id = job_id
         self.etime = etime
+        self.mom_name = mom_name
 
 class PBSState(State):
     def __init__(self, timestamp: int, node_list: list[PBSVNode], job_list: list[PBSJob]):

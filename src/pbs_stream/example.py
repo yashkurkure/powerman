@@ -7,7 +7,7 @@ from src.pbs_stream.utils import capture_state_pbs
 state = capture_state_pbs()
 
 # Create the event producer, in this case it is a redis stream
-event_stream = RedisStream(stream_name='pbs_hook_events')
+event_stream = RedisStream(stream_name='pbs-hook-events')
 
 # Create the state machine, in this case we just evaluate the events as is
 # In the case of a smiulation, the evaluator will contain code for the 
