@@ -19,7 +19,7 @@ try:
     json_data = {}
 
     # Find the event type
-    if e.type is pbs.QUEUEJOB:
+    if e.type is pbs.HOOK_EVENT_QUEUEJOB:
         event_type = 'queuejob'
         # Parameters to record
         _job_id = -1
@@ -44,19 +44,19 @@ try:
         json_data['nodes'] = _nodes
         json_data['ppn'] = _ppn
 
-    elif e.type == pbs.RUNJOB:
+    elif e.type == pbs.HOOK_EVENT_RUNJOB:
         event_type = 'runjob'
         # Parameters to record
         # TODO : record the node(s) to be run on
 
-    elif e.type == pbs.EXECJOB_BEGIN:
+    elif e.type == pbs.HOOK_EVENT_EXECJOB_BEGIN:
         event_type = 'execjob_begin'
         # mom_name = pbs.get_local_nodename()
         json_data['mom_name'] = 'mom'
         # Parameters to record
         pass
 
-    elif e.type == pbs.EXECJOB_END:
+    elif e.type == pbs.HOOK_EVENT_EXECJOB_END:
         event_type = 'execjob_end'
         # mom_name = pbs.get_local_nodename()
         json_data['mom_name'] = 'mom'
