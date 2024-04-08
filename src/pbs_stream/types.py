@@ -115,7 +115,7 @@ class PBSState(State):
         
         # Cold start preperation
         for job in job_list:
-            if job.rtime is not -1:
+            if job.rtime != -1:
                 self.running_jobs.append(job.id)
             else:
                 self.queued_jobs.append(job.id)

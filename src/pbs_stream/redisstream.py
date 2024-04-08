@@ -39,9 +39,9 @@ class RedisStream(EventProducer):
             print(f'\t{event_type}')
             j = PBSJob(
                 id = job_id,
-                nodes = json_data['nodes'],
-                ppn = json_data['ppn'],
-                walltime = json_data['walltime'],
+                nodes = int(json_data['nodes']),
+                ppn = int(json_data['ppn']),
+                walltime = int(json_data['walltime']),
                 exec_path='',
                 qtime=timestamp
             )
