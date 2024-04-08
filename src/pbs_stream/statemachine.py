@@ -43,5 +43,8 @@ class StreamEvaluator(StateMachine):
             total_cpus += node.cpus
         
         s.resource_utilization = cpus_in_use/total_cpus
-        return {'resource-utilization' : s.resource_utilization}
+        return {
+            'resource-utilization' : s.resource_utilization,
+            'cpu_run/cpu_idle' : f'{cpus_in_use}/{total_cpus}'
+            }
         
