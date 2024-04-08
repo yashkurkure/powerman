@@ -51,15 +51,15 @@ try:
 
     elif e.type == pbs.HOOK_EVENT_EXECJOB_BEGIN:
         event_type = 'execjob_begin'
-        # mom_name = pbs.get_local_nodename()
-        json_data['mom_name'] = 'mom'
+        mom_name = pbs.get_local_nodename()
+        json_data['mom_name'] = mom_name
         # Parameters to record
         pass
 
     elif e.type == pbs.HOOK_EVENT_EXECJOB_END:
         event_type = 'execjob_end'
-        # mom_name = pbs.get_local_nodename()
-        json_data['mom_name'] = 'mom'
+        mom_name = pbs.get_local_nodename()
+        json_data['mom_name'] = mom_name
         # Parameters to record
         pass
     else:
