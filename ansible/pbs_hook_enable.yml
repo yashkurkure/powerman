@@ -1,0 +1,26 @@
+---
+- name: Configure worker nodes.
+  become: true
+  hosts: workernodes
+  tasks:
+  
+    - name: Configure reject root scritps
+      shell: |
+          echo "$reject_root_scripts False" > /var/spool/pbs/mom_priv/config
+
+    - name: Restart OpenPBS service.
+      command: systemctl restart pbs
+
+
+- name: Configure head node.
+  become: true
+  hosts: headnode
+  tasks:
+    - name: Configure reject root scritps
+      shell: |
+          /opt/pbs/bin/qmgr -c "set server query_other_jobs = True"
+
+    - name: Restart pbs.
+      environment:
+        PBS_DATA_SERVICE_USER: postgres
+      command: systemctl restart pbs

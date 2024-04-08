@@ -33,7 +33,7 @@
         - "loadmodule /opt/redis-stack/lib/redisbloom.so"
         - "loadmodule /opt/redis-stack/lib/redisgears.so v8-plugin-path /opt/redis-stack/lib/libredisgears_v8_plugin.so"
   
-    - name: Start Redis Stack Server (idempotent)
+    - name: Start Redis Stack Server
       service:
         name: redis-stack-server
         state: started

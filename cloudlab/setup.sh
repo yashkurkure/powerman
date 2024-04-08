@@ -21,3 +21,12 @@ ansible-playbook \
     -i /local/cluster_inventory.yml\
     --extra-vars "username=ykurkure groupname=SchedulingPower"\
     /local/repository/ansible/ssh.yml
+
+ansible-playbook \
+    -i /local/cluster_inventory.yml\
+    /local/repository/ansible/pbs_hook_enable.yml
+
+ansible-playbook \
+    -i /local/cluster_inventory.yml\
+    /local/repository/ansible/redis.yml
+
