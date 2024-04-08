@@ -1,5 +1,4 @@
 import sys
-import re
 # Import packages external to pbs, required for redis import
 sys.path.append('/usr/local/lib/python3.8/dist-packages')
 import pbs
@@ -7,23 +6,6 @@ import os
 import time
 import redis
 import json
-
-def parse_node_info(node_str):
-  """
-  Parses a string of format "(node0.testbed.schedulingpower.emulab.net:ncpus=1)+(node1.testbed.schedulingpower.emulab.net:ncpus=1)" 
-  and outputs a dictionary of hostname : cpus
-
-  Args:
-      node_str: A string containing node information
-
-  Returns:
-      A dictionary containing node hostnames as keys and cpu counts as values
-  """
-  node_dict = {}
-  for node in re.split(r"\+", node_str):
-    hostname, ncpus = re.split(r"\:", node.strip()[1:-1])
-    node_dict[hostname] = int(ncpus.split("=")[1])
-  return node_dict
 
 
 e = pbs.event()
@@ -69,15 +51,15 @@ try:
 
     elif e.type == pbs.EXECJOB_BEGIN:
         event_type = 'execjob_begin'
-        mom_name = pbs.get_local_nodename()
-        json_data['mom_name'] = mom_name
+        # mom_name = pbs.get_local_nodename()
+        json_data['mom_name'] = 'mom'
         # Parameters to record
         pass
 
     elif e.type == pbs.EXECJOB_END:
         event_type = 'execjob_end'
-        mom_name = pbs.get_local_nodename()
-        json_data['mom_name'] = mom_name
+        # mom_name = pbs.get_local_nodename()
+        json_data['mom_name'] = 'mom'
         # Parameters to record
         pass
     else:
