@@ -1,10 +1,23 @@
 from src.base_types.types import *
 from src.base_types.types import Job, Node
 
-class VNode(Node):
+class PBSVNode(Node):
     def __init__(self, id, name, cpus, online):
         super().__init__(id, name, cpus, online)
 
+class PBSJob(Job):
+    def __init__(self, 
+                 id, 
+                 nodes: int, 
+                 ppn: int, 
+                 walltime: int, 
+                 exec_path, 
+                 qtime: int, 
+                 rtime: int = -1, 
+                 etime: int = -1, 
+                 allocated_nodes=None
+                ):
+        super().__init__(id, nodes, ppn, walltime, exec_path, qtime, rtime, etime, allocated_nodes)
 
 class PBSEvent(Event):
 
@@ -34,7 +47,7 @@ class PBSEvent(Event):
 class JobQueue(PBSEvent):
     def __init__(self, 
                  timestamp: int,
-                 job: Job
+                 job: PBSJob
                 ):
         super().__init__(
             timestamp=timestamp, 
@@ -75,7 +88,7 @@ class JobEnd(PBSEvent):
         self.etime = etime
 
 class PBSState(State):
-    def __init__(self, timestamp: int, node_list: list[Node], job_list: list[Job]):
+    def __init__(self, timestamp: int, node_list: list[VNode], job_list: list[PBSJob]):
         super().__init__(timestamp, node_list, job_list)
         self.resource_utilization = 0.0
         

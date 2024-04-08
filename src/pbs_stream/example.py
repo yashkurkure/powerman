@@ -1,14 +1,13 @@
-from src.base_types.types import *
 from src.pbs_stream.types import *
 from src.pbs_stream.statemachine import *
 from src.pbs_stream.redisstream import *
 
 # Populate the job list
-job_list = []
-node_list = []
+job_list: list[PBSJob] = []
+node_list : list[PBSVNode] = []
 
 # Create initial state
-state = State(job_list=job_list, node_list=node_list)
+state = PBSState(job_list=job_list, node_list=node_list)
 
 # Create the event produced, in this case it is a redis stream
 event_stream = RedisStream(stream_name='pbs_hook_events')
