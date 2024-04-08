@@ -66,6 +66,11 @@ def capture_state_pbs():
 
     # parse qsub -f -F json
     timestamp = cmd_qstat['timestamp']
+    if 'Jobs' not in cmd_qstat:
+       return PBSState(
+          timestamp=timestamp, 
+          node_list= node_list, 
+          job_list=[])
     pbsjobs = cmd_qstat['Jobs']
     job_list = []
     for pbs_job_id in pbsjobs:
