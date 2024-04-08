@@ -1,7 +1,6 @@
 import os
 import argparse
-from node import Node
-from job import Job
+from src.base_types import types
 from util import *
 
 def capture_state_pbs():
@@ -61,7 +60,7 @@ def capture_state_pbs():
             pbs_state=job_state
         )
         job_list.append(j)
-    return node_list, job_list
+    return timestamp, node_list, job_list
 
 
 def parse_args():
@@ -77,5 +76,6 @@ if __name__ == "__main__":
     args = parse_args()
     if args.capture_state:
         print('Capture state...')
-        node_list, job_list = capture_state_pbs()
+        timestamp, node_list, job_list = capture_state_pbs()
+        state = State(timestamp = timestamp, node_list= node_list, job_list= job_list)
 
