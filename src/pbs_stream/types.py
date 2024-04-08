@@ -29,7 +29,7 @@ class PBSEvent(Event):
     EVENT_TYPE_QUEUEJOB = 'queuejob'
     EVENT_TYPE_RUNJOB = 'runjob'
     EVENT_TYPE_EXECJOB_END = 'execjob_end'
-    EVENT_TYPE_EXECJOB_END = 'execjob_run'
+    EVENT_TYPE_EXECJOB_END = 'execjob_begin'
 
     def __init__(self, 
                  timestamp: int,
@@ -73,7 +73,7 @@ class JobRun(PBSEvent):
         self.job_id = job_id
         self.rtime = rtime,
 
-class JobMoMRun(PBSEvent):
+class JobMoMBegin(PBSEvent):
     def __init__(self, 
                  timestamp: int, 
                  job_id: str,

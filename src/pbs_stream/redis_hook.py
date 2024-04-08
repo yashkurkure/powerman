@@ -67,8 +67,8 @@ try:
         # Parameters to record
         # TODO : record the node(s) to be run on
 
-    elif e.type == pbs.EXECJOB_RUN:
-        event_type = 'execjob_run'
+    elif e.type == pbs.EXECJOB_BEGIN:
+        event_type = 'execjob_begin'
         mom_name = pbs.get_local_nodename()
         json_data['mom_name'] = mom_name
         # Parameters to record
