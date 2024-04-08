@@ -88,7 +88,7 @@ class JobEnd(PBSEvent):
         self.etime = etime
 
 class PBSState(State):
-    def __init__(self, timestamp: int, node_list: list[VNode], job_list: list[PBSJob]):
+    def __init__(self, timestamp: int, node_list: list[PBSVNode], job_list: list[PBSJob]):
         super().__init__(timestamp, node_list, job_list)
         self.resource_utilization = 0.0
         
