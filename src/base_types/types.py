@@ -44,7 +44,7 @@ class State:
         self.queued_jobs = []
         self.running_jobs = []
         self.completed_jobs = []
-        self._job_dict : dict[int, Job] = {}
+        self.job_dict : dict[int, Job] = {}
         for job in job_list:
             self._job_dict[job.id] = job
 

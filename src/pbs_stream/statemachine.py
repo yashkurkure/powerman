@@ -9,6 +9,7 @@ class StreamEvaluator(StateMachine):
         super().evaluate(s, e)
         if type(e) is JobQueue:
             s.job_list.append(e.job)
+            s.job_dict[e.job.id] = e.job
             s.queued_jobs.append(e.job.id)
             pass
         elif type(e) is JobRun:

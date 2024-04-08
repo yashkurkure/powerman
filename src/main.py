@@ -39,6 +39,7 @@ if __name__ == "__main__":
                 print("[Event]---------------------------------------------")
                 state = stream_evaluator.evaluate(state, event)
                 metrics = stream_evaluator.evaluate_metrics(state)
-                print("----------------------------------------------------")
+                print("[Metrics]---------------------------------------------")
                 print(metrics)
+                print("----------------------------------------------------")
 
