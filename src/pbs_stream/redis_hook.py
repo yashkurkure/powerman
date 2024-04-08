@@ -65,9 +65,14 @@ try:
     elif e.type == pbs.RUNJOB:
         event_type = 'runjob'
         # Parameters to record
-        allocation = parse_node_info(j.exec_vnode)
         # TODO : record the node(s) to be run on
-        json_data['allocation'] = allocation
+
+    elif e.type == pbs.EXECJOB_RUN:
+        event_type = 'execjob_run'
+        mom_name = pbs.get_local_nodename()
+        json_data['mom_name'] = mom_name
+        # Parameters to record
+        pass
 
     elif e.type == pbs.EXECJOB_END:
         event_type = 'execjob_end'

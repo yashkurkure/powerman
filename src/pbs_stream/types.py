@@ -29,6 +29,7 @@ class PBSEvent(Event):
     EVENT_TYPE_QUEUEJOB = 'queuejob'
     EVENT_TYPE_RUNJOB = 'runjob'
     EVENT_TYPE_EXECJOB_END = 'execjob_end'
+    EVENT_TYPE_EXECJOB_END = 'execjob_run'
 
     def __init__(self, 
                  timestamp: int,
@@ -62,7 +63,6 @@ class JobRun(PBSEvent):
                  timestamp: int, 
                  job_id: str,
                  rtime: int,
-                 allocated_nodes: dict[str, int]
                 ):
         super().__init__(
             timestamp=timestamp, 
@@ -72,7 +72,23 @@ class JobRun(PBSEvent):
         self.description = self.description + ':' + self.__class__.__name__
         self.job_id = job_id
         self.rtime = rtime,
-        self.allocated_nodes = allocated_nodes
+
+class JobMoMRun(PBSEvent):
+    def __init__(self, 
+                 timestamp: int, 
+                 job_id: str,
+                 rtime: int,
+                 mom_name: dict[str, int]
+                ):
+        super().__init__(
+            timestamp=timestamp, 
+            event_type=PBSEvent.EVENT_TYPE_RUNJOB,
+            event_location=PBSEvent.EVENT_LOCATION_MOM
+        )
+        self.description = self.description + ':' + self.__class__.__name__
+        self.job_id = job_id
+        self.rtime = rtime,
+        self.mom_name = mom_name
 
 class JobEnd(PBSEvent):
     def __init__(self, 

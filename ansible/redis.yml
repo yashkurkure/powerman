@@ -23,7 +23,7 @@
         create: yes  # Creates file if missing
       with_items:
         - "protected-mode no"
-        - "bind $(hostname)"
+        - "bind {{ serverhostname }}"
         - "port 6379"
         - "daemonize no"
         - "loadmodule /opt/redis-stack/lib/rediscompat.so"
