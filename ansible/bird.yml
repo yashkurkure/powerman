@@ -1,0 +1,10 @@
+---
+- name: Configure redis client on worker nodes
+  become: true
+  hosts: workernodes
+  tasks:
+
+    - name: Install Redis Python Client
+      shell: |
+        sudo apt -y install python3-pip
+        pip install redis
