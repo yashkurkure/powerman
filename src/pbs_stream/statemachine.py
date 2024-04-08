@@ -18,15 +18,18 @@ class StreamEvaluator(StateMachine):
             s.running_jobs.append(e.job_id)
             pass
         
-        elif type(e) is JobMoMRun:
+        elif type(e) is JobMoMBegin:
             j = s.get_job_obj(e.job_id)
             s.get_job_obj(e.job_id).allocated_nodes[e.mom_name] = j.ppn
 
         elif type(e) is JobEnd:
             s.get_job_obj(e.job_id).etime = e.etime
-            s.running_jobs.remove(e.job_id)
-            s.completed_jobs.append(e.job_id)
-            pass
+            del s.get_job_obj(e.job_id).allocated_nodes[e.mom_name]
+
+            if len(s.get_job_obj(e.job_id).allocated_nodes) is 0:
+                s.running_jobs.remove(e.job_id)
+                s.completed_jobs.append(e.job_id)
+        
         return s
     
     def evaluate_metrics(self, s: PBSState) -> dict:

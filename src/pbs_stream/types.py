@@ -29,7 +29,7 @@ class PBSEvent(Event):
     EVENT_TYPE_QUEUEJOB = 'queuejob'
     EVENT_TYPE_RUNJOB = 'runjob'
     EVENT_TYPE_EXECJOB_END = 'execjob_end'
-    EVENT_TYPE_EXECJOB_END = 'execjob_begin'
+    EVENT_TYPE_EXECJOB_BEGIN= 'execjob_begin'
 
     def __init__(self, 
                  timestamp: int,
@@ -82,7 +82,7 @@ class JobMoMBegin(PBSEvent):
                 ):
         super().__init__(
             timestamp=timestamp, 
-            event_type=PBSEvent.EVENT_TYPE_RUNJOB,
+            event_type=PBSEvent.EVENT_TYPE_EXECJOB_BEGIN,
             event_location=PBSEvent.EVENT_LOCATION_MOM
         )
         self.description = self.description + ':' + self.__class__.__name__
