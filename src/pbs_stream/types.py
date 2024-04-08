@@ -4,6 +4,10 @@ from base_types.types import Job, Node
 class PBSVNode(Node):
     def __init__(self, id, name, cpus, online):
         super().__init__(id, name, cpus, online)
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.name}, cpus = {self.cpus}, online = {self.online}'
 
 class PBSJob(Job):
     def __init__(self, 
@@ -19,6 +23,11 @@ class PBSJob(Job):
                 ):
         super().__init__(id, nodes, ppn, walltime, exec_path, qtime, rtime, etime, allocated_nodes)
         self.cpus = int(self.nodes) * int(self.ppn)
+    
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.id}, cpus = {self.cpus}, walltime = {self.walltime}'
 
 class PBSEvent(Event):
 
@@ -44,6 +53,10 @@ class PBSEvent(Event):
         )
         self.description = self.description + ':' + self.__class__.__name__
         self.event_location = event_location
+    
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__
 
 
 class JobQueue(PBSEvent):
@@ -58,6 +71,13 @@ class JobQueue(PBSEvent):
         )
         self.description = self.description + ':' + self.__class__.__name__
         self.job = job
+    
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.timestamp}, {self.event_type}, {self.event_location}, ' + \
+            str(self.job)
+
 
 class JobRun(PBSEvent):
     def __init__(self, 
@@ -73,6 +93,12 @@ class JobRun(PBSEvent):
         self.description = self.description + ':' + self.__class__.__name__
         self.job_id = job_id
         self.rtime = rtime,
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.timestamp}, {self.event_type}, {self.event_location}, ' + \
+            str(self.job_id)
+
 
 class JobMoMBegin(PBSEvent):
     def __init__(self, 
@@ -90,6 +116,11 @@ class JobMoMBegin(PBSEvent):
         self.job_id = job_id
         self.rtime = rtime,
         self.mom_name = mom_name
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.timestamp}, {self.event_type}, {self.event_location}, ' + \
+            str(self.job_id)
 
 class JobEnd(PBSEvent):
     def __init__(self, 
@@ -107,6 +138,11 @@ class JobEnd(PBSEvent):
         self.job_id = job_id
         self.etime = etime
         self.mom_name = mom_name
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.timestamp}, {self.event_type}, {self.event_location}, ' + \
+            str(self.job_id)
 
 class PBSState(State):
     def __init__(self, timestamp: int, node_list: list[PBSVNode], job_list: list[PBSJob]):
@@ -122,3 +158,8 @@ class PBSState(State):
     
     def get_job_obj(self, job_id) -> PBSJob:
         return super().get_job_obj(job_id)
+
+    def __str__(self) -> str:
+        return super().__str__()  + \
+            ':' + self.__class__.__name__ + \
+            f':{self.timestamp}'

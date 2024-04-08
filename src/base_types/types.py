@@ -4,6 +4,9 @@ class Node:
         self.name     = name
         self.cpus    = cpus
         self.online    = online
+    
+    def __str__(self) -> str:
+        return self.__class__.__name__
 
 class Job:
     def __init__(self, 
@@ -27,14 +30,17 @@ class Job:
         self.etime = etime,
         self.allocated_nodes = allocated_nodes
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
 class Event:
     def __init__(self, timestamp: int, event_type, description):
         self.event_type = event_type
         self.description = description
         self.timestamp = timestamp
 
-    def __str__(self):
-        return f"Event Type: {self.type}\nDescription: {self.description}"
+    def __str__(self) -> str:
+        return self.__class__.__name__
     
 class State:
     def __init__(self, timestamp: int, node_list : list[Node], job_list : list[Job]):
@@ -62,4 +68,6 @@ class State:
     def get_nodes_for_job(self, job_id):
         if job_id in self.running_jobs:
             return self.get_job_obj(job_id).allocated_nodes
-
+    
+    def __str__(self) -> str:
+        return self.__class__.__name__
