@@ -14,7 +14,6 @@ class StreamEvaluator(StateMachine):
             pass
         elif type(e) is JobRun:
             s.get_job_obj(e.job_id).rtime = e.rtime
-            s.get_job_obj(e.job_id).allocated_nodes = e.allocated_nodes
             s.queued_jobs.remove(e.job_id)
             s.running_jobs.append(e.job_id)
             pass
