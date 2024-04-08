@@ -32,6 +32,7 @@ class RedisStream(EventProducer):
         timestamp = int(timestamp_ms/1000)
         event_type = data[1]['event_type']
         json_data = json.loads(data[1]['json_data'])
+        print(json_data)
         
         if event_type == PBSEvent.EVENT_TYPE_QUEUEJOB:
             j = PBSJob(
