@@ -18,7 +18,9 @@ class PBSJob(Job):
                  allocated_nodes=None
                 ):
         super().__init__(id, nodes, ppn, walltime, exec_path, qtime, rtime, etime, allocated_nodes)
-        self.cpus = self.nodes * self.ppn
+        print(self.ppn)
+        print(self.nodes)
+        self.cpus = int(self.nodes) * int(self.ppn)
 
 class PBSEvent(Event):
 
