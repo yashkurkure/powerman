@@ -46,10 +46,10 @@ class State:
         self.completed_jobs = []
         self.job_dict : dict[int, Job] = {}
         for job in job_list:
-            self._job_dict[job.id] = job
+            self.job_dict[job.id] = job
 
     def get_job_obj(self, job_id):
-        return self._job_dict[job_id]
+        return self.job_dict[job_id]
 
     def get_jobs_on_node(self, node_id):
         query_result = {}
