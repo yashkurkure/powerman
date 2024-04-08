@@ -37,7 +37,7 @@ class StreamEvaluator(StateMachine):
         # Resource utlization
         cpus_in_use = 0
         for job_id in s.running_jobs:
-            cpus_in_use += s.get_job_obj(job_id).nodes * s.get_job_obj(job_id).ppn
+            cpus_in_use += s.get_job_obj(job_id).cpus
         total_cpus = 0
         for node in s.node_list:
             total_cpus += node.cpus

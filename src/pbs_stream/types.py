@@ -18,6 +18,7 @@ class PBSJob(Job):
                  allocated_nodes=None
                 ):
         super().__init__(id, nodes, ppn, walltime, exec_path, qtime, rtime, etime, allocated_nodes)
+        self.cpus = self.nodes * self.ppn
 
 class PBSEvent(Event):
 
@@ -118,3 +119,6 @@ class PBSState(State):
                 self.running_jobs.append(job.id)
             else:
                 self.queued_jobs.append(job.id)
+    
+    def get_job_obj(self, job_id) -> PBSJob:
+        return super().get_job_obj(job_id)
