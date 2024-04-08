@@ -78,3 +78,10 @@ class PBSState(State):
     def __init__(self, timestamp: int, node_list: list[Node], job_list: list[Job]):
         super().__init__(timestamp, node_list, job_list)
         self.resource_utilization = 0.0
+        
+        # Cold start preperation
+        for job in job_list:
+            if job.rtime is not -1:
+                self.running_jobs.append(job.id)
+            else:
+                self.queued_jobs.append(job.id)
