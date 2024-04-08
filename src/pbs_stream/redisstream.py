@@ -39,7 +39,7 @@ class RedisStream(EventProducer):
                 id = job_id,
                 nodes = json_data['nodes'],
                 ppn = json_data['ppn'],
-                walltime = walltime_to_seconds(json_data['walltime']),
+                walltime = json_data['walltime'],
                 exec_path='',
                 qtime=timestamp
             )
