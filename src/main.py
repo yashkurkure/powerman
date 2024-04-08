@@ -34,9 +34,9 @@ if __name__ == "__main__":
 
         # Loop the stream
         while True:
+            print("[Event]---------------------------------------------")
             new_events = event_stream.getEvent()
             for event in new_events:
-                print("[Event]---------------------------------------------")
                 state = stream_evaluator.evaluate(state, event)
                 metrics = stream_evaluator.evaluate_metrics(state)
                 print("[Metrics]---------------------------------------------")
