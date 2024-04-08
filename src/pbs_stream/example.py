@@ -1,7 +1,7 @@
-from src.pbs_stream.types import *
-from src.pbs_stream.statemachine import *
-from src.pbs_stream.redisstream import *
-from src.pbs_stream.utils import capture_state_pbs
+from pbs_stream.types import *
+from pbs_stream.statemachine import *
+from pbs_stream.redisstream import *
+from pbs_stream.utils import capture_state_pbs
 
 # Get the state from pbs
 state = capture_state_pbs()

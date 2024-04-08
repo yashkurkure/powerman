@@ -1,4 +1,4 @@
-from src.base_types.types import *
+from base_types.types import *
 
 class StateMachine:
     def __init__(self):

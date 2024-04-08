@@ -1,5 +1,5 @@
-from src.base_types.types import *
-from src.base_types.types import Job, Node
+from base_types.types import *
+from base_types.types import Job, Node
 
 class PBSVNode(Node):
     def __init__(self, id, name, cpus, online):

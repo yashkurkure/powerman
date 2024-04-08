@@ -1,4 +1,4 @@
-from src.pbs_stream.types import *
+from pbs_stream.types import *
 import time
 import datetime
 def datetime_to_unix(datetime_str):

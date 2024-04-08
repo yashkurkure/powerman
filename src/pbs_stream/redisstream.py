@@ -1,7 +1,7 @@
-from src.base_types.event_producer import *
-from src.pbs_stream.types import *
+from base_types.event_producer import *
+from pbs_stream.types import *
 import redis
-from src.pbs_stream.utils import walltime_to_seconds
+from pbs_stream.utils import walltime_to_seconds
 
 class RedisStream(EventProducer):
 

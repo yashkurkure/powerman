@@ -1,5 +1,5 @@
-from src.base_types.statemachine import *
-from src.pbs_stream.types import *
+from base_types.statemachine import *
+from pbs_stream.types import *
 
 class StreamEvaluator(StateMachine):
     def __init__(self):
