@@ -27,7 +27,6 @@ if __name__ == "__main__":
         event_stream = RedisStream(stream_name='pbs-hook-events')
         print('[Connected to Redis]---------------------------------------')
 
-        # Create the state machine, in this case we just evaluate the events as is
         # In the case of a smiulation, the evaluator will contain code for the 
         # scheduling policy / algorithm
         stream_evaluator = StreamEvaluator()

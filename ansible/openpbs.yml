@@ -11,7 +11,7 @@
         - expat
         - libedit2
         - postgresql
-        - python3
+        - python3.9
         - postgresql-contrib
         - sendmail-bin
         - sudo
