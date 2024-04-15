@@ -3,27 +3,9 @@
   hosts: all
   become: yes
 
-  vars:
-    python39_package:  
-      - "python39"  # Fedora 
-      - "python3.9" # RHEL/CentOS
-
-  tasks:
-    - name: Ensure required dependencies are present (RHEL/CentOS)
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - gcc
-        - openssl-devel
-        - bzip2-devel
-        - libffi-devel
-        - zlib-devel
-      when: ansible_distribution in ["RedHat", "CentOS"]
-
     - name: Install Python 3.9
       package:
-        name: "{{ python39_package }}"
+        name: python3.9
         state: present
 
     - name: Add Python 3.9 to update-alternatives
