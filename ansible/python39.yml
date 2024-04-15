@@ -1,0 +1,20 @@
+---
+- name: Configure NFS server.
+  become: true
+  hosts: all
+  tasks:
+
+    - name: Update & Install Python 3.9
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - python3.9
+        - python3-pip
+
+    - name: Add Python 3.9 to update-alternatives
+      alternatives:
+        name: python3
+        path: /usr/bin/python3.9
+        link: /usr/bin/python3
+        priority: 10
+    
