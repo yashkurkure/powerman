@@ -17,4 +17,23 @@
         path: /usr/bin/python3.9
         link: /usr/bin/python3
         priority: 10
+
+    - name: Navigate to dist-packages directory
+      file:
+        path: /usr/lib/python3/dist-packages
+        state: directory
+
+    - name: List apt_pkg .so files
+      shell: ls -l /usr/lib/python3/dist-packages | grep apt_pkg
+      register: apt_pkg_files
+
+    - name: Extract Python version from file name
+      set_fact:
+        python_version: "{{ apt_pkg_files.stdout_lines[0].split('.')[2] }}"
+
+    - name: Create a copy of apt_pkg.so
+      copy:
+        src: "/usr/lib/python3/dist-packages/apt_pkg.cpython-{{ python_version }}-x86_64-linux-gnu.so"
+        dest: "/usr/lib/python3/dist-packages/apt_pkg.so"
+        remote_src: yes
     
