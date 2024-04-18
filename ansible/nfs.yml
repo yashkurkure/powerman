@@ -23,6 +23,9 @@
         src: /exports/pbsusers
         dest: /pbsusers
         state: link
+        owner: root 
+        group: SchedulingPower
+        mode: '0775'
 
     - name: Backup original /etc/exports (if not already backed up)
       stat:
@@ -79,6 +82,9 @@
         src: /mnt/nfs/pbsusers
         dest: /pbsusers
         state: link
+        owner: root 
+        group: SchedulingPower
+        mode: '0775'
 
     - name: Ensure AutoFS /etc/auto.master entry exists
       lineinfile:
