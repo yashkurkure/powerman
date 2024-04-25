@@ -15,7 +15,7 @@
         path: /exports/pbsusers
         state: directory
         owner: root 
-        group: SchedulingPower
+        group: {{ common_user_group }}
         mode: '0775' 
 
     - name: Ensure symbolic link for pbsusers in root exists
@@ -24,7 +24,7 @@
         dest: /pbsusers
         state: link
         owner: root 
-        group: SchedulingPower
+        group: {{ common_user_group }}
         mode: '0775'
 
     - name: Backup original /etc/exports (if not already backed up)
@@ -74,7 +74,7 @@
         path: /mnt/nfs/pbsusers
         state: directory
         owner: root 
-        group: SchedulingPower
+        group: {{ common_user_group }}
         mode: '0775' 
 
     - name: Ensure symbolic link for pbsusers in root exists
@@ -83,7 +83,7 @@
         dest: /pbsusers
         state: link
         owner: root 
-        group: SchedulingPower
+        group: {{ common_user_group }}
         mode: '0775'
 
     - name: Ensure AutoFS /etc/auto.master entry exists

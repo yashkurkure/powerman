@@ -19,7 +19,7 @@ ansible-playbook \
 
 ansible-playbook \
     -i /local/cluster_inventory.yml\
-    --extra-vars "username=ykurkure groupname=SchedulingPower"\
+    --extra-vars "username=ykurkure"\
     /local/repository/ansible/ssh.yml
 
 ansible-playbook \
@@ -32,6 +32,6 @@ ansible-playbook \
 
 /opt/pbs/bin/qmgr -c 'create hook redis_hook'
 /opt/pbs/bin/qmgr -c 'import hook redis_hook application/x-python default /local/repository/src/pbs_stream/redis_hook.py'
-/opt/pbs/bin/qmgr -c 'set hook redis_hook event = "queuejob,runjob,execjob_begin,execjob_end"'
+/opt/pbs/bin/qmgr -c 'set hook redis_hook event = "queuejob,runjob,jobobit,execjob_begin,execjob_end"'
 /opt/pbs/bin/qmgr -c 'set hook redis_hook debug = True'
 
