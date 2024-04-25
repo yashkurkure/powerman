@@ -1,0 +1,11 @@
+---
+# Example of passing variables
+#  --extra-vars "cap=25"
+# A cap can be applied from 25% to 100%
+- name: Apply a powercap to all nodes that support
+  become: true
+  hosts: workernodes
+  tasks:
+
+    - name: Set power cap using script
+      shell: cd /local/powercap/_build && cmake .. && make && sudo make install

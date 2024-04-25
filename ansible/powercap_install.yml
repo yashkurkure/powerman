@@ -4,10 +4,11 @@
   hosts: workernodes
   tasks:
 
-    - name: Update & install nfs-kernel-server
+    - name: Update & Install packages
       ansible.builtin.apt:
         update_cache: yes
         pkg:
+        - python3
         - python3-pip
         - cmake
 
