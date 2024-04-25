@@ -23,7 +23,11 @@ for i in $(seq 0 $((num_zones-1))); do
     echo $max_power
 
     # Calculate the new power constraint
-    power_constraint=$(echo "$max_power * $cap" | bc)
+    power_constraint_float=$(echo "$max_power * $cap" | bc)
+
+    # Convert to integer (round down for safety)
+    power_constraint=$(printf '%.*f\n' 0 $power_constraint_float) 
+
     echo $power_constraint
 
     # Apply the new power constraint
