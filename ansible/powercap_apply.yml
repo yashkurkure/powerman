@@ -10,7 +10,7 @@
     - name: Get the number of RAPL zones
       register: nzones_result
       shell: powercap-info intel-rapl --nzones
-    
+
     - name: Calculate and set power constraints
       loop: "{{ range(0, nzones_result.stdout | int) }}"
       vars:
@@ -18,14 +18,14 @@
         max_power_filename: "/sys/class/powercap/intel-rapl/intel-rapl:{{ zone_index }}/constraint_1_max_power_uw"
         power_constraint: "{{ (max_power | int) * cap }}"
 
-      tasks:  # Use a block for better error handling
+      tasks:
         - name: Read the current max power
           register: max_power
           shell: "cat {{ max_power_filename }}"  
 
         - name: Set the new power constraint
           shell: "powercap-set intel-rapl -z {{ zone_index }} -c 1 -l {{ power_constraint }}"
-          failed_when: power_constraint.rc != 0  # Ensure the 'powercap-set' command executes successfully
-          become: true  # Likely needs root privileges
+          failed_when: power_constraint.rc != 0  
+          become: true
     
 
