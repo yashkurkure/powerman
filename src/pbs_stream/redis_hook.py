@@ -62,6 +62,9 @@ try:
         json_data['mom_name'] = mom_name
         # Parameters to record
         pass
+    elif e.type == pbs.HOOK_EVENT_JOBOBIT:
+        event_type = 'jobobit'
+
     else:
         event_type = 'unknown'
 
