@@ -1,0 +1,49 @@
+---
+- name: Install power capping tools
+  become: true
+  hosts: workernodes
+  tasks:
+
+    - name: Update & install nfs-kernel-server
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - python3-pip
+        - cmake
+
+    - name: Clone powercap git repository
+      git:
+        repo: https://github.com/powercap/powercap.git
+        dest: /local/powercap
+        update: yes
+
+    - name: Check if previous build exists
+      stat:
+        path: /local/powercap/_build
+      register: dir_result
+
+    - name: Remove existing build
+      file:
+        path: /local/powercap/_build
+        state: absent
+      when: dir_result.stat.exists 
+
+    - name: Create new build directory
+      file:
+        path: /local/powercap/_build
+        state: directory
+
+    - name: Run cmake build
+      command: 
+        chdir: /local/powercap/_build
+        cmake ..
+
+    - name: Run make build
+      command: 
+        chdir: /local/powercap/_build
+        make
+
+    - name: Run make install
+      command: 
+        chdir: /local/powercap/_build
+        sudo make install
