@@ -33,17 +33,5 @@
         path: /local/powercap/_build
         state: directory
 
-    - name: Run cmake build
-      command: 
-        chdir: /local/powercap/_build
-        cmake ..
-
-    - name: Run make build
-      command: 
-        chdir: /local/powercap/_build
-        make
-
-    - name: Run make install
-      command: 
-        chdir: /local/powercap/_build
-        sudo make install
+    - name: Build and Install
+      shell: cd /local/powercap/_build && cmake .. && make && sudo make install
