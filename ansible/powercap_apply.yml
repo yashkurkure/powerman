@@ -18,7 +18,7 @@
         max_power_filename: "/sys/class/powercap/intel-rapl/intel-rapl:{{ zone_index }}/constraint_1_max_power_uw"
         power_constraint: "{{ (max_power | int) * cap }}"
 
-      block:  # Use a block for better error handling
+      tasks:  # Use a block for better error handling
         - name: Read the current max power
           register: max_power
           shell: "cat {{ max_power_filename }}"  
