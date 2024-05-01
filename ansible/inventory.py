@@ -40,6 +40,8 @@ def generate(args):
         f.write(f'    nfshostname: {nfs_node_name}\n')
         if 'wisc.cloudlab.us' in hostname:
             f.write('    common_user_group: schedulingpower-\n')
+        elif 'clemson.cloudlab.us' in hostname:
+            f.write('    common_user_group: schedulingpower-\n')
         else:
             f.write('    common_user_group: SchedulingPower\n')
     pass
