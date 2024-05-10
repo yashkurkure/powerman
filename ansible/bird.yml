@@ -4,7 +4,9 @@
   hosts: workernodes
   tasks:
 
-    - name: Install Redis Python Client
-      shell: |
-        sudo apt -y install python3-pip
-        pip install redis
+    - name: Update & install linux tools
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - linux-tools-common
+        - linux-tools-generic

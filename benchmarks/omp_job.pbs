@@ -12,4 +12,7 @@ cd $PBS_O_WORKDIR
 PPN=$(echo $PBS_NODEFILE | wc -l)
 
 # Execute
-OMP_NUM_THREADS=$PPN /pbsusers/NPB3.4.2/NPB3.4-OMP/bin/is.S.x
+if intel
+    OMP_NUM_THREADS=$PPN /nfs_share/intel/is.S.x
+if amd
+    OMP_NUM_THREADS=$PPN /nfs_share/amd/is.S.x
