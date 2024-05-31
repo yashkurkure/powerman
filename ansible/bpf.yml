@@ -25,7 +25,6 @@
         - liblzma-dev
         - arping
         - iperf
-        - netperf
       
     - name: Make and Install
       shell: |
