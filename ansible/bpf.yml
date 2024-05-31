@@ -48,7 +48,6 @@
         chdir: /local/bcc/build
 
     - name: Install BCC
-      become: yes 
       shell: make install
       args:
         chdir: /local/bcc/build
@@ -59,12 +58,11 @@
         chdir: /local/bcc/build
 
     - name: Make Python3 bindings
-      shell: pushd src/python/ && make
+      shell: make
       args:
-        chdir: /local/bcc/build
+        chdir: /local/bcc/build/src/python
 
     - name: Install Python3 bindings
-      become: yes
-      shell: pushd src/python/ && make install && popd
+      shell: make install
       args:
-        chdir: /local/bcc/build
+        chdir: /local/bcc/build/src/python
