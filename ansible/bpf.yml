@@ -25,17 +25,46 @@
         - liblzma-dev
         - arping
         - iperf
-      
-    - name: Make and Install
-      shell: |
-        cd /local
-        git clone https://github.com/iovisor/bcc.git
-        mkdir bcc/build; cd bcc/build
-        cmake ..
-        make
-        sudo make install
-        cmake -DPYTHON_CMD=python3 .. # build python3 binding
-        pushd src/python/
-        make
-        sudo make install
-        popd
+
+    - name: Clone BCC repository (if not present)
+      git:
+        repo: https://github.com/iovisor/bcc.git
+        dest: /local/bcc
+        version: master
+
+    - name: Create build directory (if not present)
+      file:
+        path: /local/bcc/build
+        state: directory
+    
+    - name: Configure BCC build
+      shell: cmake ..
+      args:
+        chdir: /local/bcc/build
+
+    - name: Make BCC
+      shell: make
+      args:
+        chdir: /local/bcc/build
+
+    - name: Install BCC
+      become: yes 
+      shell: make install
+      args:
+        chdir: /local/bcc/build
+    
+    - name: Configure Python3 bindings (if not present)
+      shell: cmake -DPYTHON_CMD=python3 ..
+      args:
+        chdir: /local/bcc/build
+
+    - name: Make Python3 bindings
+      shell: pushd src/python/ && make
+      args:
+        chdir: /local/bcc/build
+
+    - name: Install Python3 bindings
+      become: yes
+      shell: pushd src/python/ && make install && popd
+      args:
+        chdir: /local/bcc/build
