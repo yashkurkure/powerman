@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -l nodes=3:ppn=1
+#PBS -l walltime=01:30:00
+#PBS -q workq
+#PBS -o job.out
+#PBS -e job.err
+
+cd $PBS_O_WORKDIR
+export P4_RSHCOMMAND=/opt/pbs/bin/pbs_tmrsh
+export OMP_NUM_THREADS=3
+
+# --- Start of perf recording section ---
+hostname=$(hostname | cut -d '.' -f1)  # Extract 'node0' from 'node0.cloudlab.net'
+
+# Start perf recording in the background
+perf record -F 99 -a -g \
+  > perf_${hostname}.out \
+  2> perf_${hostname}.err &
+PERF_PID=$!  # Store the process ID of the perf record command
+
+# --- End of perf recording section ---
+
+# MPI run (your original command)
+mpirun /pbsusers/NPB3.4.2-MZ/NPB3.4-MZ-MPI/bin/bt-mz.B.x
+
+# --- Stop perf recording section ---
+kill $PERF_PID  # Stop perf recording after the MPI run finishes
+perf script --input perf_${hostname}.data > perf_${hostname}.script
+# --- End of stop perf recording section ---
