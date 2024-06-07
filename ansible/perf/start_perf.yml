@@ -15,5 +15,5 @@
 
     - name: Start perf recording
       shell: |
-        nohup perf record -F 99 -a -g -o /pbsusers/perf/perf_{{ short_hostname }}.data >/dev/null 2>&1 &
+        nohup perf record -F 99 -a -g -o /pbsusers/perf/perf_{{ short_hostname }}.data </dev/null >/dev/null 2>&1 &
         echo $! > /pbsusers/perf/perf_{{ short_hostname }}.pid
