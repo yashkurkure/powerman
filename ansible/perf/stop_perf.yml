@@ -3,11 +3,15 @@
   hosts: all
   become: yes
   tasks:
+    - name: Determine shortened hostname
+      set_fact:
+        short_hostname: "{{ ansible_hostname.split('.')[0] }}"
+
     - name: Read perf process ID
       slurp:
-        src: /pbsusers/perf/perf.pid
+        src: /pbsusers/perf/perf_{{ short_hostname }}.pid  # Modified to read the correct PID file
 
     - name: Stop perf recording
-      shell: kill -INT {{ item.content | int }}  # INT for graceful termination
+      shell: kill -INT {{ item.content | int }}
       with_items:
         - "{{ perf_pid.results }}"

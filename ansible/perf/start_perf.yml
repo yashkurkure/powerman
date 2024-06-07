@@ -1,8 +1,12 @@
 ---
-- name: Start perf recording on all hosts
+- name: Start perf recording with hostname in output file
   hosts: all
   become: yes
   tasks:
+    - name: Determine shortened hostname
+      set_fact:
+        short_hostname: "{{ ansible_hostname.split('.')[0] }}"
+
     - name: Create directory for perf output
       file:
         path: /pbsusers/perf
@@ -11,7 +15,5 @@
 
     - name: Start perf recording
       shell: |
-        perf record -F 99 -a -g &
-        echo $! > /pbsusers/perf/perf.pid
-      args:
-        chdir: /pbsusers/perf  # Change working directory to save output
+        perf record -F 99 -a -g -o /pbsusers/perf/perf_{{ short_hostname }}.data &
+        echo $! > /pbsusers/perf/perf_{{ short_hostname }}.pid
