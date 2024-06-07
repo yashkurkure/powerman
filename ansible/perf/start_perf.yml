@@ -15,5 +15,5 @@
 
     - name: Start perf recording
       shell: |
-        perf record -F 99 -a -g -o /pbsusers/perf/perf_{{ short_hostname }}.data &
+        perf record -F 99 -a -g -t 30 -o /pbsusers/perf/perf_{{ short_hostname }}.data &
         echo $! > /pbsusers/perf/perf_{{ short_hostname }}.pid
