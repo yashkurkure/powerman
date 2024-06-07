@@ -1,0 +1,13 @@
+---
+- name: Stop perf recording on all hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Read perf process ID
+      slurp:
+        src: /pbsusers/perf/perf.pid
+
+    - name: Stop perf recording
+      shell: kill -INT {{ item.content | int }}  # INT for graceful termination
+      with_items:
+        - "{{ perf_pid.results }}"

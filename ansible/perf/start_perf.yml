@@ -1,0 +1,17 @@
+---
+- name: Start perf recording on all hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create directory for perf output
+      file:
+        path: /pbsusers/perf
+        state: directory
+        mode: '0755'
+
+    - name: Start perf recording
+      shell: |
+        perf record -F 99 -a -g &
+        echo $! > /pbsusers/perf/perf.pid
+      args:
+        chdir: /pbsusers/perf  # Change working directory to save output
