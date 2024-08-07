@@ -1,0 +1,23 @@
+---
+- name: Install Kafka
+  become: true
+  hosts: headnode
+  tasks:
+
+    - name: Update & Install dependencies
+      ansible.builtin.apt:
+        update_cache: yes
+        pkg:
+        - default-jdk
+    
+  - name: Download Kafka tarball
+    get_url:
+      url: https://downloads.apache.org/kafka/3.8.0/kafka_2.12-3.8.0.tgz
+      dest: /tmp/kafka.tgz
+  
+  - name: Extract Kafka archive
+    unarchive:
+      src: /tmp/kafka.tgz
+      dest: /opt
+      remote_src: yes
+      creates: /opt/kafka
