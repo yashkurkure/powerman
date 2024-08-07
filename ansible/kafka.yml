@@ -4,11 +4,11 @@
   hosts: headnode
   tasks:
 
-    - name: Update & Install dependencies
-      ansible.builtin.apt:
-        update_cache: yes
-        pkg:
-        - default-jdk
+  - name: Update & Install dependencies
+    ansible.builtin.apt:
+      update_cache: yes
+      pkg:
+      - default-jdk
     
   - name: Download Kafka tarball
     get_url:
