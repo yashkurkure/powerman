@@ -1,0 +1,14 @@
+[Unit]
+Description=Default Kafka Service
+After=network.target 
+
+[Service]
+User=root
+WorkingDirectory=/opt/kafka
+ExecStart=/opt/kafka/bin/kafka-server-start.sh config/server.properties
+StandardOutput=append:/local/kafka_service.log
+StandardError=append:/local/kafka_service.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

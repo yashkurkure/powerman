@@ -1,0 +1,14 @@
+[Unit]
+Description=Default Zookeeper Service
+After=network.target 
+
+[Service]
+User=root
+WorkingDirectory=/opt/kafka
+ExecStart=/opt/kafka/bin/zookeeper-server-start.sh config/zookeeper.properties
+StandardOutput=append:/local/zookeeper_service.log
+StandardError=append:/local/zookeeper_service.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
