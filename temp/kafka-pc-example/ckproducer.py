@@ -3,7 +3,7 @@ import json
 
 # Kafka configuration
 conf = {
-    'bootstrap.servers': 'localhost:9092',  # Adjust if your Kafka broker is elsewhere
+    'bootstrap.servers': 'head.testbed.schedulingpower.emulab.net:9092',  # Adjust if your Kafka broker is elsewhere
     'client.id': 'pbs-hook-producer',
     'batch.num.messages': 1,  # Disable batching
 }

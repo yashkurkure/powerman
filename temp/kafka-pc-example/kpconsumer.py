@@ -3,7 +3,7 @@ import json
 
 # Kafka configuration
 conf = {
-    'bootstrap_servers': 'localhost:9092', 
+    'bootstrap_servers': 'head.testbed.schedulingpower.emulab.net:9092', 
     'group_id': 'python-consumer-1',
     'auto_offset_reset': 'earliest' 
 }

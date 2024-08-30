@@ -3,7 +3,7 @@ import json
 
 # Kafka configuration
 conf = {
-    'bootstrap.servers': 'localhost:9092', 
+    'bootstrap.servers': 'head.testbed.schedulingpower.emulab.net:9092', 
     'group.id': 'python-consumer-1',
     'auto.offset.reset': 'earliest'  # Start consuming from the beginning of the topic
 }
