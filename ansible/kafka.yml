@@ -13,7 +13,7 @@
   - name: Install Confluent Kafka Python Client
     shell: |
       sudo apt -y install python3-pip
-      pip install confluent-kafka
+      pip install kafka-python
     
   - name: Download Kafka tarball
     get_url:
