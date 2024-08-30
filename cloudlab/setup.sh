@@ -28,10 +28,11 @@ ansible-playbook \
 
 ansible-playbook \
     -i /local/cluster_inventory.yml\
-    /local/repository/ansible/redis.yml
+    /local/repository/ansible/kafka.yml
 
-/opt/pbs/bin/qmgr -c 'create hook redis_hook'
-/opt/pbs/bin/qmgr -c 'import hook redis_hook application/x-python default /local/repository/src/pbs_stream/redis_hook.py'
+/opt/pbs/bin/qmgr -c 'create hook kafka_producer_hook'
+/opt/pbs/bin/qmgr -c 'import hook redis_hook application/x-python default /local/repository/kafka/kafka_producer_hook.py'
 /opt/pbs/bin/qmgr -c 'set hook redis_hook event = "queuejob,runjob,jobobit,execjob_begin,execjob_end"'
 /opt/pbs/bin/qmgr -c 'set hook redis_hook debug = True'
 
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server head.testbed.schedulingpower.emulab.net:9092 --create --replication-factor 1 --partitions 1 --topic pbsevents

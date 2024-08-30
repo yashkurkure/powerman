@@ -9,6 +9,11 @@
       update_cache: yes
       pkg:
       - default-jdk
+  
+  - name: Install Confluent Kafka Python Client
+      shell: |
+        sudo apt -y install python3-pip
+        pip install confluent-kafka
     
   - name: Download Kafka tarball
     get_url:

@@ -1,19 +1,28 @@
-# TODO: Write the Kafka producer hook 
-
+# NOTE: Ansible must append the server address above
+# server = "head.testbed.schedulingpower.emulab.net"
 import sys
 # Import packages external to pbs, required for redis import
 sys.path.append('/usr/local/lib/python3.8/dist-packages')
 import pbs
 import os
 import time
-import redis
+from confluent_kafka import Producer
 import json
+
+# Kafka configuration
+conf = {
+    'bootstrap.servers': 'head.testbed.schedulingpower.emulab.net:9092',  # Adjust if your Kafka broker is elsewhere
+    'client.id': 'python-producer',
+    'batch.num.messages': 1,  # Disable batching
+}
+
+# Create the producer instance
+producer = Producer(conf)
 
 
 e = pbs.event()
 j = e.job
 try:
-    r = redis.StrictRedis(host='head.testbed.schedulingpower.emulab.net', port=6379, decode_responses=True)
     # Information to collect 
     event_type = ''
     event_code = e.type
@@ -29,16 +38,6 @@ try:
         _ppn = int(j.Resource_List["nodes"].split(':ppn=')[1])
         _walltime = j.Resource_List["walltime"]
 
-        # Job ids - Using counter from Redis
-        if r.exists('job_counter'):
-            job_counter = r.incr('job_counter')
-            job_name = f'job.{job_counter}'
-            _job_id = job_counter
-        else:
-            # Key doesn't exist, create and initialize it to 0
-            r.set('job_counter', 0)
-            job_name = 'job.0'
-            _job_id = 0
         j.Job_Name = job_name
         
         json_data['id'] = _job_id
@@ -70,16 +69,9 @@ try:
     else:
         event_type = 'unknown'
 
-    # Insert data into redis stream
-    r.xadd(
-        "pbs-hook-events",
-        { 
-            "job_id": f"{job_name}", 
-            "event_type": event_type, 
-            "event_code": event_code,
-            "json_data" : json.dumps(json_data)
-        },
-    )
+    producer.produce('pbsevents', value=json.dumps(json_data))
+    producer.flush()  # Ensure the message is sent immediately
+
 
     # accept the event
     pbs.event().accept() 

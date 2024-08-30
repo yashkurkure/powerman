@@ -4,7 +4,7 @@ import json
 # Kafka configuration
 conf = {
     'bootstrap.servers': 'localhost:9092',  # Adjust if your Kafka broker is elsewhere
-    'client.id': 'python-producer',
+    'client.id': 'pbs-hook-producer',
     'batch.num.messages': 1,  # Disable batching
 }
 
