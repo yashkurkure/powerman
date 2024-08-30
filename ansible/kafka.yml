@@ -33,6 +33,28 @@
 
   tasks:
 
+    - name: Update Kafka server config
+      shell: |
+        echo "broker.id=0
+        listeners=PLAINTEXT://{{ serverhostname }}:9092
+        num.network.threads=3
+        num.io.threads=8
+        socket.send.buffer.bytes=102400
+        socket.receive.buffer.bytes=102400
+        socket.request.max.bytes=104857600
+        log.dirs=/tmp/kafka-logs
+        num.partitions=1
+        num.recovery.threads.per.data.dir=1
+        offsets.topic.replication.factor=1
+        transaction.state.log.replication.factor=1
+        transaction.state.log.min.isr=1
+        log.retention.hours=168
+        log.retention.check.interval.ms=300000
+        zookeeper.connect=localhost:2181
+        zookeeper.connection.timeout.ms=18000
+        group.initial.rebalance.delay.ms=0" > /opt/kafka/config/server.properties
+
+
     - name: Ensure Zookeeper log file exists
       file:
         path: /local/zookeeper_service.log
@@ -45,25 +67,25 @@
 
     - name: Copy Zookeeper service file
       copy:
-        src: /local/repository/services/zookeeper.service
+        src: /local/repository/kafka/zookeeper.service
         dest: /etc/systemd/system/zookeeper.service
-        mode: '0644'  # Set permissions: owner read/write, others read-only
-        backup: yes   # Create a backup before overwriting
-        remote_src: yes  # Copy from the Ansible control node to the remote target
+        mode: '0644'
+        backup: yes
+        remote_src: yes
 
     - name: Copy Kafka service file
       copy:
-        src: /local/repository/services/kafka.service
+        src: /local/repository/kafka/kafka.service
         dest: /etc/systemd/system/kafka.service
-        mode: '0644'  # Set permissions: owner read/write, others read-only
-        backup: yes   # Create a backup before overwriting
-        remote_src: yes  # Copy from the Ansible control node to the remote target
+        mode: '0644'
+        backup: yes
+        remote_src: yes
 
     - name: Enable Zookeeper service
       systemd:
         name: zookeeper.service
         enabled: yes
-        daemon_reload: yes  # Reload systemd configuration after enabling
+        daemon_reload: yes
 
     - name: Start Zookeeper service 
       systemd:
@@ -75,7 +97,7 @@
       systemd:
         name: kafka.service
         enabled: yes
-        daemon_reload: yes  # Reload systemd configuration after enabling
+        daemon_reload: yes
 
     - name: Start Kafka service 
       systemd:
