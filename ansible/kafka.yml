@@ -1,7 +1,7 @@
 ---
 - name: Install Kafka
   become: true
-  hosts: headnode
+  hosts: all
   tasks:
 
   - name: Update & Install dependencies
